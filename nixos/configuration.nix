@@ -11,7 +11,6 @@
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
-    ./hyprland.nix
 
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
@@ -113,9 +112,40 @@
     passwordAuthentication = false;
   };
 
+  services.greetd = {
+    enable = true;
+    settings = rec {
+      initial_session = {
+        command = "Hyprland";
+        user = "${user}";
+      };
+      default_session = initial_session;
+    };
+  };
+
   # Additional packages
   environment.systemPackages = with pkgs; [
   ];
+
+  # Environment variables
+  environment.sessionVariables = rec {
+    GBM_BACKEND = "nvidia-drm";
+    __GL_GSYNC_ALLOWED = "0";
+    __GL_VRR_ALLOWED = "0";
+    WLR_DRM_NO_ATOMIC = "1";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+
+    # Will break SDDM if running X11
+    QT_QPA_PLATFORM = "wayland";
+    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+
+    GDK_BACKEND = "wayland";
+    WLR_NO_HARDWARE_CURSORS = "1";
+    MOZ_ENABLE_WAYLAND = "1";
+  };
+  environment.etc."greetd/environments".text = ''
+    Hyprland
+  '';
 
   # Program setup
   programs.hyprland.enable = true;
