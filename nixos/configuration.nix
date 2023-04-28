@@ -16,6 +16,9 @@
     ./hardware-configuration.nix
   ];
 
+  # Some nvidia invocations
+  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+
   nixpkgs = {
     # You can add overlays here
     overlays = [
