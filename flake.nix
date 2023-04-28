@@ -36,9 +36,11 @@
       morningstar = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; }; # Pass flake inputs to our config
         # > Our main nixos configuration file <
-        let system = "x86_64-linux";
-        let user = "joshsymonds";
-        modules = [ ./nixos/configuration.nix ];
+        let {
+          system = "x86_64-linux";
+          user = "joshsymonds";
+        } in
+          modules = [ ./nixos/configuration.nix ];
       };
     } // flake-utils.lib.eachDefaultSystem (system: {
       pkgs = import nixpkgs { inherit system; };
