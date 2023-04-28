@@ -8,12 +8,7 @@
   boot = {
     plymouth = {
       enable = true;
-      theme = "spinner-monochrome";
-      themePackages = [
-        (pkgs.plymouth-spinner-monochrome.override {
-          inherit (config.boot.plymouth) logo;
-        })
-      ];
+      theme = "breeze";
     };
     loader.timeout = 0;
     kernelParams = [
