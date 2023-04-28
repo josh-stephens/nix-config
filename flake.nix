@@ -40,7 +40,7 @@
       };
     } // inputs.flake-utils.lib.eachDefaultSystem (system: {
       pkgs = import nixpkgs { inherit system; };
-      apps = imports.agenix-rekey.defineApps self pkgs self.nixosConfigurations;
+      apps = inputs.agenix-rekey.defineApps self pkgs self.nixosConfigurations;
     });
 
     # Standalone home-manager configuration entrypoint
