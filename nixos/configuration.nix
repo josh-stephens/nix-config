@@ -117,7 +117,7 @@
     settings = rec {
       initial_session = {
         command = "Hyprland";
-        user = "${user}";
+        user = "joshsymonds";
       };
       default_session = initial_session;
     };
