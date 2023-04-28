@@ -2,6 +2,12 @@
 # Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
 
 { inputs, lib, config, pkgs, ... }: {
+  # Enable cachix caches
+  nix.settings = {
+    substituters = ["https://hyprland.cachix.org"];
+    trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+  };
+
   # You can import other NixOS modules here
   imports = [
     inputs.hardware.nixosModules.common-cpu-amd
@@ -11,6 +17,7 @@
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
+    ./hyprland.nix
 
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
@@ -64,10 +71,6 @@
       experimental-features = "nix-command flakes";
       # Deduplicate and optimize nix store
       auto-optimise-store = true;
-
-      # Add Hyprland caches
-      substituters = ["https://hyprland.cachix.org"];
-      trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
     };
 
     binaryCachePublicKeys = [
@@ -104,7 +107,7 @@
 
   # This setups a SSH server. Very important if you're setting up a headless system.
   # Feel free to remove if you don't need it.
-  services.openssh = {
+  services.openssh.settings = {
     enable = true;
     # Forbid root login through SSH.
     permitRootLogin = "no";
