@@ -7,17 +7,28 @@
     # If you want to use modules from other flakes (such as nixos-hardware):
     inputs.hardware.nixosModules.common-cpu-amd
     inputs.hardware.nixosModules.common-pc-ssd
+    inputs.hardware.nixosModules.common-gpu-nvidia
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
-    ./nvidia.nix
+    ./plymouth.nix
 
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
   ];
 
-  # Some nvidia invocations
-  hardware.nvidia.package = config.boot.kernelPackages.nvidiaPackages.stable;
+# Hardware setup
+  hardware = {
+    nvidia = {
+      prime.offload.enable = false;
+      modesetting.enable = true;
+    };
+    opengl = {
+      enable = true;
+      driSupport = true;
+      driSupport32Bit = true;
+    };
+  };
 
   nixpkgs = {
     # You can add overlays here
@@ -56,12 +67,8 @@
     };
   };
 
-  # FIXME: Add the rest of your current configuration
-
-  # TODO: Set your hostname
   networking.hostName = "morningstar";
 
-  # TODO: This is just an example, be sure to use whatever bootloader you prefer
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
   boot.loader.efi.efiSysMountPoint = "/boot/efi";
