@@ -4,14 +4,14 @@
 { inputs, lib, config, pkgs, ... }: {
   # You can import other NixOS modules here
   imports = [
-    # If you want to use modules from other flakes (such as nixos-hardware):
     inputs.hardware.nixosModules.common-cpu-amd
     inputs.hardware.nixosModules.common-pc-ssd
     inputs.hardware.nixosModules.common-gpu-nvidia
+    inputs.hyprland.nixosModules.default
+    inputs.nixpkgs-wayland.packages.${system}.waybar
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
-    ./plymouth.nix
 
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
@@ -33,6 +33,7 @@
   nixpkgs = {
     # You can add overlays here
     overlays = [
+      inputs.nixpkgs-wayland.overlay
       # If you want to use overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
 
@@ -64,7 +65,20 @@
       experimental-features = "nix-command flakes";
       # Deduplicate and optimize nix store
       auto-optimise-store = true;
+
+      # Add Hyprland caches
+      substituters = ["https://hyprland.cachix.org"];
+      trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
     };
+
+    binaryCachePublicKeys = [
+      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+      "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+    ];
+    binaryCaches = [
+      "https://cache.nixos.org"
+      "https://nixpkgs-wayland.cachix.org"
+    ];
   };
 
   networking.hostName = "morningstar";
@@ -101,9 +115,10 @@
 
   # Additional packages
   environment.systemPackages = with pkgs; [
-  plymouth
-  breeze-plymouth
-];
+  ];
+
+  # Program setup
+  programs.hyprland.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.11";
