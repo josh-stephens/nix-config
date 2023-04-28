@@ -7,15 +7,15 @@
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     # Secrets
-    inputs.agenix.url = "github:ryantm/agenix";
-    inputs.agenix-rekey.url = "github:oddlama/agenix-rekey";
+    agenix.url = "github:ryantm/agenix";
+    agenix-rekey.url = "github:oddlama/agenix-rekey";
 
     # Home manager
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     # Flake utils
-    inputs.flake-utils.url = "github:numtide/flake-utils";
+    flake-utils.url = "github:numtide/flake-utils";
 
     # Hardware
     hardware.url = "github:nixos/nixos-hardware";
