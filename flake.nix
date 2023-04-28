@@ -9,7 +9,11 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";
 
+    # Hardware
     hardware.url = "github:nixos/nixos-hardware";
+
+    # UI
+    nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
     hyprland.url = "github:hyprwm/Hyprland";
 
     # Shameless plug: looking for a way to nixify your themes and make
