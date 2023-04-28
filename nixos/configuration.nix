@@ -8,7 +8,6 @@
     inputs.hardware.nixosModules.common-pc-ssd
     inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hyprland.nixosModules.default
-    inputs.nixpkgs-wayland.packages.${system}.waybar
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
