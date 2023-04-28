@@ -41,7 +41,12 @@
   };
 
   # Add stuff for your user as you see fit:
-  # programs.neovim.enable = true;
+
+  # Neovim configuration
+  programs.neovim.enable = true;
+
+  # Kitty configuration
+  programs.kitty.enable = true
   # home.packages = with pkgs; [ steam ];
 
   # Enable home-manager and git
@@ -53,6 +58,9 @@
 
   # Wayland configuration
   wayland.windowManager.hyprland.enable = true;
+  home-manager.users.joshsymonds = {
+    xdg.configFile."hypr/hyprland.conf".source = ./hyprland.conf;
+  };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "22.11";

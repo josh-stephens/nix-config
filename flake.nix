@@ -3,11 +3,19 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-22.11";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    # Secrets
+    inputs.agenix.url = "github:ryantm/agenix";
+    inputs.agenix-rekey.url = "github:oddlama/agenix-rekey";
 
     # Home manager
     home-manager.url = "github:nix-community/home-manager";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs";
+    home-manager.inputs.nixpkgs.follows = "nixpkgs-unstable";
+
+    # Flake utils
+    inputs.flake-utils.url = "github:numtide/flake-utils";
 
     # Hardware
     hardware.url = "github:nixos/nixos-hardware";
@@ -28,14 +36,18 @@
       morningstar = nixpkgs.lib.nixosSystem {
         specialArgs = { inherit inputs; }; # Pass flake inputs to our config
         # > Our main nixos configuration file <
+        let system = "x86_64-linux";
+        let user = "joshsymonds";
         modules = [ ./nixos/configuration.nix ];
       };
-    };
+    } // flake-utils.lib.eachDefaultSystem (system: {
+      pkgs = import nixpkgs { inherit system; };
+      apps = agenix-rekey.defineApps self pkgs self.nixosConfigurations;
+    });
 
     # Standalone home-manager configuration entrypoint
     # Available through 'home-manager --flake .#your-username@your-hostname'
     homeConfigurations = {
-      # FIXME replace with your username@hostname
       "joshsymonds@morningstar" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux; # Home-manager requires 'pkgs' instance
         extraSpecialArgs = { inherit inputs; }; # Pass flake inputs to our config

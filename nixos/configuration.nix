@@ -8,6 +8,10 @@
     inputs.hardware.nixosModules.common-pc-ssd
     inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hyprland.nixosModules.default
+    inputs.nixpkgs.pciutils
+    inputs.nixpkgs.hwdata
+    inputs.agenix.nixosModules.default
+    inputs.agenix-rekey.nixosModules.default
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
@@ -68,16 +72,15 @@
       # Cachix keys
       substituters = ["https://hyprland.cachix.org"];
       trusted-public-keys = ["hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="];
+      binaryCachePublicKeys = [
+        "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
+        "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+      ];
+      binaryCaches = [
+        "https://cache.nixos.org"
+        "https://nixpkgs-wayland.cachix.org"
+      ];
     };
-
-    binaryCachePublicKeys = [
-      "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-      "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
-    ];
-    binaryCaches = [
-      "https://cache.nixos.org"
-      "https://nixpkgs-wayland.cachix.org"
-    ];
   };
 
   networking.hostName = "morningstar";
@@ -91,16 +94,16 @@
   i18n.defaultLocale = "en_US.UTF-8";
 
   users.users = {
-    joshsymonds = {
+    ${user} = {
       initialPassword = "correcthorsebatterystaple";
       isNormalUser = true;
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAQ4hwNjF4SMCeYcqm3tzUxZWadcv7ZLJbCa/mLHzsvw josh+cloudbank@joshsymonds.com"
       ];
-      extraGroups = [ "wheel" ];
+      extraGroups = [ "wheel" config.users.groups.keys.name ];
     };
   };
-  services.getty.autologinUser = "joshsymonds";
+  services.getty.autologinUser = "${user}";
 
   # This setups a SSH server. Very important if you're setting up a headless system.
   # Feel free to remove if you don't need it.
@@ -117,7 +120,7 @@
     settings = rec {
       initial_session = {
         command = "Hyprland";
-        user = "joshsymonds";
+        user = "${user}";
       };
       default_session = initial_session;
     };
@@ -125,7 +128,16 @@
 
   # Additional packages
   environment.systemPackages = with pkgs; [
+    inputs.nixpkgs-wayland.packages.${system}.waybar
   ];
+
+  services.udev.packages = [ pkgs.yubikey-personalization ];
+  # Fonts!
+  fonts = {
+    fonts = with pkgs; [
+      (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
+    ];
+  }
 
   # Environment variables
   environment.sessionVariables = rec {
