@@ -38,7 +38,7 @@
         # > Our main nixos configuration file <
         modules = [ ./nixos/configuration.nix ];
       };
-    } // flake-utils.lib.eachDefaultSystem (system: {
+    } // inputs.flake-utils.lib.eachDefaultSystem (system: {
       pkgs = import nixpkgs { inherit system; };
       apps = agenix-rekey.defineApps self pkgs self.nixosConfigurations;
     });
