@@ -16,11 +16,14 @@
     plugins = {
       lsp = {
         enable = true;
-        html.enable = true;
-        jsonls.enable = true;
-        nix-lsp.enable = true;
-        gopls.enable = true;
-        rust-analyzer.enable = true;
+        servers = {
+          bashls.enable = true;
+          html.enable = true;
+          jsonls.enable = true;
+          nix-lsp.enable = true;
+          gopls.enable = true;
+          rust-analyzer.enable = true;
+        }
       };
       treesitter = {
         enable = true;
