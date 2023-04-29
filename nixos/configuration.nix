@@ -99,7 +99,6 @@ in { inputs, lib, config, pkgs, ... }: {
   # Default programs everyone wants
   programs.zsh.enable = true;
   programs.neovim.enable = true;
-  programs.kitty.enable = true;
   programs.git.enable = true;
 
  # Users and their homes
