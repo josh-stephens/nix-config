@@ -49,6 +49,8 @@
       polkit-kde-agent
       _1password-gui
       catppuccin-cursors.macchiatoPink
+      xivlauncher
+      steam
     ];
   };
 
