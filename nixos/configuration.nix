@@ -143,7 +143,7 @@ in { inputs, lib, config, pkgs, ... }: {
     pulse.enable = true;
   };
 
-  security.xremap = {
+  services.xremap = {
     enable = true;
     serviceMode = "user";
     config = ''
