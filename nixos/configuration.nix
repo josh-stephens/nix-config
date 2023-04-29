@@ -157,8 +157,8 @@ in { inputs, lib, config, pkgs, ... }: {
           };
         ];
       };
-''
-  }
+      '';
+  };
 
   # Fonts!
   fonts = {
