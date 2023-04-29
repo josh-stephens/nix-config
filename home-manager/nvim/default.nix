@@ -7,4 +7,4 @@
       pkgs.vimExtraPlugins.catppuccin
     ];
   };
-};
+}
