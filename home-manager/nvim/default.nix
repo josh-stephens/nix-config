@@ -37,6 +37,16 @@
       gitsigns = {
         enable = true;
       };
+      lualine = {
+        enable = true;
+        theme = "catppuccin";
+      };
+      nvim-tree = {
+        enable = true;
+      };
+      nvim-cmp = {
+        enable = true;
+      };
     };
 
     extraPlugins = [
