@@ -48,7 +48,7 @@ in { inputs, lib, config, pkgs, ... }: {
           system = final.system;
           config.allowUnfree = true;
         };
-      )
+      })
 
       # Or define it inline, for example:
       # (final: prev: {
