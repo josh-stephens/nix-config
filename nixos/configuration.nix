@@ -196,6 +196,7 @@ in { inputs, lib, config, pkgs, ... }: {
       curl
       unzip
       git
+      cliphist
       hwdata
       firefox
       _1password-gui
