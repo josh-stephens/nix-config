@@ -106,15 +106,13 @@ in { inputs, lib, config, pkgs, ... }: {
       extraGroups = [ "wheel" config.users.groups.keys.name ];
     };
   };
+
+# Services
   services.getty.autologinUser = "${user}";
 
-  # This setups a SSH server. Very important if you're setting up a headless system.
-  # Feel free to remove if you don't need it.
   services.openssh.settings = {
     enable = true;
-    # Forbid root login through SSH.
     permitRootLogin = "no";
-    # Use keys only. Remove if you want to SSH using password (not recommended)
     passwordAuthentication = false;
   };
 
@@ -129,12 +127,8 @@ in { inputs, lib, config, pkgs, ... }: {
     };
   };
 
-  # Additional packages
-  environment.systemPackages = with pkgs; [
-    inputs.nixpkgs-wayland.packages.${system}.waybar
-  ];
-
   services.udev.packages = [ pkgs.yubikey-personalization ];
+
   # Fonts!
   fonts = {
     fonts = with pkgs; [
@@ -142,25 +136,33 @@ in { inputs, lib, config, pkgs, ... }: {
     ];
   }
 
-  # Environment variables
-  environment.sessionVariables = rec {
-    GBM_BACKEND = "nvidia-drm";
-    __GL_GSYNC_ALLOWED = "0";
-    __GL_VRR_ALLOWED = "0";
-    WLR_DRM_NO_ATOMIC = "1";
-    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+  # Environment
+  environment = {
+    # More system packages
+    systemPackages = with pkgs; [
+      inputs.nixpkgs-wayland.packages.${system}.waybar
+    ];
 
-    # Will break SDDM if running X11
-    QT_QPA_PLATFORM = "wayland";
-    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+    sessionVariables = {
+      GBM_BACKEND = "nvidia-drm";
+      __GL_GSYNC_ALLOWED = "0";
+      __GL_VRR_ALLOWED = "0";
+      WLR_DRM_NO_ATOMIC = "1";
+      __GLX_VENDOR_LIBRARY_NAME = "nvidia";
 
-    GDK_BACKEND = "wayland";
-    WLR_NO_HARDWARE_CURSORS = "1";
-    MOZ_ENABLE_WAYLAND = "1";
-  };
-  environment.etc."greetd/environments".text = ''
-    Hyprland
-  '';
+      # Will break SDDM if running X11
+      QT_QPA_PLATFORM = "wayland";
+      QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+
+      GDK_BACKEND = "wayland";
+      WLR_NO_HARDWARE_CURSORS = "1";
+      MOZ_ENABLE_WAYLAND = "1";
+    };
+
+    etc."greetd/environments".text = ''
+      Hyprland
+    '';
+  }
 
   # Program setup
   programs.hyprland.enable = true;
