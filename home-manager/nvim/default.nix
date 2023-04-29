@@ -41,7 +41,7 @@
 
     extraPlugins = [
       pkgs.vimExtraPlugins.catppuccin
-      pkgs.vimExtraPlugins.leap
+      pkgs.vimExtraPlugins.leap-nvim
       pkgs.vimExtraPlugins.nvim-web-devicons
     ];
   };
