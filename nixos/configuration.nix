@@ -125,7 +125,6 @@ in { inputs, lib, config, pkgs, ... }: {
 
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
-    useGlobalPkgs = true;
     useUserPackages = true;
     users = {
       # Import your home-manager configuration
