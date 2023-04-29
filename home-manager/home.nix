@@ -42,16 +42,22 @@
     packages = with pkgs; [ 
       discord
       mako
+      tofi
       spotify
       spotifywm
       firefox
       polkit-kde-agent
-      rofi-wayland
       _1password-gui
+      catppuccin-cursors.macchiatoPink
     ];
   };
 
-  # Enable programs
+  # Services
+  programs.mako = {
+    enable = true;
+  };
+
+  # Programs
   programs.neovim.enable = true;
   programs.kitty.enable = true;
   programs.git.enable = true;
