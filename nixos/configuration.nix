@@ -168,7 +168,7 @@ in { inputs, lib, config, pkgs, ... }: {
     fontconfig = {
       defaultFonts = {
         monospace = [ "Cartograph CF Regular" ]
-      }
+      };
     };
   };
 
