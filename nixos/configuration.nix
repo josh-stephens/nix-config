@@ -147,18 +147,16 @@ in { inputs, lib, config, pkgs, ... }: {
   services.xremap = {
     serviceMode = "user";
     userName = "${user}";
-    config = ''
-      {
-        modmap = [
-          {
-            name = "Global",
-            remap = {
-              CapsLock = "Esc"; 
-            };
+    config = {
+      modmap = [
+        {
+          name = "Global",
+          remap = {
+            CapsLock = "Esc"; 
           };
-        ];
-      };
-      '';
+        };
+      ];
+    };
   };
 
   # Fonts!
