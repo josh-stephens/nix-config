@@ -108,7 +108,7 @@ in { inputs, lib, config, pkgs, ... }: {
   # Services
   services.getty.autologinUser = "${user}";
 
-  services.openssh.settings = {
+  services.openssh = {
     enable = true;
     permitRootLogin = "no";
     passwordAuthentication = false;
