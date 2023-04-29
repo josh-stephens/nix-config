@@ -41,6 +41,7 @@
 
     packages = with pkgs; [ 
       discord
+      mako
       spotify
       spotifywm
       firefox
@@ -49,9 +50,6 @@
       _1password-gui
     ];
   };
-
-  # Enable services
-  services.mako.enabled = true;
 
   # Enable programs
   programs.neovim.enable = true;
