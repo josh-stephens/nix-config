@@ -88,6 +88,11 @@
     source = ./zsh/zsh;
     recursive = true;
   };
+  xdg.configFile."nvim" = {
+    source = ./nvim;
+    recursive = true;
+  };
+
   home.file.".zshrc".source = ./zsh/.zshrc;
   home.file.".zshenv".source = ./zsh/.zshenv;
 
