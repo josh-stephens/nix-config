@@ -164,6 +164,12 @@ in { inputs, lib, config, pkgs, ... }: {
     fonts = with pkgs; [
       (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
     ];
+
+    fontconfig = {
+      defaultFonts = {
+        monospace = [ "Cartograph CF Regular" ]
+      }
+    };
   };
 
   # Environment
