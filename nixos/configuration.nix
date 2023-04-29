@@ -152,8 +152,8 @@ in { inputs, lib, config, pkgs, ... }: {
 
     systemPackages = with pkgs; [
       inputs.nixpkgs-wayland.packages.${system}.waybar
-      inputs.nixpkgs.pciutils
-      inputs.nixpkgs.hwdata
+      inputs.nixpkgs-unstable.pciutils
+      inputs.nixpkgs-unstable.hwdata
     ];
 
     etc."greetd/environments".text = ''
