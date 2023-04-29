@@ -107,7 +107,6 @@ in { inputs, lib, config, pkgs, ... }: {
 
   # Default programs everyone wants
   programs.zsh.enable = true;
-  programs.neovim.enable = true;
   programs.git.enable = true;
   virtualisation.docker.enable = true;
 
