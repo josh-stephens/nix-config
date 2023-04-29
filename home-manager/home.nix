@@ -57,9 +57,13 @@
   programs.neovim.enable = true;
   programs.kitty.enable = true;
   programs.git.enable = true;
-  programs.hyprland = {
-    enable = true;
 
+  # Nicely reload system units when changing configs
+  systemd.user.startServices = "sd-switch";
+
+  # Wayland configuration
+  wayland.windowManager.hyprland = {
+    enable = true;
     xwayland = {
       enable = true;
       hidpi = true;
@@ -67,12 +71,6 @@
 
     nvidiaPatches = true;
   };
-
-  # Nicely reload system units when changing configs
-  systemd.user.startServices = "sd-switch";
-
-  # Wayland configuration
-  wayland.windowManager.hyprland.enable = true;
   xdg.configFile."hypr/hyprland.conf".source = ./hyprland.conf;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
