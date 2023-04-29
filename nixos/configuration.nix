@@ -15,7 +15,7 @@ in { inputs, lib, config, pkgs, ... }: {
     inputs.agenix-rekey.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
     inputs.xremap-flake.nixosModules.default
-    inputs.ixneovim.nixosModules.nixos
+    inputs.nixneovim.nixosModules.nixos
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
