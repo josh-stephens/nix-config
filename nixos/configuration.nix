@@ -150,7 +150,7 @@ in { inputs, lib, config, pkgs, ... }: {
     config = {
       modmap = [
         {
-          name = "Global",
+          name = "Global";
           remap = {
             CapsLock = "Esc"; 
           };
