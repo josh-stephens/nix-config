@@ -211,6 +211,7 @@ in { inputs, lib, config, pkgs, ... }: {
       firefox
       _1password-gui
       _1password
+      inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
     ];
 
     etc."greetd/environments".text = ''
