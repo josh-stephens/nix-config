@@ -14,9 +14,6 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
-    # Flake utils
-    flake-utils.url = "github:numtide/flake-utils";
-
     # Hardware
     hardware.url = "github:nixos/nixos-hardware";
     xremap-flake.url = "github:xremap/nix-flake";
@@ -39,10 +36,7 @@
         # > Our main nixos configuration file <
         modules = [ ./nixos/configuration.nix ];
       };
-    } // inputs.flake-utils.lib.eachDefaultSystem (system: {
-      pkgs = import nixpkgs { inherit system; };
-      apps = inputs.agenix-rekey.defineApps self nixpkgs self.nixosConfigurations;
-    });
+    };
 
     # Standalone home-manager configuration entrypoint
     # Available through 'home-manager --flake .#your-username@your-hostname'

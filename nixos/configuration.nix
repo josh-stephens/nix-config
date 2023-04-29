@@ -43,6 +43,12 @@ in { inputs, lib, config, pkgs, ... }: {
       # If you want to use overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
 
+      unstable-packages = final: _prev: {
+        unstable = import inputs.nixpkgs-unstable {
+          system = final.system;
+          config.allowUnfree = true;
+        };
+      };
       # Or define it inline, for example:
       # (final: prev: {
       #   hi = final.hello.overrideAttrs (oldAttrs: {
@@ -117,6 +123,8 @@ in { inputs, lib, config, pkgs, ... }: {
 
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
+    useGlobalPkgs = true;
+    useUserPackages = true;
     users = {
       # Import your home-manager configuration
       ${user} = import ../home-manager/home.nix;
@@ -124,6 +132,8 @@ in { inputs, lib, config, pkgs, ... }: {
   };
 
   # Services
+  services.xserver.videoDrivers = [ "nvidia" ];
+
   services.getty.autologinUser = "${user}";
 
   services.openssh = {
@@ -209,8 +219,8 @@ in { inputs, lib, config, pkgs, ... }: {
       cliphist
       hwdata
       firefox
-      _1password-gui
-      _1password
+      unstable_packages._1password-gui
+      unstable_packages.neovim
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
     ];
 
