@@ -58,11 +58,6 @@
     enable = true;
   };
 
-  # Programs
-  programs.neovim.enable = true;
-  programs.kitty.enable = true;
-  programs.git.enable = true;
-
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
 
@@ -84,6 +79,12 @@
   };
   xdg.configFile."mako/config".source = ./mako/config;
   xdg.configFile."kitty/kitty.conf".source = ./kitty/kitty.conf;
+  xdg.configFile."zsh" = {
+    source = ./zsh/zsh
+    recursive = true
+  }
+  home.file.".zshrc".source = ./zsh/.zshrc
+  home.file.".zshenv".source = ./zsh/.zshenv
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "22.11";
