@@ -83,9 +83,9 @@
   xdg.configFile."mako/config".source = ./mako/config;
   xdg.configFile."kitty/kitty.conf".source = ./kitty/kitty.conf;
   xdg.configFile."zsh" = {
-    source = ./zsh/zsh
-    recursive = true
-  }
+    source = ./zsh/zsh;
+    recursive = true;
+  };
   home.file.".zshrc".source = ./zsh/.zshrc
   home.file.".zshenv".source = ./zsh/.zshenv
 
