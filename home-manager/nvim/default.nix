@@ -13,6 +13,12 @@
     enable = true;
     colorscheme = "catppuccin";
 
+    extraConfigVim = ''
+      lua << EOF
+        ${lib.strings.fileContents ./init.lua}
+      EOF
+    '';
+
     plugins = {
       lsp = {
         enable = true;
