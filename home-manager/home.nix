@@ -31,6 +31,9 @@
       catppuccin-cursors.macchiatoPink
       xivlauncher
       steam
+      unstable._1password-gui
+      unstable.neovim
+      inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
     ];
   };
 
