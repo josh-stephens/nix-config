@@ -15,6 +15,7 @@ in { inputs, lib, config, pkgs, ... }: {
     inputs.agenix-rekey.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
     inputs.xremap-flake.nixosModules.default
+    inputs.ixneovim.nixosModules.nixos
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
@@ -40,7 +41,7 @@ in { inputs, lib, config, pkgs, ... }: {
     # You can add overlays here
     overlays = [
       inputs.nixpkgs-wayland.overlay
-      inputs.nixneovim.nixosModules.nixos
+      inputs.nixneovim.overlays.default
       # If you want to use overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
 
