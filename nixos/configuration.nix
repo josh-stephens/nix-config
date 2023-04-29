@@ -200,6 +200,7 @@ in { inputs, lib, config, pkgs, ... }: {
       polkit
       pciutils
       curl
+      file
       unzip
       git
       cliphist
