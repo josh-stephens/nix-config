@@ -32,7 +32,7 @@
       xivlauncher
       steam
       unstable._1password-gui
-      unstable.neovim
+      unstable.neovim-unwrapped
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
     ];
   };

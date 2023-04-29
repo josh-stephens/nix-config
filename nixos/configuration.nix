@@ -133,8 +133,6 @@ in { inputs, lib, config, pkgs, ... }: {
   };
 
   # Services
-  services.xserver.videoDrivers = [ "nvidia" ];
-
   services.getty.autologinUser = "${user}";
 
   services.openssh = {
@@ -220,9 +218,6 @@ in { inputs, lib, config, pkgs, ... }: {
       cliphist
       hwdata
       firefox
-      unstable._1password-gui
-      unstable.neovim
-      inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
     ];
 
     etc."greetd/environments".text = ''
