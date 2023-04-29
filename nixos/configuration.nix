@@ -190,6 +190,7 @@ in { inputs, lib, config, pkgs, ... }: {
       curl
       git
       hwdata
+      firefox
       _1password-gui
       _1password
     ];

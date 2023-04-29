@@ -45,7 +45,6 @@
       tofi
       spotify
       spotifywm
-      firefox
       polkit-kde-agent
       catppuccin-cursors.macchiatoPink
       xivlauncher
