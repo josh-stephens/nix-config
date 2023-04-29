@@ -4,11 +4,6 @@
 { inputs, lib, config, pkgs, ... }: {
   # You can import other home-manager modules here
   imports = [
-    inputs.nixneovim.nixosModules.default
-
-    # If you want to use home-manager modules from other flakes (such as nix-colors):
-    # inputs.nix-colors.homeManagerModule
-
     # You can also split up your configuration and import pieces of it here:
     ./hyprland
     ./nvim
@@ -17,8 +12,6 @@
   nixpkgs = {
     # You can add overlays here
     overlays = [
-      inputs.nixpkgs-wayland.overlay
-      inputs.nixneovim.overlays.default
       # If you want to use overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
 
