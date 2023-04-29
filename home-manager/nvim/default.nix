@@ -52,6 +52,7 @@
       };
       nvim-cmp = {
         enable = true;
+        snippet.luasnip.enable = true;
       };
     };
 
