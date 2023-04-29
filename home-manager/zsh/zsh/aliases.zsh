@@ -3,4 +3,4 @@
 (( $+commands[nvim] )) && alias vim="nvim"
 (( $+commands[nvim] )) && alias vimdiff="nvim -d"
 
-alias rebuild="sudo nixos-rebuild switch --flake .#$(hostname)"
+alias rebuild="sudo nixos-rebuild switch --flake \".#$(hostname)\""
