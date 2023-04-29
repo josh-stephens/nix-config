@@ -220,8 +220,8 @@ in { inputs, lib, config, pkgs, ... }: {
       cliphist
       hwdata
       firefox
-      unstable_packages._1password-gui
-      unstable_packages.neovim
+      unstable._1password-gui
+      unstable.neovim
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
     ];
 
