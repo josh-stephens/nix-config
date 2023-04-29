@@ -43,12 +43,13 @@ in { inputs, lib, config, pkgs, ... }: {
       # If you want to use overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
 
-      unstable-packages = final: _prev: {
+      (final: prev: {
         unstable = import inputs.nixpkgs-unstable {
           system = final.system;
           config.allowUnfree = true;
         };
-      };
+      )
+
       # Or define it inline, for example:
       # (final: prev: {
       #   hi = final.hello.overrideAttrs (oldAttrs: {
