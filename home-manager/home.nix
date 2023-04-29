@@ -76,7 +76,12 @@
 
     nvidiaPatches = true;
   };
-  xdg.configFile."hypr/hyprland.conf".source = ./hyprland.conf;
+
+  # Drop our config
+  xdg.configFile."hyprland" = {
+    source = ./hyprland;
+    recursive = true;
+  };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "22.11";
