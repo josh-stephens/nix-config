@@ -77,11 +77,13 @@
     nvidiaPatches = true;
   };
 
-  # Drop our config
-  xdg.configFile."hypr" = {
+  # Drop our config files
+  xdg.configFile."hyprland" = {
     source = ./hyprland;
     recursive = true;
   };
+
+  xdg.configFile."mako/config".source = ./mako/config
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "22.11";
