@@ -23,7 +23,7 @@
           nix-lsp.enable = true;
           gopls.enable = true;
           rust-analyzer.enable = true;
-        }
+        };
       };
       treesitter = {
         enable = true;
