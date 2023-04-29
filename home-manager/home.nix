@@ -86,8 +86,8 @@
     source = ./zsh/zsh;
     recursive = true;
   };
-  home.file.".zshrc".source = ./zsh/.zshrc
-  home.file.".zshenv".source = ./zsh/.zshenv
+  home.file.".zshrc".source = ./zsh/.zshrc;
+  home.file.".zshenv".source = ./zsh/.zshenv;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "22.11";
