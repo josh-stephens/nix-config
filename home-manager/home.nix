@@ -53,13 +53,12 @@
     ];
   };
 
-  # Services
+  # Programs
   programs.mako = {
     enable = true;
   };
-
-  # Programs
   programs.kitty.enable = true;
+  programs.go.enable = true;
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";

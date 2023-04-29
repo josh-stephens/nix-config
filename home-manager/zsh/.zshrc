@@ -1,8 +1,10 @@
 # shortcut to this dotfiles path is $ZSH
-export ZSH=$HOME/.config/zsh
+export ZSH=${XDG_DATA_HOME:-${HOME}}/.config/zsh
 
-eval "$(/opt/homebrew/bin/brew shellenv)"
-export PATH="/opt/homebrew/opt/grep/libexec/gnubin:${PATH}"
+if [ -f "/opt/homebrew/bin/brew" ]; then
+  eval "$(/opt/homebrew/bin/brew shellenv)"
+  export PATH="/opt/homebrew/opt/grep/libexec/gnubin:${PATH}"
+fi
 
 # all of our zsh files
 typeset -U config_files
@@ -29,7 +31,10 @@ done
 unset config_files
 
 # zinit
-. ~/.zinit/bin/zinit.zsh
+ZINIT_HOME="${XDG_DATA_HOME:-${HOME}/.local/share}/zinit/zinit.git"
+[ ! -d $ZINIT_HOME ] && mkdir -p "$(dirname $ZINIT_HOME)"
+[ ! -d $ZINIT_HOME/.git ] && git clone https://github.com/zdharma-continuum/zinit.git "$ZINIT_HOME"
+source "${ZINIT_HOME}/zinit.zsh"
 autoload -Uz _zinit
 (( ${+_comps} )) && _comps[zinit]=_zinit
 
