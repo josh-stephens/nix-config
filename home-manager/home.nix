@@ -4,13 +4,13 @@
 { inputs, lib, config, pkgs, ... }: {
   # You can import other home-manager modules here
   imports = [
-    inputs.hyprland.homeManagerModules.default
     inputs.nixneovim.nixosModules.default
 
     # If you want to use home-manager modules from other flakes (such as nix-colors):
     # inputs.nix-colors.homeManagerModule
 
     # You can also split up your configuration and import pieces of it here:
+    ./hyprland
     ./nvim
   ];
 
@@ -77,22 +77,6 @@
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
 
-  # Wayland configuration
-  wayland.windowManager.hyprland = {
-    enable = true;
-    xwayland = {
-      enable = true;
-      hidpi = true;
-    };
-
-    nvidiaPatches = true;
-  };
-
-  # Drop our config files
-  xdg.configFile."hypr" = {
-    source = ./hyprland;
-    recursive = true;
-  };
   xdg.configFile."mako/config".source = ./mako/config;
   xdg.configFile."kitty/kitty.conf".source = ./kitty/kitty.conf;
   xdg.configFile."zsh" = {
