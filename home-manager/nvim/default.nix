@@ -16,7 +16,6 @@
     plugins = {
       lsp = {
         enable = true;
-        bashls.enable = true;
         html.enable = true;
         jsonls.enable = true;
         nix-lsp.enable = true;
