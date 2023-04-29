@@ -190,6 +190,8 @@ in { inputs, lib, config, pkgs, ... }: {
       curl
       git
       hwdata
+      _1password-gui
+      _1password
     ];
 
     etc."greetd/environments".text = ''
