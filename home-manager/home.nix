@@ -42,17 +42,31 @@
     packages = with pkgs; [ 
       discord
       spotify
+      spotifywm
       firefox
+      polkit-kde-agent
+      rofi-wayland
       _1password-gui
     ];
   };
 
-  # Add stuff for your user as you see fit:
+  # Enable services
+  services.mako.enabled = true;
 
   # Enable programs
   programs.neovim.enable = true;
   programs.kitty.enable = true;
   programs.git.enable = true;
+  programs.hyprland = {
+    enable = true;
+
+    xwayland = {
+      enable = true;
+      hidpi = true;
+    };
+
+    nvidiaPatches = true;
+  }
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";

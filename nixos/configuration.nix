@@ -185,7 +185,7 @@ in { inputs, lib, config, pkgs, ... }: {
     };
 
     systemPackages = with pkgs; [
-      inputs.nixpkgs-wayland.packages.${system}.waybar
+      polkit
       pciutils
       curl
       git
@@ -196,9 +196,6 @@ in { inputs, lib, config, pkgs, ... }: {
       Hyprland
     '';
   };
-
-  # Program setup
-  programs.hyprland.enable = true;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.11";
