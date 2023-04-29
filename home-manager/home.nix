@@ -46,7 +46,7 @@
   programs.neovim.enable = true;
 
   # Kitty configuration
-  programs.kitty.enable = true
+  programs.kitty.enable = true;
   # home.packages = with pkgs; [ steam ];
 
   # Enable home-manager and git
