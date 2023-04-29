@@ -154,7 +154,7 @@ in { inputs, lib, config, pkgs, ... }: {
           remap = {
             CapsLock = "Esc"; 
           };
-        };
+        }
       ];
     };
   };
