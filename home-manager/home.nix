@@ -78,7 +78,7 @@
   };
 
   # Drop our config
-  xdg.configFile."hyprland" = {
+  xdg.configFile."hypr" = {
     source = ./hyprland;
     recursive = true;
   };
