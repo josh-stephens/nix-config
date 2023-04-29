@@ -13,6 +13,7 @@ in { inputs, lib, config, pkgs, ... }: {
     inputs.hyprland.nixosModules.default
     inputs.agenix.nixosModules.default
     inputs.agenix-rekey.nixosModules.default
+    inputs.home-manager.nixosModules.home-manager
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
@@ -94,6 +95,7 @@ in { inputs, lib, config, pkgs, ... }: {
   time.timeZone = "America/Los_Angeles";
   i18n.defaultLocale = "en_US.UTF-8";
 
+ # Users and their homes
   users.users = {
     ${user} = {
       initialPassword = "correcthorsebatterystaple";
@@ -102,6 +104,14 @@ in { inputs, lib, config, pkgs, ... }: {
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAQ4hwNjF4SMCeYcqm3tzUxZWadcv7ZLJbCa/mLHzsvw josh+cloudbank@joshsymonds.com"
       ];
       extraGroups = [ "wheel" config.users.groups.keys.name ];
+    };
+  };
+
+  home-manager = {
+    extraSpecialArgs = { inherit inputs; };
+    users = {
+      # Import your home-manager configuration
+      joshsymonds = import ../home-manager;
     };
   };
 
