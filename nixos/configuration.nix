@@ -111,7 +111,7 @@ in { inputs, lib, config, pkgs, ... }: {
     extraSpecialArgs = { inherit inputs; };
     users = {
       # Import your home-manager configuration
-      joshsymonds = import ../home-manager;
+      joshsymonds = import ../home-manager/home.nix;
     };
   };
 
