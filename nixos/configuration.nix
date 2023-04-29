@@ -11,6 +11,8 @@ in { inputs, lib, config, pkgs, ... }: {
     inputs.hardware.nixosModules.common-pc-ssd
     inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hyprland.nixosModules.default
+    inputs.nixpkgs.nixosModules.pciutils
+    inputs.nixpkgs.nixosModules.hwdata
     inputs.agenix.nixosModules.default
     inputs.agenix-rekey.nixosModules.default
 
@@ -108,7 +110,7 @@ in { inputs, lib, config, pkgs, ... }: {
   # Services
   services.getty.autologinUser = "${user}";
 
-  services.openssh = {
+  services.openssh.settings = {
     enable = true;
     permitRootLogin = "no";
     passwordAuthentication = false;
@@ -152,8 +154,7 @@ in { inputs, lib, config, pkgs, ... }: {
 
     systemPackages = with pkgs; [
       inputs.nixpkgs-wayland.packages.${system}.waybar
-      inputs.nixpkgs-unstable.pciutils
-      inputs.nixpkgs-unstable.hwdata
+      pkgs.pciutils
     ];
 
     etc."greetd/environments".text = ''
