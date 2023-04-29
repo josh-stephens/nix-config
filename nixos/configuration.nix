@@ -188,6 +188,7 @@ in { inputs, lib, config, pkgs, ... }: {
       polkit
       pciutils
       curl
+      unzip
       git
       hwdata
       firefox

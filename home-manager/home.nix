@@ -42,6 +42,7 @@
     packages = with pkgs; [ 
       discord
       mako
+      ranger
       tofi
       spotify
       spotifywm
