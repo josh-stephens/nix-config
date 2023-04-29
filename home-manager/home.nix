@@ -44,6 +44,9 @@
       mako
       ranger
       tofi
+      bat
+      exa
+      jq
       spotify
       spotifywm
       polkit-kde-agent

@@ -100,6 +100,7 @@ in { inputs, lib, config, pkgs, ... }: {
   programs.zsh.enable = true;
   programs.neovim.enable = true;
   programs.git.enable = true;
+  virtualisation.docker.enable = true;
 
  # Users and their homes
   users.defaultUserShell = pkgs.zsh;
@@ -110,7 +111,7 @@ in { inputs, lib, config, pkgs, ... }: {
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAQ4hwNjF4SMCeYcqm3tzUxZWadcv7ZLJbCa/mLHzsvw josh+cloudbank@joshsymonds.com"
       ];
-      extraGroups = [ "wheel" config.users.groups.keys.name ];
+      extraGroups = [ "wheel" config.users.groups.keys.name "docker" ];
     };
   };
 
@@ -202,6 +203,8 @@ in { inputs, lib, config, pkgs, ... }: {
       curl
       file
       unzip
+      ripgrep
+      gh
       git
       cliphist
       hwdata
