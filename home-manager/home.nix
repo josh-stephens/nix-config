@@ -39,7 +39,12 @@
     username = "joshsymonds";
     homeDirectory = "/home/joshsymonds";
 
-    # packages = with pkgs; [ steam ];
+    packages = with pkgs; [ 
+      discord
+      spotify
+      firefox
+      _1password-gui
+    ];
   };
 
   # Add stuff for your user as you see fit:

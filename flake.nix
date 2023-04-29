@@ -19,6 +19,7 @@
 
     # Hardware
     hardware.url = "github:nixos/nixos-hardware";
+    xremap-flake.url = "github:xremap/nix-flake";
 
     # UI
     nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";

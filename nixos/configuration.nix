@@ -135,6 +135,31 @@ in { inputs, lib, config, pkgs, ... }: {
     };
   };
 
+  security.rtkit.enable = true;
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
+  };
+
+  security.xremap = {
+    enable = true;
+    serviceMode = "user";
+    config = ''
+      {
+        modmap = [
+          {
+            name = "Global",
+            remap = {
+              CapsLock = "Esc"; 
+            };
+          };
+        ];
+      };
+''
+  }
+
   # Fonts!
   fonts = {
     fonts = with pkgs; [
