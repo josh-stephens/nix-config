@@ -112,7 +112,7 @@ in { inputs, lib, config, pkgs, ... }: {
     extraSpecialArgs = { inherit inputs; };
     users = {
       # Import your home-manager configuration
-      joshsymonds = import ../home-manager/home.nix;
+      ${user} = import ../home-manager/home.nix;
     };
   };
 
@@ -146,6 +146,7 @@ in { inputs, lib, config, pkgs, ... }: {
 
   services.xremap = {
     serviceMode = "user";
+    userName = "${user}";
     config = ''
       {
         modmap = [
