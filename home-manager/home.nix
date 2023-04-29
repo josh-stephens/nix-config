@@ -5,11 +5,12 @@
   # You can import other home-manager modules here
   imports = [
     inputs.hyprland.homeManagerModules.default
+
     # If you want to use home-manager modules from other flakes (such as nix-colors):
     # inputs.nix-colors.homeManagerModule
 
     # You can also split up your configuration and import pieces of it here:
-    # ./nvim.nix
+    ./nvim/
   ];
 
   # TODO: Set your username
@@ -32,7 +33,6 @@
       xivlauncher
       steam
       unstable._1password-gui
-      unstable.neovim-unwrapped
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
     ];
   };

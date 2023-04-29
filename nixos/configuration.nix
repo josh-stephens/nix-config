@@ -40,6 +40,7 @@ in { inputs, lib, config, pkgs, ... }: {
     # You can add overlays here
     overlays = [
       inputs.nixpkgs-wayland.overlay
+      inputs.nixneovim.nixosModules.nixos
       # If you want to use overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
 
