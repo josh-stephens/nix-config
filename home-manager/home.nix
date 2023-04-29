@@ -83,7 +83,7 @@
     recursive = true;
   };
 
-  xdg.configFile."mako/config".source = ./mako/config
+  xdg.configFile."mako/config".source = ./mako/config;
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "22.11";
