@@ -145,7 +145,6 @@ in { inputs, lib, config, pkgs, ... }: {
   };
 
   services.xremap = {
-    enable = true;
     serviceMode = "user";
     config = ''
       {
