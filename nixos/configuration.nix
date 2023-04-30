@@ -34,6 +34,7 @@ in { inputs, lib, config, pkgs, ... }: {
       driSupport = true;
       driSupport32Bit = true;
     };
+    enableAllFirmware = true;
   };
 
   nixpkgs = {
@@ -95,9 +96,14 @@ in { inputs, lib, config, pkgs, ... }: {
 
   networking.hostName = "morningstar";
 
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
+  boot = {
+    kernelModules = [ "coretemp" "kvm-intel" ];
+    loader = {
+      systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+      efi.efiSysMountPoint = "/boot/efi";
+    };
+  };
 
   # Time and internationalization
   time.timeZone = "America/Los_Angeles";

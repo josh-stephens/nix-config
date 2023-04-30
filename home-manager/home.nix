@@ -2,15 +2,6 @@
 # Use this to configure your home environment (it replaces ~/.config/nixpkgs/home.nix)
 
 { inputs, lib, config, pkgs, ... }: {
-  # You can import other home-manager modules here
-  imports = [
-    # You can also split up your configuration and import pieces of it here:
-    ./hyprland
-    ./nvim
-    ./waybar
-    ./git
-  ];
-
   nixpkgs = {
     # You can add overlays here
     overlays = [
@@ -38,6 +29,15 @@
     };
   };
 
+  # You can import other home-manager modules here
+  imports = [
+    # You can also split up your configuration and import pieces of it here:
+    ./hyprland
+    ./nvim
+    ./waybar
+    ./git
+  ];
+
   # TODO: Set your username
   home = {
     username = "joshsymonds";
@@ -57,6 +57,7 @@
       catppuccin-cursors.macchiatoPink
       xivlauncher
       steam
+      pavucontrol
       xdg-utils
       unstable._1password-gui
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
@@ -73,6 +74,7 @@
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
 
+  xdg.enable = true;
   xdg.configFile."mako/config".source = ./mako/config;
   xdg.configFile."kitty/kitty.conf".source = ./kitty/kitty.conf;
   xdg.configFile."zsh" = {

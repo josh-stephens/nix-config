@@ -3,66 +3,52 @@
 {
   programs.waybar = {
     enable = true;
+    package = pkgs.unstable.waybar;
     systemd.enable = true;
-    style = ''
-      ${builtins.readFile "${pkgs.waybar}/etc/xdg/waybar/style.css"}
-
-      window#waybar {
-        background: transparent;
-        border-bottom: none;
-      }
-
-      * {
-        ${if config.hostId == "yoga" then ''
-        font-size: 18px;
-      '' else ''
-
-        ''}
-      }
-    '';
+    style = (builtins.readFile ./style.css);
     settings = [{
-      height = 30;
-      layer = "top";
-      position = "bottom";
+      height = 41;
+      spacing = 4;
       tray = { spacing = 10; };
-      modules-center = [ "sway/window" ];
-      modules-left = [ "sway/workspaces" "sway/mode" ];
+      modules-left = [ "wlr/workspaces" ];
+      modules-center = [ "" ];
       modules-right = [
         "pulseaudio"
         "network"
         "cpu"
         "memory"
         "temperature"
-      ] ++ (if config.hostId == "yoga" then [ "battery" ] else [ ])
-      ++ [
         "clock"
         "tray"
       ];
-      battery = {
-        format = "{capacity}% {icon}";
-        format-alt = "{time} {icon}";
-        format-charging = "{capacity}% ";
-        format-icons = [ "" "" "" "" "" ];
-        format-plugged = "{capacity}% ";
-        states = {
-          critical = 15;
-          warning = 30;
+      "wlr/workspaces" = {
+        disable-scroll = true;
+        all-outputs = true;
+        format = "{icon}";
+        format-icons = {
+            "1" = "";
+            "2" = "";
+            "3" = "";
+            "4" = "";
+            "urgent" = "";
+            "focused" = "";
+            "default" = "";
         };
       };
       clock = {
+        format = "  {:%I:%M %p}";
+        tooltip-format = "<big>{:%Y %B}</big>\n<tt>>{calendar}</small></tt>";
         format-alt = "{:%Y-%m-%d}";
-        tooltip-format = "{:%Y-%m-%d | %H:%M}";
       };
       cpu = {
         format = "{usage}% ";
         tooltip = false;
       };
-      memory = { format = "{}% "; };
+      memory = { format = "{}%  "; };
       network = {
-        interval = 1;
-        format-alt = "{ifname}: {ipaddr}/{cidr}";
+        format-alt = "{ipaddr}/{cidr}";
         format-disconnected = "Disconnected ⚠";
-        format-ethernet = "{ifname}: {ipaddr}/{cidr}   up: {bandwidthUpBits} down: {bandwidthDownBits}";
+        format-ethernet = "{ipaddr}/{cidr}   up: {bandwidthUpBits} down: {bandwidthDownBits}";
         format-linked = "{ifname} (No IP) ";
         format-wifi = "{essid} ({signalStrength}%) ";
       };
@@ -84,7 +70,6 @@
         format-source-muted = "";
         on-click = "pavucontrol";
       };
-      "sway/mode" = { format = ''<span style="italic">{}</span>''; };
       temperature = {
         critical-threshold = 80;
         format = "{temperatureC}°C {icon}";
