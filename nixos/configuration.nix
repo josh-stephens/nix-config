@@ -131,6 +131,8 @@ in { inputs, lib, config, pkgs, ... }: {
   };
 
   # Services
+  services.xserver.videoDrivers = [ "nvidia" ];
+
   services.getty.autologinUser = "${user}";
 
   services.openssh = {
