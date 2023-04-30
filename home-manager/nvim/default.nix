@@ -11,7 +11,7 @@
 
   programs.nixneovim = {
     enable = true;
-    colorscheme = "catppuccin";
+    colorscheme = "catppuccin-mocha";
 
     extraConfigVim = ''
       lua << EOF
@@ -46,6 +46,7 @@
       lualine = {
         enable = true;
         theme = "catppuccin";
+        extensions = [ "fzf" "nvim-tree" ]
       };
       nvim-tree = {
         enable = true;

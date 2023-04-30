@@ -84,7 +84,7 @@ local silent = { silent = true, noremap = true }
 local map = vim.api.nvim_set_keymap
 map('n', '<leader>q', '<cmd>qa<cr>', silent)
 map('n', '<leader>x', '<cmd>x!<cr>', silent)
-map('n', '<leader>d', '<cmd>Sayonara<cr>', { silent = true, nowait = true, noremap = true })
+map('n', '<leader>t', '<cmd>NvimTreeToggle<cr>', silent)
 
 -- Save buffer
 map('i', '<c-s>', '<esc><cmd>w<cr>a', silent)
