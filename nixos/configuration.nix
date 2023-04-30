@@ -25,6 +25,9 @@ in { inputs, lib, config, pkgs, ... }: {
 
 # Hardware setup
   hardware = {
+    cpu = {
+      amd.updateMicrocode = true;
+    };
     nvidia = {
       prime.offload.enable = false;
       modesetting.enable = true;
@@ -97,7 +100,7 @@ in { inputs, lib, config, pkgs, ... }: {
   networking.hostName = "morningstar";
 
   boot = {
-    kernelModules = [ "coretemp" "kvm-intel" ];
+    kernelModules = [ "coretemp" "kvm-intel" "nct6775" ];
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -137,6 +140,8 @@ in { inputs, lib, config, pkgs, ... }: {
   };
 
   # Services
+  services.thermald.enable = true;
+
   services.xserver.videoDrivers = [ "nvidia" ];
 
   services.getty.autologinUser = "${user}";
@@ -224,12 +229,21 @@ in { inputs, lib, config, pkgs, ... }: {
       git
       cliphist
       hwdata
-      firefox
     ];
 
     etc."greetd/environments".text = ''
       Hyprland
     '';
+    etc."sysconfig/lm_sensors".text = ''
+    # This file is sourced by /etc/init.d/lm_sensors and defines the modules to
+    # be loaded/unloaded.
+    #
+    # The format of this file is a shell script that simply defines variables:
+    # HWMON_MODULES for hardware monitoring driver modules, and optionally
+    # BUS_MODULES for any required bus driver module (for example for I2C or SPI).
+
+    HWMON_MODULES="nct6775"
+  '';
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion

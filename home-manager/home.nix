@@ -68,6 +68,7 @@
       steam
       unstable.pavucontrol
       xdg-utils
+      unstable.firefox
       unstable._1password-gui
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
     ];
