@@ -23,13 +23,4 @@
     source = ./hypr;
     recursive = true;
   };
-
-  programs.nixneovim = {
-    enable = true;
-    colorscheme = "catppuccin";
-
-    extraPlugins = [
-      pkgs.vimExtraPlugins.catppuccin
-    ];
-  };
 }
