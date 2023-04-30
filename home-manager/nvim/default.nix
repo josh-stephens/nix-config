@@ -46,7 +46,7 @@
       lualine = {
         enable = true;
         theme = "catppuccin";
-        extensions = [ "fzf" "nvim-tree" ]
+        extensions = [ "fzf" "nvim-tree" ];
       };
       nvim-tree = {
         enable = true;
