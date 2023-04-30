@@ -138,6 +138,7 @@ in { inputs, lib, config, pkgs, ... }: {
     permitRootLogin = "no";
     passwordAuthentication = false;
   };
+  programs.ssh.startAgent = true;
 
   services.greetd = {
     enable = true;
