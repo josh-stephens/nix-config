@@ -36,6 +36,10 @@ in { inputs, lib, config, pkgs, ... }: {
       enable = true;
       driSupport = true;
       driSupport32Bit = true;
+      extraPackages = with pkgs.unstable; [
+        libvdpau-va-gl
+        mesa
+      ];
     };
     enableAllFirmware = true;
   };
@@ -88,11 +92,13 @@ in { inputs, lib, config, pkgs, ... }: {
         "https://hyprland.cachix.org"
         "https://cache.nixos.org"
         "https://nixpkgs-wayland.cachix.org"
+        "https://webcord.cachix.org"
       ];
       trusted-public-keys = [
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+        "webcord.cachix.org-1:l555jqOZGHd2C9+vS8ccdh8FhqnGe8L78QrHNn+EFEs="
       ];
     };
   };
@@ -216,6 +222,20 @@ in { inputs, lib, config, pkgs, ... }: {
       GDK_BACKEND = "wayland";
       WLR_NO_HARDWARE_CURSORS = "1";
       MOZ_ENABLE_WAYLAND = "1";
+
+      NIXOS_OZONE_WL = "1";
+      _JAVA_AWT_WM_NONEREPARENTING = "1";
+      SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
+      DISABLE_QT5_COMPAT = "0";
+      ANKI_WAYLAND = "1";
+      DIRENV_LOG_FORMAT = "";
+      QT_AUTO_SCREEN_SCALE_FACTOR = "1";
+      QT_QPA_PLATFORMTHEME = "qt5ct";
+      WLR_BACKEND = "vulkan";
+      WLR_RENDERER = "vulkan";
+      XDG_SESSION_TYPE = "wayland";
+      SDL_VIDEODRIVER = "wayland";
+      CLUTTER_BACKEND = "wayland";
     };
 
     systemPackages = with pkgs; [
@@ -244,6 +264,19 @@ in { inputs, lib, config, pkgs, ... }: {
 
     HWMON_MODULES="nct6775"
   '';
+  loginShellInit = ''
+      eval $(ssh-agent)
+    '';
+  };
+
+  # xdg
+  xdg.portal = {
+    enable = true;
+    wlr.enable = false;
+    extraPortals = [
+      pkgs.unstable.xdg-desktop-portal-gtk
+      inputs.xdg-portal-hyprland.packages.${system}.default
+    ];
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion

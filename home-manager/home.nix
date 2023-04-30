@@ -13,7 +13,7 @@
           system = final.system;
           config.allowUnfree = true;
 
-      # Add unstable overlays
+          # Add unstable overlays
           overlays = [
             (final: prev: {
               waybar = prev.waybar.overrideAttrs (oldAttrs: {
@@ -45,6 +45,7 @@
     ./nvim
     ./waybar
     ./git
+    inputs.webcord.homeManagerModules.default
   ];
 
   # TODO: Set your username
@@ -53,17 +54,16 @@
     homeDirectory = "/home/joshsymonds";
 
     packages = with pkgs; [ 
-      unstable.discord
       mako
       ranger
-      tofi
+      wofi
       bat
       exa
       jq
       spotify
       spotifywm
       polkit-kde-agent
-      catppuccin-cursors.macchiatoPink
+      catppuccin-cursors.mochaLavender
       xivlauncher
       steam
       unstable.pavucontrol
@@ -71,7 +71,20 @@
       unstable.firefox
       unstable._1password-gui
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
+      unstable.hyprpicker
+      hyprpaper
+      swaylock-effects
+      swayidle
+      psensor
+      inputs.webcord.packages.${system}.default
     ];
+
+    pointerCursor = {
+      name = "Catppuccin-Mocha-Lavender-Cursors";
+      package = pkgs.catppuccin-cursors.mochaLavender;
+      gtk.enable = true;
+      size = 20;
+    };
   };
 
   # Programs
@@ -80,6 +93,20 @@
   };
   programs.kitty.enable = true;
   programs.go.enable = true;
+
+  programs.webcord = {
+    enable = true;
+    themes = let
+      catppuccin = pkgs.fetchFromGitHub {
+        owner = "catppuccin";
+        repo = "discord";
+        rev = "159aac939d8c18da2e184c6581f5e13896e11697";
+        sha256 = "sha256-cWpog52Ft4hqGh8sMWhiLUQp/XXipOPnSTG6LwUAGGA=";
+      };
+    in {
+      CatpuccinMocha = "${catppuccin}/themes/mocha.theme.css";
+    };
+  };
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";

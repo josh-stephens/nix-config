@@ -21,9 +21,13 @@
     # UI
     nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
     hyprland.url = "github:hyprwm/Hyprland";
+    xdg-portal-hyprland.url = "github:hyprwm/xdg-desktop-portal-hyprland";
 
     # Neovim
     nixneovim.url = "github:nixneovim/nixneovim";
+
+    # Discord
+    webcord.url = "github:fufexan/webcord-flake";
 
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!
