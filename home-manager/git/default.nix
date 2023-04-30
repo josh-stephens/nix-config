@@ -7,7 +7,7 @@
     aliases = {
       co = "checkout"; 
       st = "status";
-      a = "add -all";
+      a = "add --all";
       pl = "pull -u";
       pu = "push --all origin";
     };
