@@ -43,7 +43,7 @@
     homeDirectory = "/home/joshsymonds";
 
     packages = with pkgs; [ 
-      discord
+      unstable.discord
       mako
       ranger
       tofi
@@ -56,6 +56,7 @@
       catppuccin-cursors.macchiatoPink
       xivlauncher
       steam
+      xdg-utils
       unstable._1password-gui
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
     ];
