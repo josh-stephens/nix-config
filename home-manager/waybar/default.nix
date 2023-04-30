@@ -7,11 +7,13 @@
     systemd.enable = true;
     style = (builtins.readFile ./style.css);
     settings = [{
-      height = 41;
+      layer = "bottom";
+      position = "top";
+      height = 40;
       spacing = 4;
       tray = { spacing = 10; };
       modules-left = [ "wlr/workspaces" ];
-      modules-center = [ "" ];
+      modules-center = [ "hyprland/window" ];
       modules-right = [
         "pulseaudio"
         "network"
@@ -48,7 +50,7 @@
       network = {
         format-alt = "{ipaddr}/{cidr}";
         format-disconnected = "Disconnected ⚠";
-        format-ethernet = "{ipaddr}/{cidr}   up: {bandwidthUpBits} down: {bandwidthDownBits}";
+        format-ethernet = "{ipaddr}/{cidr}  ";
         format-linked = "{ifname} (No IP) ";
         format-wifi = "{essid} ({signalStrength}%) ";
       };
@@ -68,7 +70,7 @@
         format-muted = " {format_source}";
         format-source = "{volume}% ";
         format-source-muted = "";
-        on-click = "pavucontrol";
+        on-click = "/etc/profiles/per-user/joshsymonds/bin/pavucontrol";
       };
       temperature = {
         critical-threshold = 80;

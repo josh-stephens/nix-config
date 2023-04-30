@@ -12,6 +12,15 @@
         unstable = import inputs.nixpkgs-unstable {
           system = final.system;
           config.allowUnfree = true;
+
+      # Add unstable overlays
+          overlays = [
+            (final: prev: {
+              waybar = prev.waybar.overrideAttrs (oldAttrs: {
+                mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
+              });
+            })
+          ];
         };
       })
 
@@ -57,7 +66,7 @@
       catppuccin-cursors.macchiatoPink
       xivlauncher
       steam
-      pavucontrol
+      unstable.pavucontrol
       xdg-utils
       unstable._1password-gui
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard

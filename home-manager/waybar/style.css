@@ -39,7 +39,7 @@
 /* Main styles */
 
 * {
-  font-family: "Cartograph CF Regular";
+  font-family: "Cartograph CF";
   font-size: 14px;
 }
 
@@ -63,11 +63,11 @@ window#waybar {
   color: @sky;
 }
 
-#wifi {
+#memory {
   color: @sapphire;
 }
 
-#battery {
+#cpu {
   color: @green;
 }
 
@@ -84,7 +84,7 @@ window#waybar {
 }
 
 #workspaces button {
-  color: @text;
+  color: shade(@sky, 0.6);
   border-radius: 16px;
   transition: all 0.5s cubic-bezier(.55,-0.68,.48,1.68);
 }
@@ -94,7 +94,7 @@ window#waybar {
 }
 
 #workspaces button.active {
-  color: @maroon;
+  color: @text;
   background-color: shade(@surface1, 0.9);
 }
 
@@ -114,11 +114,8 @@ window#waybar {
   background-color: @surface1;
   border-radius: 16px;
   margin: 5px;
-}
-
-.custom-spotify {
-  padding: 0 10px;
-  color: @green;
+  padding: 5px;
+  color: @text;
 }
 
 .modules-left > widget:first-child > #workspaces {
