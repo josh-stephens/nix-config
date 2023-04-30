@@ -114,7 +114,8 @@ window#waybar {
   background-color: @surface1;
   border-radius: 16px;
   margin: 5px;
-  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
   color: @text;
 }
 
