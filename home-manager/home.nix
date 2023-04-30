@@ -45,6 +45,7 @@
     ./nvim
     ./waybar
     ./git
+    ./wofi
     inputs.webcord.homeManagerModules.default
   ];
 
@@ -56,7 +57,6 @@
     packages = with pkgs; [ 
       mako
       ranger
-      wofi
       bat
       exa
       jq
@@ -67,6 +67,7 @@
       xivlauncher
       steam
       unstable.pavucontrol
+      unstable.mozillavpn
       xdg-utils
       unstable.firefox
       unstable._1password-gui
