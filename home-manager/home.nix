@@ -74,8 +74,8 @@
       unstable._1password-gui
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
       unstable.hyprpicker
-      hyprpaper
       unstable.signal-desktop-beta
+      swaybg
       swaylock-effects
       swayidle
       psensor
@@ -123,6 +123,10 @@
 
   home.file.".zshrc".source = ./zsh/.zshrc;
   home.file.".zshenv".source = ./zsh/.zshenv;
+  home.file."Backgrounds" = {
+    source = ./Backgrounds;
+    recursive = true;
+  };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "22.11";
