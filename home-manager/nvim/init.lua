@@ -125,6 +125,7 @@ local actions = require('telescope.actions')
 local mod = {}
 mod.open_in_nvim_tree = function(prompt_bufnr)
     local cur_win = vim.api.nvim_get_current_win()
+    if not cur_win or cur_win == "1000" or cur_win == 1000 then return true end
     vim.cmd("NvimTreeFindFile")
     vim.api.nvim_set_current_win(cur_win)
 end
