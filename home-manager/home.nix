@@ -67,7 +67,6 @@
       xivlauncher
       steam
       unstable.pavucontrol
-      unstable.mozillavpn
       xdg-utils
       unstable.firefox
       unstable._1password-gui
@@ -78,6 +77,7 @@
       swayidle
       psensor
       inputs.webcord.packages.${system}.default
+      unstable.qbittorrent
     ];
 
     pointerCursor = {

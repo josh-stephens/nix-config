@@ -104,6 +104,7 @@ in { inputs, lib, config, pkgs, ... }: {
   };
 
   networking.hostName = "morningstar";
+  networking.firewall.checkReversePath = "loose";
 
   boot = {
     kernelModules = [ "coretemp" "kvm-intel" "nct6775" ];

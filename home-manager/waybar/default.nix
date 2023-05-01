@@ -9,7 +9,7 @@
     settings = [{
       layer = "bottom";
       position = "top";
-      height = 44;
+      height = 40;
       spacing = 4;
       tray = { spacing = 10; };
       modules-left = [ "wlr/workspaces" ];
