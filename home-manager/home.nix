@@ -47,6 +47,7 @@
     ./git
     ./wofi
     ./kitty
+    ./k9s
     ./wlogout
     inputs.webcord.homeManagerModules.default
   ];
