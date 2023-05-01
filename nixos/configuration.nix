@@ -107,8 +107,10 @@ in { inputs, lib, config, pkgs, ... }: {
   networking.firewall.checkReversePath = "loose";
 
   boot = {
+    consoleLogLevel = 0;
+    initrd.verbose = false;
     kernelModules = [ "coretemp" "kvm-intel" "nct6775" ];
-    kernelParams = ["quiet"];
+    kernelParams = ["quiet" "splash" "rd.systemd.show_status=false" "rd.udev.log_level=3" "udev.log_priority=3" "boot.shell_on_fail" ];
     plymouth = {
       enable = true;
     };
