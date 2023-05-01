@@ -73,6 +73,7 @@
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
       unstable.hyprpicker
       hyprpaper
+      unstable.signal-desktop-beta
       swaylock-effects
       swayidle
       psensor
