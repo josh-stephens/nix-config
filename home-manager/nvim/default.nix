@@ -13,10 +13,8 @@
     enable = true;
     colorscheme = "catppuccin-mocha";
 
-    extraConfigVim = ''
-      lua << EOF
-        ${lib.strings.fileContents ./init.lua}
-      EOF
+    extraConfigLua = ''
+      ${lib.strings.fileContents ./init.lua}
     '';
 
     plugins = {
@@ -54,13 +52,46 @@
       nvim-cmp = {
         enable = true;
         snippet.luasnip.enable = true;
+        snippet.expand = ''
+          function(args)
+            require('luasnip').lsp_expand(args.body) -- For `luasnip` users.
+          end
+        '';
+        mapping = ''
+          {
+            "<CR>" = "cmp.mapping.confirm({ select = true })";
+            "<Tab>" = {
+              modes = [ "i" "s" ];
+              action = '${""}'
+                function(fallback)
+                  if cmp.visible() then
+                    cmp.select_next_item()
+                  elseif luasnip.expandable() then
+                    luasnip.expand()
+                  elseif luasnip.expand_or_jumpable() then
+                    luasnip.expand_or_jump()
+                  elseif check_backspace() then
+                    fallback()
+                  else
+                    fallback()
+                  end
+                end
+              '${""}';
+            };
+          }
+        '';
       };
     };
 
-    extraPlugins = [
-      pkgs.vimExtraPlugins.catppuccin
-      pkgs.vimExtraPlugins.leap-nvim
-      pkgs.vimExtraPlugins.nvim-web-devicons
+    extraPlugins = with pkgs.vimExtraPlugins; [
+      catppuccin
+      leap-nvim
+      nvim-web-devicons
+      copilot-lua
+      cmp-nvim-lsp
+      cmp-buffer
+      cmp-path
+      cmp-rg
     ];
   };
 }
