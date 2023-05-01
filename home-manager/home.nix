@@ -47,6 +47,7 @@
     ./git
     ./wofi
     ./wezterm
+    ./kitty
     inputs.webcord.homeManagerModules.default
   ];
 
@@ -94,7 +95,6 @@
   programs.mako = {
     enable = true;
   };
-  programs.kitty.enable = true;
   programs.go.enable = true;
 
   programs.webcord = {
@@ -116,7 +116,6 @@
 
   xdg.enable = true;
   xdg.configFile."mako/config".source = ./mako/config;
-  xdg.configFile."kitty/kitty.conf".source = ./kitty/kitty.conf;
   xdg.configFile."zsh" = {
     source = ./zsh/zsh;
     recursive = true;
