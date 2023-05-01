@@ -46,7 +46,6 @@
     ./waybar
     ./git
     ./wofi
-    ./wezterm
     ./kitty
     ./wlogout
     inputs.webcord.homeManagerModules.default

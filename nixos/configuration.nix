@@ -178,6 +178,11 @@ in { inputs, lib, config, pkgs, ... }: {
     alsa.support32Bit = true;
     pulse.enable = true;
   };
+  security.pam.services.swaylock = {
+    text = ''
+      auth include login 
+    '';
+  };
 
   services.xremap = {
     serviceMode = "user";
