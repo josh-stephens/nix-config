@@ -108,6 +108,10 @@ in { inputs, lib, config, pkgs, ... }: {
 
   boot = {
     kernelModules = [ "coretemp" "kvm-intel" "nct6775" ];
+    kernelParams = ["quiet"];
+    plymouth = {
+      enable = true;
+    };
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
