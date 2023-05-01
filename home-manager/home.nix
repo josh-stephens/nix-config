@@ -79,6 +79,7 @@
       swaylock-effects
       swayidle
       psensor
+      unstable.slack
       inputs.webcord.packages.${system}.default
       unstable.qbittorrent
     ];

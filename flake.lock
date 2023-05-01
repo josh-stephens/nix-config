@@ -664,16 +664,15 @@
         "nmt": "nmt"
       },
       "locked": {
-        "lastModified": 1682970445,
-        "narHash": "sha256-7paqxNi/RH6VIO4RmhAzgeQ7PH/pu+hNhRkblpk+kMU=",
+        "lastModified": 1682973809,
+        "narHash": "sha256-5JsB/dkKZTCP0p2oGbMvPYvABDx6CSCcPFkp1W4UBmA=",
         "owner": "Veraticus",
         "repo": "nixneovim",
-        "rev": "867c08ff7da854c9889e83dd4485dd43669dafd4",
+        "rev": "739b709f21391a40bdc2415972271f170dae11fa",
         "type": "github"
       },
       "original": {
         "owner": "Veraticus",
-        "ref": "fix-cmp-copilot",
         "repo": "nixneovim",
         "type": "github"
       }

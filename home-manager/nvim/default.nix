@@ -109,7 +109,7 @@
           "<C-b>" = "cmp.mapping.scroll_docs(-4)";
           "<C-f>" = "cmp.mapping.scroll_docs(4)";
           "<C-Space>" = "cmp.mapping.complete()";
-          "<Esc>" = "cmp.mapping.abort()";
+          "<C-c>" = "cmp.mapping.abort()";
           "<CR>" = "cmp.mapping.confirm({ select = false, behavior = cmp.ConfirmBehavior.Replace })";
         };
         sources = {
@@ -120,10 +120,18 @@
           "nvim_lsp" = {
             enable = true;
             groupIndex = 2;
+            entryFilter = ''
+              function(entry, ctx)
+                return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()] ~= 'Text'
+              end
+            '';
           };
           "buffer" = {
             enable = true;
             groupIndex = 2;
+            option = {
+              keyword_length = 5;
+            };
           };
           "luasnip" = {
             enable = true;
@@ -140,6 +148,9 @@
           "rg" = {
             enable = true;
             groupIndex = 2;
+            option = {
+              keyword_length = 5;
+            };
           };
         };
         sorting = {
@@ -160,6 +171,46 @@
           }'';
         };
       };
+      telescope = {
+        enable = true;
+        extraConfig = {
+          layout_strategy = "flex";
+          layout_config = { anchor = "N"; };
+          scroll_strategy = "cycle";
+          theme = "require('telescope.themes').get_dropdown { layout_config = { prompt_position = 'top' } }";
+        };
+        extraLua.post = ''
+          local telescopeBorderless = function(flavor) 
+            local cp = require("catppuccin.palettes").get_palette(flavor)
+
+            return {
+              TelescopeBorder = { fg = cp.surface0, bg = cp.surface0 },
+              TelescopeSelectionCaret = { fg = cp.flamingo, bg = cp.surface1 },
+              TelescopeMatching = { fg = cp.peach },
+              TelescopeNormal = { bg = cp.surface0 },
+              TelescopeSelection = { fg = cp.text, bg = cp.surface1 },
+              TelescopeMultiSelection = { fg = cp.text, bg = cp.surface2 },
+
+              TelescopeTitle = { fg = cp.crust, bg = cp.green },
+              TelescopePreviewTitle = { fg = cp.crust, bg = cp.red },
+              TelescopePromptTitle = { fg = cp.crust, bg = cp.mauve },
+
+              TelescopePromptNormal = { fg = cp.flamingo, bg = cp.crust },
+              TelescopePromptBorder = { fg = cp.crust, bg = cp.crust },
+            }
+          end
+
+          require("catppuccin").setup {
+            highlight_overrides = {
+              latte = telescopeBorderless('latte'),
+              frappe = telescopeBorderless('frappe'),
+              macchiato = telescopeBorderless('macchiato'),
+              mocha = telescopeBorderless('mocha'),
+            },
+          }
+
+        '';
+      };
     };
 
     extraPlugins = with pkgs.vimExtraPlugins; [
@@ -173,6 +224,7 @@
       cmp-buffer
       cmp-path
       cmp-rg
+      Comment-nvim
     ];
 
     extraConfigLua = ''

@@ -2,6 +2,11 @@ default-timeout=5000
 
 # Colors
 
+width=200
+height=200
+
+font=Cartograph CF 10
+
 background-color=#1e1e2e
 text-color=#cdd6f4
 border-color=#89b4fa
