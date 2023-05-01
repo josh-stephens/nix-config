@@ -27,20 +27,15 @@
         ai.enable = true;
         jump.enable = true;
       };
-      gitsigns = {
-        enable = true;
-      };
       lualine = {
         enable = true;
         theme = "catppuccin";
         extensions = [ "fzf" "nvim-tree" ];
       };
-      luasnip = {
-        enable = true;
-      };
-      nvim-tree = {
-        enable = true;
-      };
+      gitsigns.enable = true;
+      luasnip.enable = true;
+      nvim-tree.enable = true;
+      fugitive.enable = true;
     };
 
     extraPlugins = with pkgs.vimExtraPlugins; [
