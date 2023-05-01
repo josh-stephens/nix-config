@@ -46,6 +46,7 @@
     ./waybar
     ./git
     ./wofi
+    ./wezterm
     inputs.webcord.homeManagerModules.default
   ];
 
