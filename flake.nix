@@ -24,7 +24,7 @@
     xdg-portal-hyprland.url = "github:hyprwm/xdg-desktop-portal-hyprland";
 
     # Neovim
-    nixneovim.url = "github:nixneovim/nixneovim";
+    nixneovim.url = "github:Veraticus/nixneovim/fix-cmp-copilot";
 
     # Discord
     webcord.url = "github:fufexan/webcord-flake";
