@@ -38,13 +38,6 @@ button:focus {
     background-image: image(url("./logout-hover.png"));
 }
 
-#suspend {
-    background-image: image(url("./sleep.png"));
-}
-#suspend:focus {
-    background-image: image(url("./sleep-hover.png"));
-}
-
 #shutdown {
     background-image: image(url("./power.png"));
 }
