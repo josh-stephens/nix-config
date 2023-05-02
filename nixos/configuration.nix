@@ -126,7 +126,6 @@ in { inputs, lib, config, pkgs, ... }: {
   i18n.defaultLocale = "en_US.UTF-8";
 
   # Default programs everyone wants
-  programs.zsh.enable = true;
   programs.git.enable = true;
   virtualisation.docker.enable = true;
 

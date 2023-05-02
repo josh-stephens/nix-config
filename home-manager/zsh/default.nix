@@ -5,7 +5,6 @@
   };
 
   programs.zsh = {
-    package = pkgs.unstable.zsh;
     enable = true;
     enableAutosuggestions = true;
     enableCompletion = true;
@@ -21,7 +20,7 @@
       ll = "exa -a -F -l -B --git";
       update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
       vim = "nvim";
-      vimdiff = "nvim -d"
+      vimdiff = "nvim -d";
     };
 
     envExtra = ''

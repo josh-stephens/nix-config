@@ -49,6 +49,7 @@
     ./kitty
     ./k9s
     ./wlogout
+    ./zsh
     inputs.webcord.homeManagerModules.default
   ];
 
@@ -115,13 +116,7 @@
   systemd.user.startServices = "sd-switch";
 
   xdg.enable = true;
-  xdg.configFile."zsh" = {
-    source = ./zsh/zsh;
-    recursive = true;
-  };
 
-  home.file.".zshrc".source = ./zsh/.zshrc;
-  home.file.".zshenv".source = ./zsh/.zshenv;
   home.file."Backgrounds" = {
     source = ./Backgrounds;
     recursive = true;
