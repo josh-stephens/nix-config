@@ -50,32 +50,34 @@
       cmp-path
       cmp-rg
       Comment-nvim
+      indent-blankline-nvim
     ];
 
+    mappings = {
+      normal = {
+        "<leader>t" = "'<cmd>NvimTreeToggle<cr>'";
+        "<c-h>" = "'<c-w>h'";
+        "<c-j>" = "'<c-w>j'";
+        "<c-k>" = "'<c-w>k'";
+        "<c-l>" = "'<c-w>l'";
+        "<leader>n" = "'<cmd>noh<cr>'";
+        "<c-p>" = "'<cmd>Telescope buffers show_all_buffers=true theme=get_dropdown<cr>'";
+        "<c-P>" = "'<cmd>Telescope commands theme=get_dropdown<cr>'";
+        "<c-a>" = "'<cmd>Telescope buffers show_all_buffers=true theme=get_dropdown<cr>'";
+        "<c-a>" = "'<cmd>Telescope frecency theme=get_dropdown<cr>'";
+        "<c-s>" = "'<cmd>Telescope git_files theme=get_dropdown<cr>'";
+        "<c-d>" = "'<cmd>Telescope find_files theme=get_dropdown<cr>'";
+        "<c-g>" = "'<cmd>Telescope live_grep theme=get_dropdown<cr>'";
+        "<leader>e" = "vim.diagnostic.open_float";
+        "[d" = "vim.diagnostic.goto_prev";
+        "]d" = "vim.diagnostic.goto_next";
+        "<leader>q" = "vim.diagnostic.setloclist";
+      };
+    };
+
     extraConfigLua = ''
-      ${lib.strings.fileContents ./init.lua}
-
-      local lspconfig = require("lspconfig")
-      local capabilities = require("cmp_nvim_lsp").default_capabilities()
-
-      local servers = { 'bashls', 'html', 'jsonls', 'rnix', 'gopls', 'rust_analyzer' }
-      for _, lsp in ipairs(servers) do
-        lspconfig[lsp].setup {
-          -- on_attach = my_custom_on_attach,
-          capabilities = capabilities,
-        }
-      end
-
-      require("copilot").setup({
-        suggestion = { enabled = false },
-        panel = { enabled = false },
-      })
-
-      require("copilot_cmp").setup({
-        formatters = {
-          insert_text = require("copilot_cmp.format").remove_existing
-        },
-      })
+      ${lib.strings.fileContents ./opts.lua}
+      ${lib.strings.fileContents ./plugins.lua}
     '';
   };
 }
