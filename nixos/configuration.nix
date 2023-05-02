@@ -24,12 +24,7 @@ in { inputs, lib, config, pkgs, ... }: {
   ];
 
 # Hardware setup
-  sound.enable = true;
   hardware = {
-    pulseaudio = {
-      enable = true;
-      support32Bit = true;
-    };
     cpu = {
       amd.updateMicrocode = true;
     };
@@ -60,7 +55,6 @@ in { inputs, lib, config, pkgs, ... }: {
         unstable = import inputs.nixpkgs-unstable {
           system = final.system;
           config.allowUnfree = true;
-          config.pulseaudio = true;
         };
       })
 
@@ -73,7 +67,7 @@ in { inputs, lib, config, pkgs, ... }: {
     ];
     # Configure your nixpkgs instance
     config = {
-      pulseaudio = true;
+      # Disable if you don't want unfree packages
       allowUnfree = true;
     };
   };
@@ -145,7 +139,7 @@ in { inputs, lib, config, pkgs, ... }: {
       openssh.authorizedKeys.keys = [
         "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAQ4hwNjF4SMCeYcqm3tzUxZWadcv7ZLJbCa/mLHzsvw josh+cloudbank@joshsymonds.com"
       ];
-      extraGroups = [ "wheel" config.users.groups.keys.name "docker" "audio" ];
+      extraGroups = [ "wheel" config.users.groups.keys.name "docker" ];
     };
   };
 
@@ -199,6 +193,13 @@ in { inputs, lib, config, pkgs, ... }: {
       };
       default_session = initial_session;
     };
+  };
+
+  services.pipewire = {
+    enable = true;
+    alsa.enable = true;
+    alsa.support32Bit = true;
+    pulse.enable = true;
   };
 
   services.xremap = {
