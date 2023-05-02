@@ -95,9 +95,6 @@
   };
 
   # Programs
-  programs.mako = {
-    enable = true;
-  };
   programs.go.enable = true;
 
   programs.webcord = {
@@ -118,7 +115,6 @@
   systemd.user.startServices = "sd-switch";
 
   xdg.enable = true;
-  xdg.configFile."mako/config".source = ./mako/config;
   xdg.configFile."zsh" = {
     source = ./zsh/zsh;
     recursive = true;

@@ -231,6 +231,8 @@ in { inputs, lib, config, pkgs, ... }: {
 
   # Environment
   environment = {
+    pathsToLink = [ "/share/zsh" ];
+
     sessionVariables = rec {
       GBM_BACKEND = "nvidia-drm";
       __GL_GSYNC_ALLOWED = "0";
@@ -280,16 +282,16 @@ in { inputs, lib, config, pkgs, ... }: {
       Hyprland
     '';
     etc."sysconfig/lm_sensors".text = ''
-    # This file is sourced by /etc/init.d/lm_sensors and defines the modules to
-    # be loaded/unloaded.
-    #
-    # The format of this file is a shell script that simply defines variables:
-    # HWMON_MODULES for hardware monitoring driver modules, and optionally
-    # BUS_MODULES for any required bus driver module (for example for I2C or SPI).
+      # This file is sourced by /etc/init.d/lm_sensors and defines the modules to
+      # be loaded/unloaded.
+      #
+      # The format of this file is a shell script that simply defines variables:
+      # HWMON_MODULES for hardware monitoring driver modules, and optionally
+      # BUS_MODULES for any required bus driver module (for example for I2C or SPI).
 
-    HWMON_MODULES="nct6775"
-  '';
-  loginShellInit = ''
+      HWMON_MODULES="nct6775"
+    '';
+    loginShellInit = ''
       eval $(ssh-agent)
     '';
   };
