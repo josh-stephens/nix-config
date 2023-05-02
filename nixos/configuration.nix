@@ -164,7 +164,6 @@ in { inputs, lib, config, pkgs, ... }: {
       };
       yubico = {
         enable = true;
-        debug = true;
         mode = "challenge-response";
       };
     };
