@@ -172,9 +172,8 @@ in { inputs, lib, config, pkgs, ... }: {
   # Services
   services.thermald.enable = true;
   services.pcscd.enable = true;
-
+  services.ratbagd.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
-
   services.getty.autologinUser = "${user}";
 
   services.openssh = {
