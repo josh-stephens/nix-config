@@ -152,8 +152,27 @@ in { inputs, lib, config, pkgs, ... }: {
     };
   };
 
+# Security
+  security = {
+    rtkit.enable = true;
+    pam = {
+      services.swaylock = {
+        text = ''
+          auth sufficient pam_yubico.so mode=challenge-response
+          auth include login 
+        '';
+      };
+      yubico = {
+        enable = true;
+        debug = true;
+        mode = "challenge-response";
+      };
+    };
+  };
+
   # Services
   services.thermald.enable = true;
+  services.pcscd.enable = true;
 
   services.xserver.videoDrivers = [ "nvidia" ];
 
@@ -177,17 +196,11 @@ in { inputs, lib, config, pkgs, ... }: {
     };
   };
 
-  security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
-  };
-  security.pam.services.swaylock = {
-    text = ''
-      auth include login 
-    '';
   };
 
   services.xremap = {
@@ -261,6 +274,8 @@ in { inputs, lib, config, pkgs, ... }: {
       git
       cliphist
       hwdata
+      yubikey-manager
+      yubico-pam
     ];
 
     etc."greetd/environments".text = ''
