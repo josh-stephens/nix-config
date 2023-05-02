@@ -64,7 +64,7 @@
         "<c-p>" = "'<cmd>Telescope buffers show_all_buffers=true theme=get_dropdown<cr>'";
         "<c-P>" = "'<cmd>Telescope commands theme=get_dropdown<cr>'";
         "<c-a>" = "'<cmd>Telescope buffers show_all_buffers=true theme=get_dropdown<cr>'";
-        "<c-a>" = "'<cmd>Telescope frecency theme=get_dropdown<cr>'";
+        "<c-e>" = "'<cmd>Telescope frecency theme=get_dropdown<cr>'";
         "<c-s>" = "'<cmd>Telescope git_files theme=get_dropdown<cr>'";
         "<c-d>" = "'<cmd>Telescope find_files theme=get_dropdown<cr>'";
         "<c-g>" = "'<cmd>Telescope live_grep theme=get_dropdown<cr>'";

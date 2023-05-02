@@ -74,5 +74,3 @@ opt.termguicolors = true
 cmd [[set nobackup]]
 cmd [[set noswapfile]]
 cmd [[set noundofile]]
-
-

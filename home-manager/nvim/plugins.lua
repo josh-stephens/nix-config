@@ -91,7 +91,7 @@ require("copilot_cmp").setup({
 -- Catppuccin
 require("catppuccin").setup({  
   transparent_background = true
-}
+})
 
 -- IndentLines
 vim.g.indent_blankline_use_treesitter = true
