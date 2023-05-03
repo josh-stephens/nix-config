@@ -78,7 +78,7 @@ in { inputs, lib, config, pkgs, ... }: {
     useGlobalPkgs = true;
     users = {
       # Import your home-manager configuration
-      ${user} = import ../../home-manager;
+      ${user} = import ../../home-manager/${system}.nix;
     };
   };
 

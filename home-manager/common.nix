@@ -8,7 +8,6 @@
     ./k9s
     ./zsh
     ./starship
-    ./${pkgs.system}.nix
   ];
 
   # TODO: Set your username
