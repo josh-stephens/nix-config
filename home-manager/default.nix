@@ -64,6 +64,9 @@
     homeDirectory = "/home/joshsymonds";
 
     packages = with pkgs; [ 
+      coreutils
+      curl
+      ripgrep
       ranger
       bat
       exa
@@ -105,6 +108,10 @@
 
   # Programs
   programs.go.enable = true;
+  programs.direnv.enable = true;
+  programs.direnv.nix-direnv.enable = true;
+  programs.htop.enable = true;
+  programs.htop.settings.show_program_path = true;
 
   programs.webcord = {
     enable = true;

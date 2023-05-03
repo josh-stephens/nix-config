@@ -1,6 +1,3 @@
-# This is your system's configuration file.
-# Use this to configure your system environment (it replaces /etc/nixos/configuration.nix)
-
 let 
   system = "x86_64-linux";
   user = "joshsymonds";
@@ -144,9 +141,10 @@ in { inputs, lib, config, pkgs, ... }: {
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
     useUserPackages = true;
+    useGlobalPackages = true;
     users = {
       # Import your home-manager configuration
-      ${user} = import ../home-manager/home.nix;
+      ${user} = import ../../home-manager/home.nix;
     };
   };
 
@@ -264,15 +262,10 @@ in { inputs, lib, config, pkgs, ... }: {
     systemPackages = with pkgs; [
       polkit
       pciutils
-      curl
-      file
-      unzip
-      ripgrep
-      gh
-      cliphist
       hwdata
       yubikey-manager
       yubico-pam
+      cachix
     ];
 
     etc."greetd/environments".text = ''
