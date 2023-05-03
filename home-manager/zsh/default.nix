@@ -12,12 +12,11 @@
 
     historySubstringSearch = {
       enable = true;
-      searchDownKey = "j";
-      searchUpKey = "k";
     };
     
     shellAliases = {
       ll = "exa -a -F -l -B --git";
+      ls = "ls --color=auto";
       update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
       vim = "nvim";
       vimdiff = "nvim -d";
@@ -25,6 +24,7 @@
 
     envExtra = ''
       export NIX_CONFIG="experimental-features = nix-command flakes"
+      export LS_COLORS="$(vivid generate catppuccin-mocha)"
     '';
 
     history = {
@@ -35,6 +35,12 @@
 
     initExtraFirst = ''
       source ${config.xdg.configHome}/zsh/extras/catppuccin_mocha-zsh-syntax-highlighting.zsh
+    '';
+    initExtra = ''
+      if [ -n "$\{commands[fzf-share]}" ]; then
+        source "$(fzf-share)/key-bindings.zsh"
+        source "$(fzf-share)/completion.zsh"
+      fi
     '';
   };
 }

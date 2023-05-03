@@ -7,47 +7,52 @@
     settings = {
       palette = "catppuccin_mocha";
 
-      format = ''
-        [](fg:mauve)\
-        $directory\
-        $character\
-      '';
+      format = "[](fg:lavender)$directory$character";
 
-      right_format = ''
-      [](bg:#1E1E2E)\
-        $git_branch\
-        $git_status\
-      []()\
-      []()\
-      '';
+      right_format = "[](fg:peach)$git_branch$git_status[](bg:peach fg:teal)$kubernetes[](fg:teal)";
 
       add_newline = false;
 
       directory = {
-        style = "bg:mauve";
+        style = "bg:lavender fg:base";
         format = "[ $path ]($style)";
         truncation_length = 3;
         truncation_symbol = "…/";
         fish_style_pwd_dir_length = 1;
         substitutions = {
-          Documents = " "; 
+          Documents = " ";
           Downloads = " ";
           Music = " ";
           Pictures = " ";
-          Work = ""
         };
       };
 
       character = {
-        success_symbol = "[](bg:#f38ba8 fg:mauve)[ ](bg:green)[](fg:green) ";
-        error_symbol = "[](bg:#a6e3a1 fg:mauve)[ ](bg:red)[](fg:red) ";
-        vimcmd_symbol = "[](bg:#f38ba8 fg:mauve)[ ](bg:green)[](fg:green) ";
-        vimcmd_replace_one_symbol = "[](bg:lavender fg:mauve)[ ](bg:lavender)[](fg:lavender) ";
-        vimcmd_replace_symbol = "[](bg:lavender fg:mauve)[ ](bg:lavender)[](fg:lavender) ";
-        vimcmd_visual_symbol = "[](bg:yellow fg:mauve)[ ](bg:yellow)[](fg:yellow) ";
+        success_symbol = "[](bg:green fg:lavender)[](fg:green) ";
+        error_symbol = "[](bg:red fg:lavender)[](fg:red) ";
+        vimcmd_symbol = "[](bg:green fg:lavender)[](fg:green) ";
+        vimcmd_replace_one_symbol = "[](bg:lavender fg:lavender)[](fg:lavender) ";
+        vimcmd_replace_symbol = "[](bg:lavender fg:lavender)[](fg:lavender) ";
+        vimcmd_visual_symbol = "[](bg:yellow fg:lavender)[](fg:yellow) ";
       };
 
-      palettes.catppuccin_mocha .= {
+      "git_branch" = {
+        symbol = "";
+        style = "bg:peach fg:base";
+        format = "[ $symbol $branch ]($style)";
+      };
+
+      "git_status" = {
+        style = "bg:peach fg:base";
+        format = "[$all_status$ahead_behind ]($style)";
+      };
+
+      kubernetes = {
+        disabled = false;
+        style = "bg:teal fg:base";
+      };
+
+      palettes.catppuccin_mocha = {
         rosewater = "#f5e0dc";
         flamingo = "#f2cdcd";
         pink = "#f5c2e7";

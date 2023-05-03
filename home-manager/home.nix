@@ -50,6 +50,7 @@
     ./k9s
     ./wlogout
     ./zsh
+    ./starship
     inputs.webcord.homeManagerModules.default
   ];
 
@@ -85,6 +86,8 @@
       unstable.slack
       inputs.webcord.packages.${system}.default
       unstable.qbittorrent
+      unstable.vivid
+      fzf
     ];
 
     pointerCursor = {
