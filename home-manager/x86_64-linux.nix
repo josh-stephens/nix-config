@@ -1,6 +1,5 @@
 { inputs, lib, config, pkgs, ... }: {
   imports = [
-    ./common.nix
     ./wofi
     ./waybar
     ./hyprland
