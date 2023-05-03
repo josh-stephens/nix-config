@@ -10,10 +10,8 @@
     ./starship
   ];
 
-  # TODO: Set your username
   home = {
     username = "joshsymonds";
-    homeDirectory = "/home/joshsymonds";
 
     packages = with pkgs; [ 
       coreutils

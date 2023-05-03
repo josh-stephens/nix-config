@@ -65,15 +65,11 @@ in { inputs, lib, config, pkgs, ... }: {
 
 
   networking.hostName = "cloudbank";
-  networking.firewall.checkReversePath = "loose";
 
   # Time and internationalization
   time.timeZone = "America/Los_Angeles";
-  i18n.defaultLocale = "en_US.UTF-8";
 
  # Users and their homes
-  users.defaultUserShell = pkgs.zsh;
-
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
     useUserPackages = true;
@@ -87,19 +83,6 @@ in { inputs, lib, config, pkgs, ... }: {
   # Security
   security.pam.enableSudoTouchIdAuth = true;
 
-    # Fonts!
-  fonts = {
-    fonts = with pkgs; [
-      (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
-    ];
-
-    fontconfig = {
-      defaultFonts = {
-        monospace = [ "Cartograph CF Regular" "Symbols Nerd Font Mono" ];
-      };
-    };
-  };
-
-  # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   system.stateVersion = "22.11";
 }

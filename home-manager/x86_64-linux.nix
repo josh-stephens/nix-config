@@ -10,6 +10,8 @@
   ];
 
   home = {
+    homeDirectory = "/home/joshsymonds";
+
     packages = with pkgs; [ 
       spotifywm
       polkit-kde-agent

@@ -6,8 +6,4 @@
     ./skhd
     ./sketchybar
   ];
-
-  packages = [
-
-  ];
 }

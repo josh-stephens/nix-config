@@ -49,9 +49,8 @@
     darwinConfigurations.cloudbank = darwin.lib.darwinSystem {
       system = "aarch64-darwin"; # "x86_64-darwin" if you're using a pre M1 mac
       specialArgs = { inherit inputs; }; # Pass flake inputs to our config
-      modules = [ ./hosts/cloudbank ]; # will be important later
+      modules = [ ./nixos/cloudbank ]; # will be important later
     };
-    
 
     homeConfigurations = {
       "joshsymonds@morningstar" = home-manager.lib.homeManagerConfiguration {
@@ -66,7 +65,6 @@
         # > Our main home-manager configuration file <
         modules = [ ./home-manager ];
       };
-
     };
   };
 }
