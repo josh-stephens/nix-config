@@ -7,12 +7,6 @@
     ./telescope.nix
   ];
 
-  nixpkgs = {
-    overlays = [
-      inputs.nixneovim.overlays.default
-    ];
-  };
-
   programs.nixneovim = {
     enable = true;
     colorscheme = "catppuccin-mocha";
@@ -25,7 +19,7 @@
     options = {
       textwidth = 0;
       scrolloff = 4;
-      wildmode = "longest, full";
+      wildmode = "longest:full,full";
       wildoptions = "pum";
       inccommand = "nosplit";
       lazyredraw = true;
@@ -41,13 +35,13 @@
       smartindent = true;
       laststatus = 3;
       showmode = false;
+      shada = "'20,<50,s10,h,/100";
       hidden = true;
       joinspaces = false;
       updatetime = 100;
       conceallevel = 2;
       concealcursor = "nc";
       previewheight = 5;
-      undofile = true;
       synmaxcol = 500;
       display = "msgsep";
       cursorline = true;

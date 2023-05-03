@@ -6,25 +6,28 @@
     ./waybar
     ./hyprland
     ./wlogout
+    inputs.webcord.homeManagerModules.default
   ];
 
-  packages = with pkgs; [ 
-    spotifywm
-    polkit-kde-agent
-    xivlauncher
-    steam
-    unstable.pavucontrol
-    unstable._1password-gui
-    inputs.webcord.packages.${system}.default
-    unstable.qbittorrent
-    inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
-    unstable.hyprpicker
-    swaybg
-    swaylock-effects
-    swayidle
-    psensor
-    unstable.piper
-  ];
+  home = {
+    packages = with pkgs; [ 
+      spotifywm
+      polkit-kde-agent
+      xivlauncher
+      steam
+      unstable.pavucontrol
+      unstable._1password-gui
+      inputs.webcord.packages.${system}.default
+      unstable.qbittorrent
+      inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
+      unstable.hyprpicker
+      swaybg
+      swaylock-effects
+      swayidle
+      psensor
+      unstable.piper
+    ];
+  };
 
   programs.webcord = {
     enable = true;
