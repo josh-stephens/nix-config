@@ -17,6 +17,48 @@
     enable = true;
     colorscheme = "catppuccin-mocha";
 
+    globals = {
+      mapleader = " ";
+      maplocalleader = ",";
+    };
+
+    options = {
+      textwidth = 0;
+      scrolloff = 4;
+      wildmode = "longest, full";
+      wildoptions = "pum";
+      inccommand = "nosplit";
+      lazyredraw = true;
+      showmatch = true;
+      ignorecase = true;
+      smartcase = true;
+      tabstop = 2;
+      softtabstop = 0;
+      expandtab = true;
+      shiftwidth = 2;
+      number = true;
+      backspace = "indent,eol,start";
+      smartindent = true;
+      laststatus = 3;
+      showmode = false;
+      hidden = true;
+      joinspaces = false;
+      updatetime = 100;
+      conceallevel = 2;
+      concealcursor = "nc";
+      previewheight = 5;
+      undofile = true;
+      synmaxcol = 500;
+      display = "msgsep";
+      cursorline = true;
+      modeline = false;
+      mouse = "nivh";
+      signcolumn = "yes:1";
+      ruler = true;
+      clipboard = "unnamedplus";
+      termguicolors = true;
+    };
+
     plugins = {
       treesitter = {
         enable = true;
@@ -76,7 +118,6 @@
     };
 
     extraConfigLua = ''
-      ${lib.strings.fileContents ./opts.lua}
       ${lib.strings.fileContents ./plugins.lua}
     '';
   };

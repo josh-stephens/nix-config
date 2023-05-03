@@ -75,10 +75,10 @@ in { inputs, lib, config, pkgs, ... }: {
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
     useUserPackages = true;
-    useGlobalPackages = true;
+    useGlobalPkgs = true;
     users = {
       # Import your home-manager configuration
-      ${user} = import ../../home-manager/home.nix;
+      ${user} = import ../../${system}.nix;
     };
   };
 

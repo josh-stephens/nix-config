@@ -39,7 +39,7 @@
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
-  outputs = { nixpkgs, home-manager, self, ... }@inputs: {
+  outputs = { nixpkgs, darwin, home-manager, self, ... }@inputs: {
     nixosConfigurations.morningstar = nixpkgs.lib.nixosSystem {
       specialArgs = { inherit inputs; }; # Pass flake inputs to our config
       # > Our main nixos configuration file <

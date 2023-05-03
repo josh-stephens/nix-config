@@ -58,11 +58,6 @@
       "nvim_lsp" = {
         enable = true;
         groupIndex = 2;
-        entryFilter = ''
-          function(entry, ctx)
-            return require('cmp.types').lsp.CompletionItemKind[entry:get_kind()] ~= 'Text'
-          end
-        '';
       };
       "buffer" = {
         enable = true;
