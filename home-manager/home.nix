@@ -41,17 +41,21 @@
   # You can import other home-manager modules here
   imports = [
     # You can also split up your configuration and import pieces of it here:
-    ./hyprland
     ./nvim
-    ./waybar
     ./git
-    ./wofi
     ./kitty
     ./k9s
     ./wlogout
     ./zsh
     ./starship
     inputs.webcord.homeManagerModules.default
+  ] ++ stdenv.isDarwin [
+    ./skhd
+    ./yabai
+  ] ++ stdenv.isLinux [
+    ./wofi
+    ./waybar
+    ./hyprland
   ];
 
   # TODO: Set your username
@@ -60,34 +64,35 @@
     homeDirectory = "/home/joshsymonds";
 
     packages = with pkgs; [ 
-      mako
       ranger
       bat
       exa
       jq
-      spotify
-      spotifywm
-      polkit-kde-agent
       catppuccin-cursors.mochaLavender
-      xivlauncher
-      steam
-      unstable.pavucontrol
       xdg-utils
+      spotify
       unstable.firefox
-      unstable._1password-gui
+      unstable.signal-desktop-beta
+      unstable.slack
+      unstable.vivid
+      fzf
+    ] ++ stdenv.isDarwin [
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
       unstable.hyprpicker
-      unstable.signal-desktop-beta
       swaybg
       swaylock-effects
       swayidle
       psensor
       unstable.piper
-      unstable.slack
+    ] ++ stdenv.IsLinux [
+      spotifywm
+      polkit-kde-agent
+      xivlauncher
+      steam
+      unstable.pavucontrol
+      unstable._1password-gui
       inputs.webcord.packages.${system}.default
       unstable.qbittorrent
-      unstable.vivid
-      fzf
     ];
 
     pointerCursor = {

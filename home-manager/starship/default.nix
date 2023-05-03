@@ -24,6 +24,9 @@
           Downloads = " ";
           Music = " ";
           Pictures = " ";
+          Work = "󰃖 ";
+          Personal = " ";
+          Dropbox = " ";
         };
       };
 

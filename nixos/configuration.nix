@@ -126,7 +126,6 @@ in { inputs, lib, config, pkgs, ... }: {
   i18n.defaultLocale = "en_US.UTF-8";
 
   # Default programs everyone wants
-  programs.git.enable = true;
   virtualisation.docker.enable = true;
 
  # Users and their homes
@@ -270,7 +269,6 @@ in { inputs, lib, config, pkgs, ... }: {
       unzip
       ripgrep
       gh
-      git
       cliphist
       hwdata
       yubikey-manager
