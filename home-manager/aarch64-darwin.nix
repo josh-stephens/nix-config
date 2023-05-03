@@ -6,4 +6,6 @@
     ./skhd
     ./sketchybar
   ];
+
+  programs.zsh.shellAliases.update = "darwin-rebuild switch --flake \".#$(hostname -s)\"";
 }

@@ -2,7 +2,7 @@
   # You can import other home-manager modules here
   imports = [
     # You can also split up your configuration and import pieces of it here:
-    ./nvim
+    #./nvim
     ./git
     ./kitty
     ./k9s
@@ -21,22 +21,9 @@
       bat
       exa
       jq
-      catppuccin-cursors.mochaLavender
       xdg-utils
-      spotify
-      unstable.firefox
-      unstable.signal-desktop-beta
-      unstable.slack
-      unstable.vivid
       fzf
     ];
-
-    pointerCursor = {
-      name = "Catppuccin-Mocha-Lavender-Cursors";
-      package = pkgs.catppuccin-cursors.mochaLavender;
-      gtk.enable = true;
-      size = 20;
-    };
   };
 
   # Programs

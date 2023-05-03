@@ -40,6 +40,7 @@ in { inputs, lib, config, pkgs, ... }: {
 
   nix = {
     package = inputs.darwin-nix.packages.${system}.nix;
+    useDaemon = true;
 
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
@@ -86,5 +87,5 @@ in { inputs, lib, config, pkgs, ... }: {
   security.pam.enableSudoTouchIdAuth = true;
 
    # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  system.stateVersion = "22.11";
+  # system.stateVersion = 22.11;
 }

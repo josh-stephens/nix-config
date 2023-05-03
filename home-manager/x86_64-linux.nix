@@ -28,7 +28,20 @@
       swayidle
       psensor
       unstable.piper
+      spotify
+      catppuccin-cursors.mochaLavender
+      unstable.firefox
+      unstable.signal-desktop-beta
+      unstable.slack
+      unstable.vivid
     ];
+
+    pointerCursor = {
+      name = "Catppuccin-Mocha-Lavender-Cursors";
+      package = pkgs.catppuccin-cursors.mochaLavender;
+      gtk.enable = true;
+      size = 20;
+    };
   };
 
   programs.webcord = {
@@ -44,6 +57,8 @@
       CatpuccinMocha = "${catppuccin}/themes/mocha.theme.css";
     };
   };
+
+  programs.zsh.shellAliases.update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";

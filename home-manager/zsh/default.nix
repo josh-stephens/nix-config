@@ -14,7 +14,6 @@
     shellAliases = {
       ll = "exa -a -F -l -B --git";
       ls = "ls --color=auto";
-      update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
       vim = "nvim";
       vimdiff = "nvim -d";
     };
