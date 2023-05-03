@@ -9,10 +9,7 @@
     enableAutosuggestions = true;
     enableCompletion = true;
     enableSyntaxHighlighting = true;
-
-    historySubstringSearch = {
-      enable = true;
-    };
+    historySubstringSearch.enable = true;
     
     shellAliases = {
       ll = "exa -a -F -l -B --git";
@@ -25,12 +22,20 @@
     envExtra = ''
       export NIX_CONFIG="experimental-features = nix-command flakes"
       export LS_COLORS="$(vivid generate catppuccin-mocha)"
+      export ZVM_CURSOR_STYLE_ENABLED=false
     '';
 
     history = {
       size = 50000;
       save = 50000;
       path = "${config.xdg.dataHome}/zsh/history";
+    };
+
+    zplug = {
+      enable = true;
+      plugins = [
+        {name = "jeffreytse/zsh-vi-mode";}
+      ];
     };
 
     initExtraFirst = ''

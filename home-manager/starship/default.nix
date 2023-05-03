@@ -9,7 +9,7 @@
 
       format = "[](fg:lavender)$directory$character";
 
-      right_format = "[](fg:peach)$git_branch$git_status[](bg:peach fg:teal)$kubernetes[](fg:teal)";
+      right_format = "[](fg:rosewater)$cmd_duration[](fg:peach bg:rosewater)$git_branch$git_status[](bg:peach fg:teal)$kubernetes[](fg:teal)";
 
       add_newline = false;
 
@@ -28,12 +28,17 @@
       };
 
       character = {
-        success_symbol = "[](bg:green fg:lavender)[](fg:green) ";
-        error_symbol = "[](bg:red fg:lavender)[](fg:red) ";
-        vimcmd_symbol = "[](bg:green fg:lavender)[](fg:green) ";
-        vimcmd_replace_one_symbol = "[](bg:lavender fg:lavender)[](fg:lavender) ";
-        vimcmd_replace_symbol = "[](bg:lavender fg:lavender)[](fg:lavender) ";
-        vimcmd_visual_symbol = "[](bg:yellow fg:lavender)[](fg:yellow) ";
+        success_symbol = "[](bg:green fg:lavender)[](fg:green)";
+        error_symbol = "[](bg:red fg:lavender)[](fg:red)";
+        vimcmd_symbol = "[](fg:yellow bg:lavender)[](bg:yellow fg:base)";
+        vimcmd_replace_one_symbol = "[](fg:flamingo bg:lavender)[](bg:flamingo fg:base)";
+        vimcmd_replace_symbol = "[](fg:flamingo bg:lavender)[](bg:flamingo fg:base)";
+        vimcmd_visual_symbol = "[](fg:yellow bg:lavender)[](bg:yellow fg:base)";
+      };
+
+      "cmd_duration" = {
+        style = "bg:rosewater fg:base";
+        format = "[ $duration ]($style)";
       };
 
       "git_branch" = {
@@ -49,6 +54,7 @@
 
       kubernetes = {
         disabled = false;
+        format = "[ $symbol$context(\($cluster\)) ]($style)";
         style = "bg:teal fg:base";
       };
 
