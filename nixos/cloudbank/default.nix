@@ -5,6 +5,7 @@ in { inputs, lib, config, pkgs, ... }: {
   # You can import other NixOS modules here
   imports = [
     inputs.home-manager.darwinModules.home-manager
+    ./applications.nix
   ];
 
   nixpkgs = {
@@ -12,6 +13,7 @@ in { inputs, lib, config, pkgs, ... }: {
     overlays = [
       inputs.nixpkgs-wayland.overlay
       inputs.nixneovim.overlays.default
+      inputs.neovim-nightly-overlay.overlay
 
       # If you want to use overlays exported from other flakes:
       # neovim-nightly-overlay.overlays.default
@@ -72,7 +74,12 @@ in { inputs, lib, config, pkgs, ... }: {
   # Time and internationalization
   time.timeZone = "America/Los_Angeles";
 
- # Users and their homes
+  # Users and their homes
+  users.users.${user} = {
+    shell = pkgs.unstable.zsh;
+    home = "/Users/${user}";
+  };
+
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
     useUserPackages = true;
@@ -86,6 +93,21 @@ in { inputs, lib, config, pkgs, ... }: {
   # Security
   security.pam.enableSudoTouchIdAuth = true;
 
-   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  # system.stateVersion = 22.11;
+  # Services
+  services.nix-daemon.enable = true;
+  programs.zsh.enable = true; # This is necessary to set zsh paths properly
+
+  # Environment
+  environment = {
+    pathsToLink = [ 
+      "/bin"
+      "/share/locale"
+      "/share/terminfo"
+      "/share/zsh"
+    ];
+  };
+
+  # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
+  system.stateVersion = 4;
+
 }

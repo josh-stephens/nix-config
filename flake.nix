@@ -9,7 +9,7 @@
     # Darwin
     nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-22.11-darwin";
     darwin.url = "github:lnl7/nix-darwin/master";
-    darwin.inputs.nixpkgs.follows = "nixpkgs-darwin";
+    darwin.inputs.nixpkgs.follows = "nixpkgs-unstable";
     darwin-nix.url = "github:yorickvP/nix/boost-regex";
 
     # Secrets
@@ -31,6 +31,7 @@
 
     # Neovim
     nixneovim.url = "github:Veraticus/nixneovim";
+    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
     # Discord
     webcord.url = "github:fufexan/webcord-flake";

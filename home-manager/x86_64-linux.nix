@@ -33,7 +33,6 @@
       unstable.firefox
       unstable.signal-desktop-beta
       unstable.slack
-      unstable.vivid
     ];
 
     pointerCursor = {

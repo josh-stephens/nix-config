@@ -2,7 +2,7 @@
   # You can import other home-manager modules here
   imports = [
     # You can also split up your configuration and import pieces of it here:
-    #./nvim
+    ./nvim
     ./git
     ./kitty
     ./k9s
@@ -23,6 +23,7 @@
       jq
       xdg-utils
       fzf
+      unstable.vivid
     ];
   };
 

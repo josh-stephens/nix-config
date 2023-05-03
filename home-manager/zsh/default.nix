@@ -30,21 +30,15 @@
       path = "${config.xdg.dataHome}/zsh/history";
     };
 
-    zplug = {
-      enable = true;
-      plugins = [
-        {name = "jeffreytse/zsh-vi-mode";}
-      ];
-    };
-
     initExtraFirst = ''
-      source ${config.xdg.configHome}/zsh/extras/catppuccin_mocha-zsh-syntax-highlighting.zsh
     '';
     initExtra = ''
       if [ -n "$\{commands[fzf-share]}" ]; then
         source "$(fzf-share)/key-bindings.zsh"
         source "$(fzf-share)/completion.zsh"
       fi
+
+      source ${pkgs.unstable.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
     '';
   };
 }

@@ -128,15 +128,15 @@ in { inputs, lib, config, pkgs, ... }: {
 
  # Users and their homes
   users.defaultUserShell = pkgs.zsh;
-  users.users = {
-    ${user} = {
-      initialPassword = "correcthorsebatterystaple";
-      isNormalUser = true;
-      openssh.authorizedKeys.keys = [
-        "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAQ4hwNjF4SMCeYcqm3tzUxZWadcv7ZLJbCa/mLHzsvw josh+cloudbank@joshsymonds.com"
-      ];
-      extraGroups = [ "wheel" config.users.groups.keys.name "docker" ];
-    };
+  users.users.${user} = {
+    shell = pkgs.unstable.zsh;
+    home = "/home/${user}";
+    initialPassword = "correcthorsebatterystaple";
+    isNormalUser = true;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAQ4hwNjF4SMCeYcqm3tzUxZWadcv7ZLJbCa/mLHzsvw josh+cloudbank@joshsymonds.com"
+    ];
+    extraGroups = [ "wheel" config.users.groups.keys.name "docker" ];
   };
 
   home-manager = {
