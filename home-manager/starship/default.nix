@@ -9,16 +9,14 @@
 
       format = "[](fg:lavender)$directory$character";
 
-      right_format = "[](fg:rosewater)$cmd_duration[](fg:peach bg:rosewater)$git_branch$git_status[](bg:peach fg:teal)$kubernetes[](fg:teal)";
+      right_format = "[](fg:rosewater)$cmd_duration[](fg:peach bg:rosewater)$git_branch$git_status[](bg:peach fg:blue)$aws[](bg:blue fg:teal)$kubernetes[](fg:teal)";
 
       add_newline = false;
 
       directory = {
         style = "bg:lavender fg:base";
         format = "[ $path ]($style)";
-        truncation_length = 3;
-        truncation_symbol = "…/";
-        fish_style_pwd_dir_length = 1;
+        fish_style_pwd_dir_length = 2;
         substitutions = {
           Documents = " ";
           Downloads = " ";
@@ -59,6 +57,11 @@
         disabled = false;
         format = "[ $symbol$context ]($style)";
         style = "bg:teal fg:base";
+      };
+
+      aws = {
+        format = "[ $symbol$profile ]($style)";
+        style = "bg:blue fg:base";
       };
 
       palettes.catppuccin_mocha = {

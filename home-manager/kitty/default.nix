@@ -12,7 +12,9 @@
       "kitty_mod+k" = "scroll_line_up";
       "kitty_mod+j" = "scroll_line_down";
       "kitty_mod+s" = "show_scrollback";
-      "kitty_mod+l" =  "clear_terminal scrollback active";
+      "kitty_mod+l" = "clear_terminal scrollback active";
+      "cmd+enter" = "no_op";
+      "cmd+shift+enter" = "no_op";
     };
 
     settings = {

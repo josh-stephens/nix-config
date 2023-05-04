@@ -3,13 +3,9 @@
     ../../modules/services/skhd.nix
   ];
 
-  xdg.configFile."skhd" = {
-    recursive = true;
-  };
-  
   services.skhd = {
     enable = true;
-    configPath = ./skhd;
+    configPath = ./skhdrc;
     package = pkgs.unstable.skhd;
   };
 }

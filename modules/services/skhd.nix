@@ -84,12 +84,17 @@ in
             "${config.xdg.configHome}/skhd/skhdrc"
           ];
           KeepAlive = true;
+          RunAtLoad = true;
           ProcessType = "Interactive";
           EnvironmentVariables = {
             PATH = concatStringsSep ":" [
+              "${cfg.package}/bin"
               "${config.home.homeDirectory}/.nix-profile/bin"
               "/run/current-system/sw/bin"
               "/nix/var/nix/profiles/default/"
+              "/usr/bin"
+              "/opt/homebrew/bin"
+              "/etc/profiles/per-user/joshsymonds/bin"
             ];
           };
           StandardOutPath = "${config.xdg.cacheHome}/skhd.out.log";

@@ -15,11 +15,4 @@ k9s:
     fullScreenLogs: true
     textWrap: true
     showTime: false
-  thresholds:
-    cpu:
-      critical: 90
-      warn: 70
-    memory:
-      critical: 90
-      warn: 70
 

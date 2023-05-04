@@ -15,14 +15,8 @@ lcmd - 0x29 : yabai -m window --focus east  || yabai -m display --focus east
 lcmd -    h : yabai -m window --focus first
 lcmd - 0x27 : yabai -m window --focus  last
 
-# Float / Unfloat window: lcmd - space
-lcmd - space : yabai -m window --toggle float; sketchybar --trigger window_focus
-
 # Make window zoom to fullscreen: shift + lcmd - f
 shift + lcmd - f : yabai -m window --toggle zoom-fullscreen; sketchybar --trigger window_focus
-
-# Make window zoom to parent node: lcmd - f 
-lcmd - f : yabai -m window --toggle zoom-parent; sketchybar --trigger window_focus
 
 ## Window Movement (shift + lcmd - ...)
 # Moving windows in spaces: shift + lcmd - {j, k, l, ö}
@@ -96,13 +90,5 @@ shift + ctrl + lcmd - s : yabai -m window --insert stack
 
 ## Misc
 # Open new kitty window
-lcmd - t : kitty
-
-# New window in hor./ vert. splits for all applications with yabai
-lcmd - s : yabai -m window --insert east;  skhd -k "cmd - n"
-lcmd - v : yabai -m window --insert south; skhd -k "cmd - n"
-
-# Toggle sketchybar
-shift + lcmd - space : sketchybar --bar hidden=toggle
-shift + lcmd - r : sketchybar --remove '/.*/' && sh -c '$HOME/.config/sketchybar/sketchybarrc'
+lcmd - return : kitty
 

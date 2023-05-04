@@ -12,6 +12,7 @@
 
     packages = with pkgs; [
       pkgs.python3
+      pkgs.unstable.k9s
     ];
   };
 

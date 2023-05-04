@@ -98,7 +98,7 @@ in
       xdg.configFile."yabai/yabairc" = {
         text =
           (optionalString (cfg.config != { }) "${toYabaiSignals cfg.signals}")
-          + (optionalString (cfg.config != { }) "${toYabaiConfig cfg.config}")
+          + (optionalString (cfg.config != { }) "${"\n" + toYabaiConfig cfg.config}")
           + (optionalString (cfg.extraConfig != "") ("\n" + cfg.extraConfig));
 
         executable = true;
@@ -117,7 +117,15 @@ in
           KeepAlive = true;
           ProcessType = "Interactive";
           EnvironmentVariables = {
-            PATH = "${config.home.homeDirectory}/.nix-profile/bin";
+            PATH = concatStringsSep ":" [
+              "${cfg.package}/bin"
+              "${config.home.homeDirectory}/.nix-profile/bin"
+              "/run/current-system/sw/bin"
+              "/nix/var/nix/profiles/default/"
+              "/usr/bin"
+              "/opt/homebrew/bin"
+              "/etc/profiles/per-user/joshsymonds/bin"
+            ];
           };
           Nice = 20;
           StandardOutPath = "${config.xdg.cacheHome}/yabai.out.log";
