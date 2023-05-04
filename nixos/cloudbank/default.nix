@@ -82,7 +82,7 @@ in { inputs, lib, config, pkgs, ... }: {
     extraSpecialArgs = { inherit inputs; };
     useUserPackages = true;
     useGlobalPkgs = true;
-    users = {
+       users = {
       # Import your home-manager configuration
       ${user} = import ../../home-manager/${system}.nix;
     };
@@ -97,6 +97,7 @@ in { inputs, lib, config, pkgs, ... }: {
 
   # Environment
   environment = {
+    loginShell = "zsh";
     pathsToLink = [ 
       "/bin"
       "/share/locale"
