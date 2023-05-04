@@ -1,8 +1,7 @@
-{ inputs, lib, config, pkgs, ... }: {
+{ inputs, darwin, lib, config, pkgs, ... }: {
   imports = [
     ./common.nix
 
-    ./brew
     ./yabai
     ./skhd
     ./sketchybar

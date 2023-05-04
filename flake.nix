@@ -31,7 +31,6 @@
 
     # Neovim
     nixneovim.url = "github:Veraticus/nixneovim";
-    neovim-nightly-overlay.url = "github:nix-community/neovim-nightly-overlay";
 
     # Discord
     webcord.url = "github:fufexan/webcord-flake";

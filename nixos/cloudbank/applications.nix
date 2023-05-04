@@ -1,13 +1,9 @@
 # From https://github.com/IvarWithoutBones/dotfiles/blob/main/modules/darwin/applications.nix
 
-
-{ config
-, lib
-, username
-, ...
-}:
-
-{
+let 
+  system = "aarch64-darwin";
+  user = "joshsymonds";
+in { inputs, lib, config, pkgs, ... }: {
   # Nix-darwin does not link installed applications to the user environment. This means apps will not show up
   # in spotlight, and when launched through the dock they come with a terminal window. This is a workaround.
   # Upstream issue: https://github.com/LnL7/nix-darwin/issues/214
@@ -19,7 +15,7 @@
     # Needs to be writable by the user so that home-manager can symlink into it
     if ! test -d "$applications"; then
         mkdir -p "$applications"
-        chown ${username}: "$applications"
+        chown ${user}: "$applications"
         chmod u+w "$applications"
     fi
 
@@ -44,5 +40,7 @@
             " 1>/dev/null
         done
   '';
+
+
 }
 

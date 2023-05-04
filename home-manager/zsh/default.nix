@@ -38,6 +38,8 @@
         source "$(fzf-share)/completion.zsh"
       fi
 
+      [ -d "/opt/homebrew/bin" ] && export PATH=''${PATH}:/opt/homebrew/bin
+
       source ${pkgs.unstable.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
     '';
   };

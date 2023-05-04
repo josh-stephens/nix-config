@@ -47,7 +47,6 @@ in { inputs, lib, config, pkgs, ... }: {
       inputs.nixpkgs-wayland.overlay
       inputs.nixneovim.overlays.default
       # If you want to use overlays exported from other flakes:
-      # neovim-nightly-overlay.overlays.default
 
       (final: prev: {
         unstable = import inputs.nixpkgs-unstable {
