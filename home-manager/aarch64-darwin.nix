@@ -2,6 +2,7 @@
   imports = [
     ./common.nix
 
+    ./brew
     ./yabai
     ./skhd
     ./sketchybar

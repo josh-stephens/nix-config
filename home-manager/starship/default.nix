@@ -57,7 +57,7 @@
 
       kubernetes = {
         disabled = false;
-        format = "[ $symbol$cluster ]($style)";
+        format = "[ $symbol$context ]($style)";
         style = "bg:teal fg:base";
       };
 
