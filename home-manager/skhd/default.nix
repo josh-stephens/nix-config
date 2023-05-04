@@ -1,8 +1,15 @@
 { inputs, lib, config, pkgs, ... }: {
-  home.packages = [ pkgs.unstable.skhd ];
+  imports = [
+    ../../modules/services/skhd.nix
+  ];
 
   xdg.configFile."skhd" = {
-    source = ./skhd;
     recursive = true;
+  };
+  
+  services.skhd = {
+    enable = true;
+    configPath = ./skhd;
+    package = pkgs.unstable.skhd;
   };
 }

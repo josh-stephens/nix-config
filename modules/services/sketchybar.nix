@@ -48,6 +48,8 @@ in
         config = {
           ProgramArguments = [
             "${cfg.package}/bin/sketchybar"
+            "-c"
+            "${config.xdg.configHome}/sketchybar/sketchybarrc"
           ];
           KeepAlive = true;
           ProcessType = "Interactive";
