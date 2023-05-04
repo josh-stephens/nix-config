@@ -58,6 +58,8 @@
   };
 
   programs.zsh.shellAliases.update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
+  programs.kitty.font.size = 10;
+  programs.kitty.settings."kitty_mod" = "alt";
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
