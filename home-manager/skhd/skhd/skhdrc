@@ -1,0 +1,27 @@
+## Navigation (lcmd - ...)
+# Space Navigation (four spaces per display): lcmd - {1, 2, 3, 4}
+lcmd - 1 : yabai -m space --focus 1
+lcmd - 2 : yabai -m space --focus 2
+lcmd - 3 : yabai -m space --focus 3
+lcmd - 4 : yabai -m space --focus 4
+lcmd - 5 : yabai -m space --focus 5
+lcmd - 6 : yabai -m space --focus 6
+lcmd - 7 : yabai -m space --focus 7
+lcmd - 8 : yabai -m space --focus 8
+lcmd - 9 : yabai -m space --focus 9
+
+# Window Navigation (through display borders): lcmd - {j, k, l, ö}
+lcmd - j : yabai -m window --focus west
+lcmd - k : yabai -m window --focus south
+lcmd - l : yabai -m window --focus north
+lcmd - h : yabai -m window --focus east
+
+shift + lcmd - j : yabai -m space --focus west
+shift + lcmd - k : yabai -m space --focus south
+shift + lcmd - l : yabai -m space --focus north
+shift + lcmd - h : yabai -m space --focus east
+
+## Misc
+# Open new kitty window
+lcmd - return : kitty
+
