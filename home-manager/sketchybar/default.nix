@@ -1,5 +1,12 @@
 { inputs, lib, config, pkgs, ... }: {
-  home.packages = [ pkgs.unstable.sketchybar ];
+  imports = [
+    ../../modules/services/sketchybar.nix
+  ];
+
+  services.sketchybar = {
+    enable = true;
+    package = pkgs.unstable.sketchybar;
+  };
 
   xdg.configFile."sketchybar" = {
     source = ./sketchybar;

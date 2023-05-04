@@ -17,6 +17,12 @@ let
       (p: v:
         "${pkgs.yabai}/bin/yabai -m config ${p} ${toString v}")
       opts);
+
+  toYabaiSignals = opts:
+    concatStringsSep "\n" (mapAttrsToList
+      (p: v:
+        "${pkgs.yabai}/bin/yabai -m signal --add --event=${p} action=\"${toString v}\"")
+      opts);
 in
 {
   options.services.yabai = {
@@ -50,6 +56,20 @@ in
       '';
     };
 
+    signals = mkOption {
+      type = types.attrs;
+      default = { };
+      example = literalExample ''
+        {
+          dock_did_restart = "sudo yabai --load-sa";
+          window_focused = "sketchybar --trigger window_focus";
+        }
+      '';
+      description = ''
+        Key/Value pairs to pass to yabai's 'signals'
+      '';
+    };
+
     extraConfig = mkOption {
       type = types.str;
       default = "";
@@ -77,7 +97,8 @@ in
 
       xdg.configFile."yabai/yabairc" = {
         text =
-          (optionalString (cfg.config != { }) "${toYabaiConfig cfg.config}")
+          (optionalString (cfg.config != { }) "${toYabaiSignals cfg.signals}")
+          + (optionalString (cfg.config != { }) "${toYabaiConfig cfg.config}")
           + (optionalString (cfg.extraConfig != "") ("\n" + cfg.extraConfig));
 
         executable = true;

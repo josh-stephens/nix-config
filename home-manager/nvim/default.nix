@@ -97,10 +97,26 @@
     mappings = {
       normal = {
         "<leader>t" = "'<cmd>NvimTreeToggle<cr>'";
-        "<c-h>" = "'<c-w>h'";
-        "<c-j>" = "'<c-w>j'";
-        "<c-k>" = "'<c-w>k'";
-        "<c-l>" = "'<c-w>l'";
+        "<c-h>" = {
+          action = "'<c-w>h'";
+          noremap = true;
+          silent = true;
+        };
+        "<c-j>" = {
+          action = "'<c-w>j'";
+          noremap = true;
+          silent = true;
+        };
+        "<c-k>" = {
+          action = "'<c-w>k'";
+          noremap = true;
+          silent = true;
+        };
+        "<c-l>" = {
+          action = "'<c-w>l'";
+          noremap = true;
+          silent = true;
+        };
         "<leader>n" = "'<cmd>noh<cr>'";
         "<c-p>" = "'<cmd>Telescope buffers show_all_buffers=true theme=get_dropdown<cr>'";
         "<c-P>" = "'<cmd>Telescope commands theme=get_dropdown<cr>'";
