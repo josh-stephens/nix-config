@@ -32,7 +32,7 @@ yabai -m signal --add event=window_minimized active=yes action="if \$(yabai -m q
 # global settings
 
 yabai -m config                              \
-    external_bar                off:45:0     \
+    external_bar                all:40:0      \
     mouse_follows_focus         on           \
     focus_follows_mouse         autoraise    \
     window_placement            second_child \
