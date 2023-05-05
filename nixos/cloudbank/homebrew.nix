@@ -10,22 +10,19 @@ in { inputs, lib, config, pkgs, ... }: {
       #"slack"
       #"discord"
     ];
+    taps = [
+      "FelixKratz/formulae"
+      "koekeishiya/formulae"
+    ];
     brews = [
       {
-        name = "FelixKratz/formulae/sketchybar";
+        name = "sketchybar";
         restart_service = "changed";
         start_service = true;
+        args = [ "HEAD" ];
       }
-      {
-        name = "koekeishiya/formulae/yabai";
-        restart_service = "changed";
-        start_service = true;
-      }
-      {
-        name = "koekeishiya/formulae/skhd";
-        restart_service = "changed";
-        start_service = true;
-      }
+      "yabai"
+      "skhd"
     ];
     masApps = {
       #"Bear" = 1091189122;

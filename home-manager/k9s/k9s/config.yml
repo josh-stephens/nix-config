@@ -6,8 +6,9 @@ k9s:
   logoless: false
   crumbsless: false
   readOnly: false
-  noExitOnCtrlC: false
   noIcons: false
+  clusters: {}
+  thresholds: {}
   logger:
     tail: 100
     buffer: 5000
@@ -15,4 +16,3 @@ k9s:
     fullScreenLogs: true
     textWrap: true
     showTime: false
-
