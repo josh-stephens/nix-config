@@ -5,10 +5,8 @@ in { inputs, lib, config, pkgs, ... }: {
   homebrew = {
     enable = true;
     casks = [
-      #"firefox"
-      #"signal"
-      #"slack"
-      #"discord"
+      "font-hack-nerd-font"
+      "sf-symbols"
     ];
     taps = [
       "FelixKratz/formulae"
@@ -25,9 +23,6 @@ in { inputs, lib, config, pkgs, ... }: {
       "skhd"
     ];
     masApps = {
-      #"Bear" = 1091189122;
-      #"WireGuard" = 1451685025;
-      #"Tailscale" = 1475387142;
     };
   };
 }

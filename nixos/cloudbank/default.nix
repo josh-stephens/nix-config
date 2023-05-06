@@ -1,7 +1,8 @@
-let 
+let
   system = "aarch64-darwin";
   user = "joshsymonds";
-in { inputs, lib, config, pkgs, ... }: {
+in
+{ inputs, lib, config, pkgs, ... }: {
   # You can import other NixOS modules here
   imports = [
     inputs.home-manager.darwinModules.home-manager
@@ -36,7 +37,6 @@ in { inputs, lib, config, pkgs, ... }: {
       allowUnfree = true;
     };
   };
-
 
   nix = {
     package = inputs.darwin-nix.packages.${system}.nix;
@@ -82,7 +82,7 @@ in { inputs, lib, config, pkgs, ... }: {
     extraSpecialArgs = { inherit inputs; };
     useUserPackages = true;
     useGlobalPkgs = true;
-       users = {
+    users = {
       # Import your home-manager configuration
       ${user} = import ../../home-manager/${system}.nix;
     };
@@ -95,10 +95,33 @@ in { inputs, lib, config, pkgs, ... }: {
   services.nix-daemon.enable = true;
   programs.zsh.enable = true; # This is necessary to set zsh paths properly
 
+  # System setup
+  system = {
+    defaults = {
+      dock = {
+        wvous-tl-corner = 1;
+        wvous-tr-corner = 1;
+        wvous-bl-corner = 1;
+        wvous-br-corner = 1;
+      };
+      finder = {
+        AppleShowAllExtensions = true;
+        CreateDesktop = false;
+        ShowPathbar = true;
+        ShowStatusBar = true;
+        _FXShowPosixPathInTitle = true;
+      };
+    };
+    keyboard = {
+      enableKeyMapping = true;
+      remapCapsLockToEscape = true;
+    };
+  };
+
   # Environment
   environment = {
     loginShell = "zsh";
-    pathsToLink = [ 
+    pathsToLink = [
       "/bin"
       "/share/locale"
       "/share/terminfo"

@@ -8,20 +8,18 @@ yabai -m signal --add event=window_focused action="sketchybar --trigger window_f
 yabai -m space 1 --label code
 yabai -m space 2 --label web
 yabai -m space 3 --label spotify
-yabai -m space 4 --label re
-yabai -m space 5 --label media
-yabai -m space 6 --label social
-yabai -m space 7 --label games
+yabai -m space 4 --label slack
+yabai -m space 5 --label social
+yabai -m space 5 --label social
 
 # window rules
-yabai -m rule --add app="^Mail$" space=mail
-yabai -m rule --add app="^Safari$" space=web
-yabai -m rule --add app="^Notes$" space=notes
-yabai -m rule --add app="^ida64$" space=re
-yabai -m rule --add app="^Transmission$" space=media
-yabai -m rule --add app="^Spotify$" space=media
-yabai -m rule --add app="^Discord$" space=social grid=1:1:0:0:1:1 manage=off
-yabai -m rule --add app="^Steam$" space=games manage=off
+yabai -m rule --add app="^kitty$" space=code
+yabai -m rule --add app="^Firefox$" space=web
+yabai -m rule --add app="^Spotify$" space=spotify
+yabai -m rule --add app="^Slack$" space=slack
+yabai -m rule --add app="^Discord$" space=social
+yabai -m rule --add app="^Signal$" space=social
+yabai -m rule --add app="^Messages$" space=social
 yabai -m rule --add app="^(Calculator|System Preferences|Archive Utility)$" manage=off
 yabai -m rule --add app="^mpv$" manage=off border=off sticky=on layer=above opacity=1.0 grid=8:8:6:0:2:2
 
