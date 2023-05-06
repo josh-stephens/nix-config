@@ -89,7 +89,7 @@ require("copilot_cmp").setup({
 })
 
 -- Catppuccin
-require("catppuccin").setup({  
+require("catppuccin").setup({
   transparent_background = true
 })
 
@@ -112,3 +112,5 @@ require('Comment').setup()
 -- Trim
 require('trim').setup()
 
+-- Leap
+require('leap').add_default_mappings()

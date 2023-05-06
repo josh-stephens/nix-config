@@ -1,6 +1,4 @@
-{ config, pkgs, lib, ... }:
-
-{
+{ inputs, lib, config, pkgs, ... }: {
   programs.waybar = {
     enable = true;
     package = pkgs.unstable.waybar;
@@ -80,4 +78,3 @@
     }];
   };
 }
-

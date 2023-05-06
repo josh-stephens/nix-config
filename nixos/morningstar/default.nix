@@ -1,4 +1,4 @@
-let 
+let
   system = "x86_64-linux";
   user = "joshsymonds";
 in { inputs, lib, config, pkgs, ... }: {
@@ -44,7 +44,6 @@ in { inputs, lib, config, pkgs, ... }: {
   nixpkgs = {
     # You can add overlays here
     overlays = [
-      inputs.nixpkgs-wayland.overlay
       inputs.nixneovim.overlays.default
       # If you want to use overlays exported from other flakes:
 
@@ -52,8 +51,18 @@ in { inputs, lib, config, pkgs, ... }: {
         unstable = import inputs.nixpkgs-unstable {
           system = final.system;
           config.allowUnfree = true;
+          overlays = [
+            inputs.nixneovim.overlays.default
+
+             (self: super: {
+                waybar = super.waybar.overrideAttrs (oldAttrs: {
+                  mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
+                });
+              })
+          ];
         };
       })
+
 
       # Or define it inline, for example:
       # (final: prev: {
@@ -155,7 +164,7 @@ in { inputs, lib, config, pkgs, ... }: {
       services.swaylock = {
         text = ''
           auth sufficient pam_yubico.so mode=challenge-response
-          auth include login 
+          auth include login
         '';
       };
       yubico = {
@@ -205,7 +214,7 @@ in { inputs, lib, config, pkgs, ... }: {
         {
           name = "Global";
           remap = {
-            CapsLock = "Esc"; 
+            CapsLock = "Esc";
           };
         }
       ];

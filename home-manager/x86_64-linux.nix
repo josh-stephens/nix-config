@@ -12,11 +12,12 @@
   home = {
     homeDirectory = "/home/joshsymonds";
 
-    packages = with pkgs; [ 
+    packages = with pkgs; [
       spotifywm
       polkit-kde-agent
       xivlauncher
       steam
+      unstable.cliphist
       unstable.pavucontrol
       unstable._1password-gui
       inputs.webcord.packages.${system}.default
