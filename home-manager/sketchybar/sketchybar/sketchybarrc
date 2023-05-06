@@ -1,9 +1,7 @@
-# Mostly from here: https://raw.githubusercontent.com/Tnixc/dots/main/sketchybar/sketchybarrc
-
 #                          ﱦ 齃     ﮂ  ﵁ 爵        ﭵ     ﱦ  ﰊ 異 ﴱ אַ  'Y⃣'
 
 ############## BAR ##############
-sketchybar --bar height=38 \
+sketchybar --bar height=42 \
                  y_offset=5 \
                  blur_radius=0 \
                  position=top \
@@ -16,10 +14,10 @@ sketchybar --bar height=38 \
 
 ############## GLOBAL DEFAULTS ##############
 sketchybar --default updates=when_shown \
-                     icon.font="CartographF Nerd Font:Condensed Bold:14.0" \
+                     icon.font="Cartograph CF:Bold:16.0" \
                      icon.color=0xffECEFF4 \
                      icon.highlight_color=0xffE48FA8 \
-                     label.font="CartographF Nerd Font:Condensed Bold:14.0" \
+                     label.font="Cartograph CF:Bold:16.0" \
                      label.color=0xffECEFF4 \
                      background.corner_radius=5 \
                      background.height=30
@@ -73,7 +71,7 @@ sketchybar --default label.padding_left=6 \
                      label.padding_right=6 \
                      icon.padding_left=6 \
                      icon.padding_right=6 \
-                     icon.font="CartographF Nerd Font:Condensed Bold:16.0" \
+                     icon.font="Cartograph CF:Bold:20.0" \
                      background.height=30 \
                      background.padding_right=4 \
                      background.padding_left=4 \
@@ -151,4 +149,3 @@ sketchybar --add item net_logo right \
 sketchybar --update
 
 echo "sketchybar configuration loaded..."
-

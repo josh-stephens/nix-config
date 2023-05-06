@@ -5,7 +5,6 @@ in { inputs, lib, config, pkgs, ... }: {
   homebrew = {
     enable = true;
     casks = [
-      "font-hack-nerd-font"
       "sf-symbols"
     ];
     taps = [
