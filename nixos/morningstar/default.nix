@@ -33,10 +33,6 @@ in { inputs, lib, config, pkgs, ... }: {
       enable = true;
       driSupport = true;
       driSupport32Bit = true;
-      extraPackages = with pkgs.unstable; [
-        libvdpau-va-gl
-        mesa
-      ];
     };
     enableAllFirmware = true;
   };
@@ -252,20 +248,6 @@ in { inputs, lib, config, pkgs, ... }: {
       GDK_BACKEND = "wayland";
       WLR_NO_HARDWARE_CURSORS = "1";
       MOZ_ENABLE_WAYLAND = "1";
-
-      NIXOS_OZONE_WL = "1";
-      _JAVA_AWT_WM_NONEREPARENTING = "1";
-      SSH_AUTH_SOCK = "/run/user/1000/keyring/ssh";
-      DISABLE_QT5_COMPAT = "0";
-      ANKI_WAYLAND = "1";
-      DIRENV_LOG_FORMAT = "";
-      QT_AUTO_SCREEN_SCALE_FACTOR = "1";
-      QT_QPA_PLATFORMTHEME = "qt5ct";
-      WLR_BACKEND = "vulkan";
-      WLR_RENDERER = "vulkan";
-      XDG_SESSION_TYPE = "wayland";
-      SDL_VIDEODRIVER = "wayland";
-      CLUTTER_BACKEND = "wayland";
     };
 
     systemPackages = with pkgs; [

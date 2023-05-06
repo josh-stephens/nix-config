@@ -16,6 +16,7 @@
       spotifywm
       polkit-kde-agent
       xivlauncher
+      file
       steam
       unstable.cliphist
       unstable.pavucontrol
