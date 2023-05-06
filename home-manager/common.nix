@@ -24,6 +24,7 @@
       xdg-utils
       fzf
       unstable.vivid
+      unstable.manix
     ];
   };
 

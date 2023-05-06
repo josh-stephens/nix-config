@@ -22,17 +22,18 @@ mod = transform_mod(mod)
 
 --- Open Telescope-selected file in nvim-tree
 require("telescope").setup{
-    defaults = {
-        mappings = {
-            i = {
-                ["<CR>"] = actions.select_default + mod.open_in_nvim_tree,
-            },
-            n = {
-                ["<CR>"] = actions.select_default + mod.open_in_nvim_tree,
-            },
-        },
+  defaults = {
+    mappings = {
+      i = {
+          ["<CR>"] = actions.select_default + mod.open_in_nvim_tree,
+      },
+      n = {
+          ["<CR>"] = actions.select_default + mod.open_in_nvim_tree,
+      },
     },
+  },
 }
+require("telescope").load_extension('manix')
 
 -- LSP Attachment
 vim.api.nvim_create_autocmd('LspAttach', {
@@ -104,4 +105,10 @@ vim.g.indent_blankline_context_patterns =
 vim.g.indent_blankline_buftype_exclude = {'terminal'}
 vim.g.indent_blankline_filetype_exclude =
   {'help', 'startify', 'dashboard', 'packer'}
+
+-- Comment
+require('Comment').setup()
+
+-- Trim
+require('trim').setup()
 

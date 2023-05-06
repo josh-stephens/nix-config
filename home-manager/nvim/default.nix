@@ -19,6 +19,8 @@
     globals = {
       mapleader = " ";
       maplocalleader = ",";
+      loaded_netrw = 1;
+      loaded_netrwPlugin = 1;
     };
 
     options = {
@@ -92,6 +94,8 @@
       cmp-rg
       Comment-nvim
       indent-blankline-nvim
+      telescope-manix
+      trim-nvim
     ];
 
     mappings = {
@@ -125,6 +129,7 @@
         "<c-s>" = "'<cmd>Telescope git_files theme=get_dropdown<cr>'";
         "<c-d>" = "'<cmd>Telescope find_files theme=get_dropdown<cr>'";
         "<c-g>" = "'<cmd>Telescope live_grep theme=get_dropdown<cr>'";
+        "<c-n>" = "'<cmd>Telescope manix<cr>'";
         "<leader>e" = "vim.diagnostic.open_float";
         "[d" = "vim.diagnostic.goto_prev";
         "]d" = "vim.diagnostic.goto_next";
