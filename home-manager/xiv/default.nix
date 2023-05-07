@@ -4,15 +4,12 @@
     recursive = true;
   };
 
-  xiv = pkgs.makeDesktopItem {
-    name = "ffxiv";
-    desktopName = "FFXIV";
+  xdg.desktopEntries.ffxiv = {
+    name = "FFXIV";
+    genericName = "FFXIV Startup";
+    icon="ffxiv";
     exec = "${config.xdg.configHome}/xiv/start.sh";
     comment = "Start FFXIV";
     categories = [ "Game" ];
   };
-
-  packages = [
-    xiv
-  ];
 }
