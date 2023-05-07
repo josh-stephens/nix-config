@@ -150,6 +150,15 @@ in { inputs, lib, config, pkgs, ... }: {
 
   # Default programs everyone wants
   virtualisation.docker.enable = true;
+  programs.firefox = {
+    enable = true;
+    package = pkgs.unstable.firefox;
+  };
+  programs._1password-gui = {
+    enable = true;
+    package = pkgs.unstable._1password-gui;
+    polkitPolicyOwners = [ "${user}" ];
+  };
 
  # Users and their homes
   users.defaultUserShell = pkgs.zsh;

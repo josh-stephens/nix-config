@@ -21,7 +21,6 @@
       unzip
       unstable.cliphist
       unstable.pavucontrol
-      unstable._1password-gui
       inputs.webcord.packages.${system}.default
       unstable.discord
       unstable.nvtop
@@ -35,7 +34,6 @@
       unstable.piper
       spotify
       catppuccin-cursors.mochaLavender
-      unstable.firefox
       unstable.signal-desktop-beta
       unstable.slack
     ];
