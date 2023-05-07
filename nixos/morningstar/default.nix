@@ -1,7 +1,7 @@
 let
   system = "x86_64-linux";
   user = "joshsymonds";
-in { inputs, lib, config, pkgs, ... }: {
+in { inputs, outputs, lib, config, pkgs, ... }: {
   # You can import other NixOS modules here
   imports = [
     inputs.hardware.nixosModules.common-cpu-amd
@@ -40,7 +40,10 @@ in { inputs, lib, config, pkgs, ... }: {
   nixpkgs = {
     # You can add overlays here
     overlays = [
-      inputs.nixneovim.overlays.default
+      outputs.overlays.additions
+      outputs.overlays.modifications
+      outputs.overlays.unstable-packages
+      outputs.overlays.external
       # If you want to use overlays exported from other flakes:
 
       (final: prev: {

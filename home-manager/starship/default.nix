@@ -16,6 +16,7 @@
       directory = {
         style = "bg:lavender fg:base";
         format = "[ $path ]($style)";
+        truncation_length = 1;
         fish_style_pwd_dir_length = 2;
         substitutions = {
           Documents = " ";

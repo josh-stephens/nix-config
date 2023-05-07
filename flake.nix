@@ -57,28 +57,30 @@
       in import ./pkgs { inherit pkgs; }
     );
 
+    overlays = import ./overlays { inherit inputs; };
+
     nixosConfigurations.morningstar = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs; }; # Pass flake inputs to our config
+      specialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
       # > Our main nixos configuration file <
       modules = [ ./nixos/morningstar ];
     };
 
     darwinConfigurations.cloudbank = darwin.lib.darwinSystem {
       system = "aarch64-darwin"; # "x86_64-darwin" if you're using a pre M1 mac
-      specialArgs = { inherit inputs; }; # Pass flake inputs to our config
+      specialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
       modules = [ ./nixos/cloudbank ]; # will be important later
     };
 
     homeConfigurations = {
       "joshsymonds@morningstar" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = { inherit inputs; }; # Pass flake inputs to our config
+        extraSpecialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
         # > Our main home-manager configuration file <
         modules = [ ./home-manager ];
       };
       "joshsymonds@cloudbank" = home-manager.lib.homeManagerConfiguration {
         pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-        extraSpecialArgs = { inherit inputs; }; # Pass flake inputs to our config
+        extraSpecialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
         # > Our main home-manager configuration file <
         modules = [ ./home-manager ];
       };

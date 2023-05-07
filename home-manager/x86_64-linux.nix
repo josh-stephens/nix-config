@@ -32,6 +32,7 @@
       swayidle
       psensor
       unstable.piper
+      hudkit
       spotify
       catppuccin-cursors.mochaLavender
       unstable.signal-desktop-beta
