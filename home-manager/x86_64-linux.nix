@@ -18,6 +18,7 @@
       xivlauncher
       file
       steam
+      unzip
       unstable.cliphist
       unstable.pavucontrol
       unstable._1password-gui
