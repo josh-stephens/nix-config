@@ -22,7 +22,10 @@ stdenv.mkDerivation rec {
   nativeBuildInputs = [ pkg-config gcc gnumake gtk3 webkitgtk ];
 
   buildPhase = "make";
-  installPhase = "cp hudkit $out";
+  installPhase = ''
+    mkdir -p $out/bin
+    cp hudkit $out/bin
+  '';
 
   meta = with lib; {
     homepage = "https://github.com/anko/hudkit";

@@ -1,11 +1,6 @@
 # This file defines overlays
 { inputs, ... }:
 {
-  # Add some overlays we care about
-  external = [
-    inputs.nixneovim.overlays.default
-  ];
-
   # This one brings our custom packages from the 'pkgs' directory
   additions = final: _prev: import ../pkgs { pkgs = final; };
 

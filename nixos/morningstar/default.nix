@@ -40,10 +40,10 @@ in { inputs, outputs, lib, config, pkgs, ... }: {
   nixpkgs = {
     # You can add overlays here
     overlays = [
+      inputs.nixneovim.overlays.default
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
-      outputs.overlays.external
       # If you want to use overlays exported from other flakes:
 
       (final: prev: {
