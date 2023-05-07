@@ -2,26 +2,39 @@
 , stdenv
 , fetchFromGitHub
 , pkg-config
-, gcc
 , gnumake
 , webkitgtk
 , gtk3
+, json_c
+, keybinder3
+, clang
 }:
 
 stdenv.mkDerivation rec {
   pname = "hudkit";
-  version = "v4.1.0";
+  version = "CEF-0.9.3";
 
   src = fetchFromGitHub {
-    owner = "anko";
+    owner = "valarnin";
     repo = pname;
     rev = version;
-    sha256 = "sha256-Itm1CayIkMxwWymirzHOuU/h3+tJ0OFO/jmAH8OIB40=";
+    sha256 = "sha256-rt6nOfHL+iRDM20fFtEHIApd/NQQJDopczwtd2xl948=";
   };
 
-  nativeBuildInputs = [ pkg-config gcc gnumake gtk3 webkitgtk ];
+  nativeBuildInputs = [
+    pkg-config
+    gnumake
+    gtk3
+    webkitgtk
+    json_c
+    keybinder3
+    clang
+  ];
 
-  buildPhase = "make";
+  buildPhase = ''
+    cd webkit
+    make
+  '';
   installPhase = ''
     mkdir -p $out/bin
     cp hudkit $out/bin
