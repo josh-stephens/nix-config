@@ -4,6 +4,10 @@
     recursive = true;
   };
 
+  home.packages = [
+    pkgs.hudkit
+  ];
+
   xdg.desktopEntries.ffxiv = {
     name = "FFXIV";
     genericName = "FFXIV Startup";

@@ -33,7 +33,6 @@
       swayidle
       psensor
       unstable.piper
-      hudkit
       catppuccin-cursors.mochaLavender
       unstable.signal-desktop-beta
       unstable.slack
