@@ -44,46 +44,6 @@ in { inputs, outputs, lib, config, pkgs, ... }: {
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
-      # If you want to use overlays exported from other flakes:
-
-      (final: prev: {
-        unstable = import inputs.nixpkgs-unstable {
-          system = final.system;
-          config.allowUnfree = true;
-          overlays = [
-            inputs.nixneovim.overlays.default
-
-            (self: super: {
-              waybar = super.waybar.overrideAttrs (oldAttrs: {
-                mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
-              });
-            })
-
-            (self: super: {
-              xivlauncher = super.xivlauncher.overrideAttrs (oldAttrs: {
-                desktopItems = [
-                  (super.makeDesktopItem {
-                    name = "xivlauncher";
-                    exec = "env XL_SECRET_PROVIDER=FILE XIVLauncher.Core";
-                    icon = "xivlauncher";
-                    desktopName = "XIVLauncher";
-                    comment = "Custom launcher for FFXIV";
-                    categories = [ "Game" ];
-                  })
-                ];
-              });
-            })
-          ];
-        };
-      })
-
-
-      # Or define it inline, for example:
-      # (final: prev: {
-      #   hi = final.hello.overrideAttrs (oldAttrs: {
-      #     patches = [ ./change-hello-to-hi.patch ];
-      #   });
-      # })
     ];
     # Configure your nixpkgs instance
     config = {

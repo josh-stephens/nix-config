@@ -19,6 +19,30 @@
     unstable = import inputs.nixpkgs-unstable {
       system = final.system;
       config.allowUnfree = true;
+      overlays = [
+        inputs.nixneovim.overlays.default
+
+        (self: super: {
+          waybar = super.waybar.overrideAttrs (oldAttrs: {
+            mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
+          });
+        })
+
+        (self: super: {
+          xivlauncher = super.xivlauncher.overrideAttrs (oldAttrs: {
+            desktopItems = [
+              (super.makeDesktopItem {
+                name = "xivlauncher";
+                exec = "env XL_SECRET_PROVIDER=FILE XIVLauncher.Core";
+                icon = "xivlauncher";
+                desktopName = "XIVLauncher";
+                comment = "Custom launcher for FFXIV";
+                categories = [ "Game" ];
+              })
+            ];
+          });
+        })
+      ];
     };
   };
 }
