@@ -15,7 +15,7 @@
     packages = with pkgs; [
       spotifywm
       polkit-kde-agent
-      xivlauncher
+      unstable.xivlauncher
       file
       steam
       unzip

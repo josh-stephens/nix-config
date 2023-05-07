@@ -50,11 +50,26 @@ in { inputs, lib, config, pkgs, ... }: {
           overlays = [
             inputs.nixneovim.overlays.default
 
-             (self: super: {
-                waybar = super.waybar.overrideAttrs (oldAttrs: {
-                  mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
-                });
-              })
+            (self: super: {
+              waybar = super.waybar.overrideAttrs (oldAttrs: {
+                mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
+              });
+            })
+
+            (self: super: {
+              xivlauncher = super.xivlauncher.overrideAttrs (oldAttrs: {
+                desktopItems = [
+                  (super.makeDesktopItem {
+                    name = "xivlauncher";
+                    exec = "env XL_SECRET_PROVIDER=FILE XIVLauncher.Core";
+                    icon = "xivlauncher";
+                    desktopName = "XIVLauncher";
+                    comment = "Custom launcher for FFXIV";
+                    categories = [ "Game" ];
+                  })
+                ];
+              });
+            })
           ];
         };
       })
@@ -112,6 +127,7 @@ in { inputs, lib, config, pkgs, ... }: {
     consoleLogLevel = 0;
     initrd.verbose = false;
     kernelModules = [ "coretemp" "kvm-intel" "nct6775" ];
+    supportedFilesystems =  [ "ntfs" ];
     kernelParams = ["quiet" "splash" "rd.systemd.show_status=false" "rd.udev.log_level=3" "udev.log_priority=3" "boot.shell_on_fail" ];
     plymouth = {
       enable = true;
@@ -121,6 +137,11 @@ in { inputs, lib, config, pkgs, ... }: {
       efi.canTouchEfiVariables = true;
       efi.efiSysMountPoint = "/boot/efi";
     };
+  };
+
+  fileSystems."/mnt/windows" = {
+    device = "/dev/sda2";
+    fsType = "ntfs3";
   };
 
   # Time and internationalization
