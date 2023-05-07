@@ -23,6 +23,8 @@
       unstable.pavucontrol
       unstable._1password-gui
       inputs.webcord.packages.${system}.default
+      unstable.discord
+      unstable.nvtop
       unstable.qbittorrent
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
       unstable.hyprpicker
