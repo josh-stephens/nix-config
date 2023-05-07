@@ -6,6 +6,7 @@
     ./waybar
     ./hyprland
     ./wlogout
+    ./xiv
     inputs.webcord.homeManagerModules.default
   ];
 
@@ -33,7 +34,6 @@
       psensor
       unstable.piper
       hudkit
-      spotify
       catppuccin-cursors.mochaLavender
       unstable.signal-desktop-beta
       unstable.slack
