@@ -9,25 +9,25 @@ sketchybar --bar height=38 \
                  padding_right=2 \
                  margin=10 \
                  corner_radius=12 \
-                 color=0xff1e1d2e \
+                 color=0xff1e1e2e \
                  shadow=on
 
 ############## GLOBAL DEFAULTS ##############
 sketchybar --default updates=when_shown \
                      icon.font="CartographF Nerd Font:Condensed Bold:14.0" \
-                     icon.color=0xffECEFF4 \
+                     icon.color=0xff11111b \
                      icon.highlight_color=0xffE48FA8 \
                      label.font="CartographF Nerd Font:Condensed Bold:14.0" \
-                     label.color=0xffECEFF4 \
+                     label.color=0xffcdd6f4 \
                      background.corner_radius=5 \
                      background.height=30
 
 sketchybar --add item logo left \
            --set logo icon= \
-                 icon.color=0xff010101 \
+                 icon.color=0xff11111b \
                  icon.padding_left=16 \
                  icon.padding_right=16 \
-                 background.color=0xffA5E0D5 \
+                 background.color=0xff89dceb \
                  background.padding_right=8 \
                  background.padding_left=4 \
                  click_script="sketchybar --update"
@@ -44,10 +44,10 @@ do
                               icon=${SPACE_ICONS[i]} \
                               icon.padding_left=20 \
                               icon.padding_right=20 \
-                              icon.highlight_color=0xffE48FA8 \
+                              icon.highlight_color=0xfff5e0dc \
                               background.padding_left=-4 \
                               background.padding_right=-4 \
-                              background.color=0xff3C3E4F \
+                              background.color=0xff45475a \
                               background.drawing=on \
                               label.drawing=off \
                               click_script="yabai -m space --focus $sid"
@@ -58,12 +58,13 @@ sketchybar --add item space_separator left \
                                  background.padding_left=23 \
                                  background.padding_right=23 \
                                  label.drawing=off \
-                                 icon.color=0xff92B3F5
+                                 icon.color=0xffb4befe
 
 sketchybar --add item window_title left \
            --set window_title    script="~/.config/sketchybar/plugins/window_title.sh" \
                                  icon.drawing=off \
-                                 label.color=0xffb7bdf4 \
+                                 label.color=0xffb4befe \
+                                 label.padding_right=20 \
            --subscribe window_title front_app_switched
 
 ############## ITEM DEFAULTS ###############
@@ -80,7 +81,7 @@ sketchybar --default label.padding_left=6 \
 sketchybar --add item spot_logo center \
            --set spot_logo icon= \
                            label.drawing=off \
-                           icon.color=0xff121219 \
+                           icon.color=0xff11111b \
                            background.color=0xffEDC4E5
 
 
@@ -89,7 +90,7 @@ sketchybar --add item spot center \
                       icon.drawing=off \
                       updates=on \
                       script="~/.config/sketchybar/plugins/spotifyIndicator.sh" \
-                      background.color=0xff3C3E4F \
+                      background.color=0xff45475a \
                       background.padding_left=0
 
 ############## RIGHT ITEMS ##############
@@ -97,53 +98,53 @@ sketchybar --add item time right \
            --set time update_freq=1 \
                       icon.drawing=off \
                       script="~/.config/sketchybar/plugins/time.sh" \
-                      background.color=0xff3C3E4F \
+                      background.color=0xff45475a \
                       background.padding_left=0
 
 sketchybar --add item time_logo right\
            --set time_logo icon= \
                            label.drawing=off \
-                           icon.color=0xff121219 \
+                           icon.color=0xff11111b \
                            label.drawing=off \
-                           background.color=0xffF5E3B5
+                           background.color=0xfff9e2af
 
 sketchybar --add item date right \
            --set date update_freq=1000 \
                       icon.drawing=off \
                       script="~/.config/sketchybar/plugins/date.sh" \
-                      background.color=0xff3C3E4F \
+                      background.color=0xff45475a \
                       background.padding_left=0
 
 sketchybar --add item clock_logo right\
            --set clock_logo icon= \
-                            icon.color=0xff121219\
+                            icon.color=0xff11111b\
                             label.drawing=off \
-                            background.color=0xff92B3F5
+                            background.color=0xff74c7ec
 
 sketchybar --add item battery right \
            --set battery update_freq=3 \
                          icon.drawing=off \
                          script="~/.config/sketchybar/plugins/power.sh" \
-                         background.color=0xff3C3E4F \
+                         background.color=0xff45475a \
                          background.padding_left=0
 
 sketchybar --add item power_logo right \
            --set power_logo icon= \
-                 icon.color=0xff121219 \
+                 icon.color=0xff11111b \
                  label.drawing=off \
-                 background.color=0xffB3E1A7
+                 background.color=0xffa6e3a1
 
 sketchybar --add item net right \
            --set net script="~/.config/sketchybar/plugins/net.sh" \
                      icon.drawing=off \
-                     background.color=0xff3C3E4F \
+                     background.color=0xff45475a \
                      background.padding_left=0
 
 sketchybar --add item net_logo right \
            --set net_logo icon=\
-                     icon.color=0xff121219\
+                     icon.color=0xff11111b\
                      label.drawing=off \
-                     background.color=0xffE0A3AD
+                     background.color=0xfffab387
 
 ############## FINALIZING THE SETUP ##############
 sketchybar --update

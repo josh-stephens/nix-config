@@ -36,14 +36,17 @@ yabai -m config                              \
     window_placement            second_child \
     window_topmost              off          \
     window_shadow               off          \
-    window_animation_duration   0.10         \
-    window_opacity_duration     0.10         \
+    window_animation_duration   0.20         \
+    window_opacity_duration     0.20         \
     active_window_opacity       1.00         \
     normal_window_opacity       0.80         \
+    active_window_border_color  0xffe5e5e5   \
+    normal_window_border_color  0xff444444   \
     window_opacity              on           \
-    window_border_radius        12           \
+    window_border_radius        8            \
     window_border_blur          on           \
     window_border_hidpi         on           \
+    window_border_width         2            \
     window_border               on           \
     split_ratio                 0.50         \
     split_type                  auto         \
@@ -60,4 +63,3 @@ yabai -m config                              \
     mouse_drop_action           swap
 
 echo "yabai configuration loaded.."
-
