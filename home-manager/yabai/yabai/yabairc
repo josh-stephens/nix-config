@@ -11,15 +11,16 @@ yabai -m space 3 --label spotify
 yabai -m space 4 --label slack
 yabai -m space 5 --label social
 yabai -m space 5 --label social
+yabai -m space 6 --label discord
 
 # window rules
 yabai -m rule --add app="^kitty$" space=code
 yabai -m rule --add app="^Firefox$" space=web
 yabai -m rule --add app="^Spotify$" space=spotify
 yabai -m rule --add app="^Slack$" space=slack
-yabai -m rule --add app="^Discord$" space=social
 yabai -m rule --add app="^Signal$" space=social
 yabai -m rule --add app="^Messages$" space=social
+yabai -m rule --add app="^Discord$" space=discord
 yabai -m rule --add app="^(Calculator|System Preferences|Archive Utility)$" manage=off
 yabai -m rule --add app="^mpv$" manage=off border=off sticky=on layer=above opacity=1.0 grid=8:8:6:0:2:2
 
