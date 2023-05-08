@@ -6,7 +6,7 @@ set -ex
 CACHE_DIR="${HOME}/Games/FFXIV/TTS"
 mkdir -p "${CACHE_DIR}"
 
-text="$1"
+text="$(echo "${1}" | awk '{print tolower($0)}' | tr -d '[:punct:]')"
 filename="$(echo "${text}" | base64 -).wav"
 path="${CACHE_DIR}/${filename}"
 
