@@ -34,6 +34,8 @@
     };
 
     initExtraFirst = ''
+      [ -d "/opt/homebrew/bin" ] && export PATH=''${PATH}:/opt/homebrew/bin
+
       function set-title-precmd() {
         printf "\e]2;%s\a" "''${PWD/#$HOME/~}"
       }
@@ -46,6 +48,14 @@
       add-zsh-hook precmd set-title-precmd
       add-zsh-hook preexec set-title-preexec
     '';
+    initExtraBeforeCompInit = ''
+      if type brew &>/dev/null
+      then
+        FPATH="$(brew --prefix)/share/zsh/site-functions:''${FPATH}"
+        [[ -r "$(brew --prefix)/etc/bash_completion.d/ckutil" ]] && . "$(brew --prefix)/etc/bash_completion.d/ckutil"
+      fi
+
+    '';
     initExtra = ''
       if [ -n "''${commands[fzf-share]}" ]; then
         source "$(fzf-share)/key-bindings.zsh"
@@ -55,11 +65,11 @@
           }
       fi
 
-      [ -d "/opt/homebrew/bin" ] && export PATH=''${PATH}:/opt/homebrew/bin
-
       source ${pkgs.unstable.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
       source "$(fzf-share)/key-bindings.zsh"
       source "$(fzf-share)/completion.zsh"
+
+      cd ~
     '';
   };
 }
