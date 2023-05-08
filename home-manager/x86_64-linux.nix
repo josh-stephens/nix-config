@@ -6,7 +6,6 @@
     ./waybar
     ./hyprland
     ./wlogout
-    ./xiv
     inputs.webcord.homeManagerModules.default
   ];
 
