@@ -250,6 +250,8 @@ in { inputs, outputs, lib, config, pkgs, ... }: {
       yubikey-manager
       yubico-pam
       cachix
+      tts
+      sox
     ];
 
     etc."greetd/environments".text = ''

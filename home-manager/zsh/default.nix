@@ -69,8 +69,8 @@
       source "$(fzf-share)/key-bindings.zsh"
       source "$(fzf-share)/completion.zsh"
 
-      if [ -f "${HOME}/.ssh/github" ]; then
-        ssh-add "${HOME}/.ssh/github"
+      if [ -f "''${HOME}/.ssh/github" ]; then
+        ssh-add "''${HOME}/.ssh/github"
       fi
 
       cd ~
