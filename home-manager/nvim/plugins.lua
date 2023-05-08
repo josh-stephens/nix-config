@@ -68,10 +68,27 @@ vim.api.nvim_create_autocmd('LspAttach', {
 local lspconfig = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
+local augroup = vim.api.nvim_create_augroup('LspFormatting', {})
+local lsp_format_on_save = function(bufnr)
+  vim.api.nvim_clear_autocmds({group = augroup, buffer = bufnr})
+  vim.api.nvim_create_autocmd('BufWritePre', {
+    group = augroup,
+    buffer = bufnr,
+    callback = function()
+      vim.lsp.buf.format()
+      filter = function(client)
+        return client.name == "null-ls"
+      end
+    end,
+  })
+end
+
 local servers = { 'bashls', 'html', 'jsonls', 'rnix', 'gopls', 'rust_analyzer' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
-    -- on_attach = my_custom_on_attach,
+    on_attach = function(client, bufnr)
+      lsp_format_on_save(bufnr)
+    end,
     capabilities = capabilities,
   }
 end
