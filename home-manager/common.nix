@@ -25,6 +25,7 @@
       unstable.fzf
       unstable.vivid
       unstable.manix
+      unstable.talosctl
     ];
   };
 
