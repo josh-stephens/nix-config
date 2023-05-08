@@ -30,16 +30,7 @@
 
         (self: super: {
           xivlauncher = super.xivlauncher.overrideAttrs (oldAttrs: {
-            desktopItems = [
-              (super.makeDesktopItem {
-                name = "xivlauncher";
-                exec = "env XL_SECRET_PROVIDER=FILE XIVLauncher.Core";
-                icon = "xivlauncher";
-                desktopName = "XIVLauncher";
-                comment = "Custom launcher for FFXIV";
-                categories = [ "Game" ];
-              })
-            ];
+            desktopItems = [ ];
           });
         })
       ];
