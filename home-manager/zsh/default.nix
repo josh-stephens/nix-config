@@ -36,6 +36,13 @@
     initExtraFirst = ''
       [ -d "/opt/homebrew/bin" ] && export PATH=''${PATH}:/opt/homebrew/bin
 
+      function async-ssh-add {
+        if [ -f "''${HOME}/.ssh/github" ] && ! ssh-add -l >/dev/null; then
+          ssh-add "''${HOME}/.ssh/github"
+        fi
+      }
+      async-ssh-add > /dev/null &!
+
       function set-title-precmd() {
         printf "\e]2;%s\a" "''${PWD/#$HOME/~}"
       }
@@ -68,10 +75,6 @@
       source ${pkgs.unstable.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
       source "$(fzf-share)/key-bindings.zsh"
       source "$(fzf-share)/completion.zsh"
-
-      if [ -f "''${HOME}/.ssh/github" ]; then
-        ssh-add "''${HOME}/.ssh/github"
-      fi
 
       cd ~
     '';
