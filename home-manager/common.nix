@@ -30,7 +30,10 @@
   };
 
   # Programs
-  programs.go.enable = true;
+  programs.go = {
+    enable = true;
+    package = pkgs.unstable.go_1_20;
+  };
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
   programs.htop.enable = true;
