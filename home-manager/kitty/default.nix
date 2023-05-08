@@ -5,7 +5,7 @@
 
     font.name = "Cartograph CF";
     theme = "Catppuccin-Mocha";
-    
+
     keybindings = {
       "kitty_mod+c" = "copy_to_clipboard";
       "kitty_mod+v" = "paste_from_clipboard";
@@ -13,6 +13,13 @@
       "kitty_mod+j" = "scroll_line_down";
       "kitty_mod+s" = "show_scrollback";
       "kitty_mod+l" = "clear_terminal scrollback active";
+      "kitty_mod+t" = "new_tab";
+      "kitty_mod+1" = "goto_tab 1";
+      "kitty_mod+2" = "goto_tab 2";
+      "kitty_mod+3" = "goto_tab 3";
+      "kitty_mod+4" = "goto_tab 4";
+      "kitty_mod+5" = "goto_tab 5";
+      "kitty_mod+6" = "goto_tab 6";
       "cmd+enter" = "no_op";
       "cmd+shift+enter" = "no_op";
     };
