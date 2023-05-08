@@ -1,8 +1,7 @@
 let
   system = "aarch64-darwin";
   user = "joshsymonds";
-in
-{ inputs, lib, config, pkgs, ... }: {
+in { inputs, outputs, lib, config, pkgs, ... }: {
   # You can import other NixOS modules here
   imports = [
     inputs.home-manager.darwinModules.home-manager
