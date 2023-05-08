@@ -106,7 +106,7 @@ in
 
   # Environment
   environment = {
-    loginShell = "zsh";
+    loginShell = pkgs.unstable.zsh;
     pathsToLink = [
       "/bin"
       "/share/locale"
