@@ -69,7 +69,7 @@ local lspconfig = require("lspconfig")
 local capabilities = require("cmp_nvim_lsp").default_capabilities()
 
 local augroup = vim.api.nvim_create_augroup('LspFormatting', {})
-local lsp_format_on_save = function(bufnr)
+local lsp_on_attach = function(bufnr)
   vim.api.nvim_clear_autocmds({group = augroup, buffer = bufnr})
   vim.api.nvim_create_autocmd('BufWritePre', {
     group = augroup,
@@ -81,13 +81,27 @@ local lsp_format_on_save = function(bufnr)
       end
     end,
   })
+  vim.api.nvim_create_autocmd("CursorHold", {
+    buffer = bufnr,
+    callback = function()
+      local opts = {
+        focusable = false,
+        close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+        border = 'rounded',
+        source = 'always',
+        prefix = ' ',
+        scope = 'cursor',
+      }
+      vim.diagnostic.open_float(nil, opts)
+    end
+  })
 end
 
 local servers = { 'bashls', 'html', 'jsonls', 'rnix', 'gopls', 'rust_analyzer' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     on_attach = function(client, bufnr)
-      lsp_format_on_save(bufnr)
+      lsp_on_attach(bufnr)
     end,
     capabilities = capabilities,
   }
