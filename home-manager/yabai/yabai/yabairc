@@ -40,8 +40,8 @@ yabai -m config                              \
     window_opacity_duration     0.20         \
     active_window_opacity       1.00         \
     normal_window_opacity       0.80         \
-    active_window_border_color  0xffe5e5e5   \
-    normal_window_border_color  0xff444444   \
+    active_window_border_color  0xff9399b2   \
+    normal_window_border_color  0xff313244   \
     window_opacity              on           \
     window_border_radius        8            \
     window_border_blur          on           \
