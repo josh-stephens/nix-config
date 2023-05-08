@@ -1,4 +1,6 @@
 { inputs, lib, config, pkgs, ... }: {
+  home.packages = [ pkgs.unstable.xivlauncher ];
+
   xdg.configFile."xiv" = {
     source = ./xiv;
     recursive = true;

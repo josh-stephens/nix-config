@@ -6,6 +6,7 @@
     ./waybar
     ./hyprland
     ./wlogout
+    ./xiv
     inputs.webcord.homeManagerModules.default
   ];
 
@@ -15,7 +16,6 @@
     packages = with pkgs; [
       spotifywm
       polkit-kde-agent
-      unstable.xivlauncher
       file
       steam
       unzip
