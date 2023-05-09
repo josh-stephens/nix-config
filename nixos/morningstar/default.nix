@@ -1,7 +1,8 @@
 let
   system = "x86_64-linux";
   user = "joshsymonds";
-in { inputs, outputs, lib, config, pkgs, ... }: {
+in
+{ inputs, outputs, lib, config, pkgs, ... }: {
   # You can import other NixOS modules here
   imports = [
     inputs.hardware.nixosModules.common-cpu-amd
@@ -20,7 +21,7 @@ in { inputs, outputs, lib, config, pkgs, ... }: {
     ./hardware-configuration.nix
   ];
 
-# Hardware setup
+  # Hardware setup
   hardware = {
     cpu = {
       amd.updateMicrocode = true;
@@ -90,8 +91,8 @@ in { inputs, outputs, lib, config, pkgs, ... }: {
     consoleLogLevel = 0;
     initrd.verbose = false;
     kernelModules = [ "coretemp" "kvm-intel" "nct6775" ];
-    supportedFilesystems =  [ "ntfs" ];
-    kernelParams = ["quiet" "splash" "rd.systemd.show_status=false" "rd.udev.log_level=3" "udev.log_priority=3" "boot.shell_on_fail" ];
+    supportedFilesystems = [ "ntfs" ];
+    kernelParams = [ "quiet" "splash" "rd.systemd.show_status=false" "rd.udev.log_level=3" "udev.log_priority=3" "boot.shell_on_fail" ];
     plymouth = {
       enable = true;
     };
@@ -122,8 +123,9 @@ in { inputs, outputs, lib, config, pkgs, ... }: {
     package = pkgs.unstable._1password-gui;
     polkitPolicyOwners = [ "${user}" ];
   };
+  programs.xwayland.enable = true;
 
- # Users and their homes
+  # Users and their homes
   users.defaultUserShell = pkgs.zsh;
   users.users.${user} = {
     shell = pkgs.unstable.zsh;
@@ -146,7 +148,7 @@ in { inputs, outputs, lib, config, pkgs, ... }: {
     };
   };
 
-# Security
+  # Security
   security = {
     rtkit.enable = true;
     pam = {
@@ -217,6 +219,13 @@ in { inputs, outputs, lib, config, pkgs, ... }: {
     ];
 
     fontconfig = {
+      antialias = true;
+      hinting = {
+        enable = true;
+        style = "hintfull";
+        autohint = true;
+      };
+      subpixel.rgba = "rgb";
       defaultFonts = {
         monospace = [ "Cartograph CF Regular" "Symbols Nerd Font Mono" ];
       };
