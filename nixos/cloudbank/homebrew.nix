@@ -1,7 +1,8 @@
-let 
+let
   system = "aarch64-darwin";
   user = "joshsymonds";
-in { inputs, lib, config, pkgs, ... }: {
+in
+{ inputs, lib, config, pkgs, ... }: {
   homebrew = {
     enable = true;
     casks = [
@@ -18,10 +19,10 @@ in { inputs, lib, config, pkgs, ... }: {
         start_service = true;
         args = [ "HEAD" ];
       }
+      "colima"
       "yabai"
       "skhd"
     ];
-    masApps = {
-    };
+    masApps = { };
   };
 }

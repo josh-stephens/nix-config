@@ -124,6 +124,7 @@ in
     polkitPolicyOwners = [ "${user}" ];
   };
   programs.xwayland.enable = true;
+  programs.gamemode.enable = true;
 
   # Users and their homes
   users.defaultUserShell = pkgs.zsh;
