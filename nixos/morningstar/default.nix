@@ -120,7 +120,10 @@ in
   };
   programs._1password-gui = {
     enable = true;
-    package = pkgs.unstable._1password-gui;
+    package = pkgs.unstable._1password-gui.override
+      ({
+        channel = "beta";
+      });
     polkitPolicyOwners = [ "${user}" ];
   };
   programs.xwayland.enable = true;
@@ -262,6 +265,7 @@ in
       cachix
       tts
       sox
+      unstable._1password
     ];
 
     etc."greetd/environments".text = ''
