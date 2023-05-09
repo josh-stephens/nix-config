@@ -75,9 +75,13 @@
         theme = "catppuccin";
         extensions = [ "fzf" "nvim-tree" ];
       };
+      nvim-tree = {
+        enable = true;
+        hijackNetrw = true;
+        updateCwd = true;
+      };
       gitsigns.enable = true;
       luasnip.enable = true;
-      nvim-tree.enable = true;
       fugitive.enable = true;
     };
 
