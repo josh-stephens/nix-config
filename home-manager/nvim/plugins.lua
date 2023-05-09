@@ -145,3 +145,16 @@ require('trim').setup()
 
 -- Leap
 require('leap').add_default_mappings()
+
+-- nvim-tree
+require("nvim-tree").setup {
+  renderer = {
+    icons = {
+      glyphs = {
+        git = {
+          untracked = "󰓎",
+        },
+      },
+    },
+  },
+}
