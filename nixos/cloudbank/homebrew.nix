@@ -23,6 +23,8 @@ in
       "yabai"
       "skhd"
     ];
-    masApps = { };
+    masApps = {
+      "Boop" = 1518425043;
+    };
   };
 }
