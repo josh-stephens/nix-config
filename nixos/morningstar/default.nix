@@ -73,13 +73,11 @@ in
         "https://hyprland.cachix.org"
         "https://cache.nixos.org"
         "https://nixpkgs-wayland.cachix.org"
-        "https://webcord.cachix.org"
       ];
       trusted-public-keys = [
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
-        "webcord.cachix.org-1:l555jqOZGHd2C9+vS8ccdh8FhqnGe8L78QrHNn+EFEs="
       ];
     };
   };
@@ -116,7 +114,7 @@ in
   virtualisation.docker.enable = true;
   programs.firefox = {
     enable = true;
-    package = pkgs.unstable.firefox;
+    package = pkgs.unstable.firefox-wayland;
   };
   programs._1password-gui = {
     enable = true;
@@ -254,6 +252,7 @@ in
       GDK_BACKEND = "wayland";
       WLR_NO_HARDWARE_CURSORS = "1";
       MOZ_ENABLE_WAYLAND = "1";
+      NIXOS_OZONE_WL = "1";
     };
 
     systemPackages = with pkgs; [

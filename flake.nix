@@ -32,58 +32,55 @@
     # Neovim
     nixneovim.url = "github:Veraticus/nixneovim";
 
-    # Discord
-    webcord.url = "github:fufexan/webcord-flake";
-
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!
     nix-colors.url = "github:misterio77/nix-colors";
   };
 
   outputs = { nixpkgs, darwin, home-manager, self, ... }@inputs:
-  let
-    inherit (self) outputs;
-    forAllSystems = nixpkgs.lib.genAttrs [
-      "aarch64-linux"
-      "i686-linux"
-      "x86_64-linux"
-      "aarch64-darwin"
-      "x86_64-darwin"
-    ];
-  in
-  rec {
-    packages = forAllSystems (system:
-      let pkgs = nixpkgs.legacyPackages.${system};
-      in import ./pkgs { inherit pkgs; }
-    );
+    let
+      inherit (self) outputs;
+      forAllSystems = nixpkgs.lib.genAttrs [
+        "aarch64-linux"
+        "i686-linux"
+        "x86_64-linux"
+        "aarch64-darwin"
+        "x86_64-darwin"
+      ];
+    in
+    rec {
+      packages = forAllSystems (system:
+        let pkgs = nixpkgs.legacyPackages.${system};
+        in import ./pkgs { inherit pkgs; }
+      );
 
-    overlays = import ./overlays { inherit inputs; };
+      overlays = import ./overlays { inherit inputs; };
 
-    nixosConfigurations.morningstar = nixpkgs.lib.nixosSystem {
-      specialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
-      # > Our main nixos configuration file <
-      modules = [ ./nixos/morningstar ];
-    };
-
-    darwinConfigurations.cloudbank = darwin.lib.darwinSystem {
-      system = "aarch64-darwin"; # "x86_64-darwin" if you're using a pre M1 mac
-      specialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
-      modules = [ ./nixos/cloudbank ]; # will be important later
-    };
-
-    homeConfigurations = {
-      "joshsymonds@morningstar" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        extraSpecialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
-        # > Our main home-manager configuration file <
-        modules = [ ./home-manager ];
+      nixosConfigurations.morningstar = nixpkgs.lib.nixosSystem {
+        specialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
+        # > Our main nixos configuration file <
+        modules = [ ./nixos/morningstar ];
       };
-      "joshsymonds@cloudbank" = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-        extraSpecialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
-        # > Our main home-manager configuration file <
-        modules = [ ./home-manager ];
+
+      darwinConfigurations.cloudbank = darwin.lib.darwinSystem {
+        system = "aarch64-darwin"; # "x86_64-darwin" if you're using a pre M1 mac
+        specialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
+        modules = [ ./nixos/cloudbank ]; # will be important later
+      };
+
+      homeConfigurations = {
+        "joshsymonds@morningstar" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.x86_64-linux;
+          extraSpecialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
+          # > Our main home-manager configuration file <
+          modules = [ ./home-manager ];
+        };
+        "joshsymonds@cloudbank" = home-manager.lib.homeManagerConfiguration {
+          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+          extraSpecialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
+          # > Our main home-manager configuration file <
+          modules = [ ./home-manager ];
+        };
       };
     };
-  };
 }

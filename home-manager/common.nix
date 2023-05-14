@@ -13,7 +13,7 @@
   home = {
     username = "joshsymonds";
 
-    packages = with pkgs; [
+    packages = with pkgs.unstable; [
       coreutils
       curl
       ripgrep
@@ -22,10 +22,11 @@
       exa
       jq
       xdg-utils
-      unstable.fzf
-      unstable.vivid
-      unstable.manix
-      unstable.talosctl
+      fzf
+      vivid
+      manix
+      talosctl
+      wget
     ];
   };
 
