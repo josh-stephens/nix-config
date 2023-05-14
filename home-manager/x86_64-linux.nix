@@ -14,6 +14,11 @@
 
     packages = with pkgs; [
       spotifywm
+      (pkgs.makeDesktopItem {
+        name = "Spotify";
+        exec = "spotifywm";
+        desktopName = "Spotify";
+      })
       polkit-kde-agent
       file
       steam
