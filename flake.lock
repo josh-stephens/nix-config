@@ -480,11 +480,11 @@
         "nmt": "nmt"
       },
       "locked": {
-        "lastModified": 1684520148,
-        "narHash": "sha256-Dk+gkc5fthHeyq6Il4oQ9+UXKMK1Wh1Ry1t5BLDZ2dg=",
+        "lastModified": 1684521950,
+        "narHash": "sha256-19CU7pyzy0ve+MXQd74KJMvh3Critqv64TqRX3PpYKE=",
         "owner": "Veraticus",
         "repo": "nixneovim",
-        "rev": "46655069114bcec31a95e93a4a43b2062e566f55",
+        "rev": "8a577a6a5681c56fca9d77af7b3b63bc86f1cad8",
         "type": "github"
       },
       "original": {
