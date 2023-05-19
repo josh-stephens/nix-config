@@ -4,6 +4,8 @@
     recursive = true;
   };
 
+  home.packages = [ pkgs.unstable.nodejs_20 ];
+
   imports = [
     inputs.nixneovim.nixosModules.default
 
@@ -143,6 +145,12 @@
 
     extraConfigLua = ''
       ${lib.strings.fileContents ./plugins.lua}
+
+      require("copilot").setup({
+        suggestion = { enabled = true },
+        panel = { enabled = false },
+        copilot_node_command = "${pkgs.unstable.nodejs_20}/bin/node"
+      })
     '';
   };
 }
