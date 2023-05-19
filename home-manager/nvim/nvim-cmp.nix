@@ -15,7 +15,7 @@
 
           if cmp.visible() then
             cmp.select_next_item({ behavior = cmp.SelectBehavior.Select })
-          -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable() 
+          -- You could replace the expand_or_jumpable() calls with expand_or_locally_jumpable()
           -- they way you will only jump inside the snippet region
           elseif luasnip.expand_or_jumpable() then
             luasnip.expand_or_jump()
@@ -26,7 +26,7 @@
           end
         end, { "i", "s" })
       '';
-      "<S-Tab>" =''
+      "<S-Tab>" = ''
         cmp.mapping(function(fallback)
           local has_words_before = function()
             unpack = unpack or table.unpack
@@ -48,7 +48,7 @@
       "<C-f>" = "cmp.mapping.scroll_docs(4)";
       "<C-Space>" = "cmp.mapping.complete()";
       "<C-c>" = "cmp.mapping.abort()";
-      "<CR>" = "cmp.mapping.confirm({ select = false, behavior = cmp.ConfirmBehavior.Replace })";
+      "<CR>" = "cmp.mapping.confirm({ select = true, behavior = cmp.ConfirmBehavior.Replace })";
     };
     sources = {
       "copilot" = {

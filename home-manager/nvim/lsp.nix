@@ -6,9 +6,11 @@
         bashls.enable = true;
         html.enable = true;
         jsonls.enable = true;
+        lua_ls.enable = true;
         rnix-lsp.enable = true;
         gopls.enable = true;
         rust-analyzer.enable = true;
+        terraform-ls.enable = true;
       };
     };
     lspkind = {

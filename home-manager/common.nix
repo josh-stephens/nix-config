@@ -27,6 +27,7 @@
       manix
       talosctl
       wget
+      lua-language-server
     ];
   };
 
