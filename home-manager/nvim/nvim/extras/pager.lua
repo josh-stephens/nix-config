@@ -3,7 +3,6 @@ package.path = package.path .. ';' .. os.getenv( "HOME" ) .. '/.config/nvim/?.lu
 require('init')
 
 local opt = vim.opt
-local g = vim.g
 local cmd = vim.cmd
 opt.number = false
 opt.signcolumn = 'no'
