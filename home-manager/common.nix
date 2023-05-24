@@ -28,6 +28,7 @@
       talosctl
       wget
       lua-language-server
+      go-tools
     ];
   };
 
