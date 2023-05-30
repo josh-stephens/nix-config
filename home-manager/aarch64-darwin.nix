@@ -3,6 +3,7 @@
     ./common.nix
 
     ./yabai
+    ./kitty
     ./skhd
     ./sketchybar
   ];

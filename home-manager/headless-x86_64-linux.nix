@@ -1,0 +1,21 @@
+{ inputs, lib, config, pkgs, ... }: {
+  imports = [
+    ./common.nix
+  ];
+
+  home = {
+    homeDirectory = "/home/joshsymonds";
+
+    packages = with pkgs.unstable; [
+      file
+      unzip
+      nvtop
+      psensor
+    ];
+  };
+
+  programs.zsh.shellAliases.update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
+
+  # Nicely reload system units when changing configs
+  systemd.user.startServices = "sd-switch";
+}

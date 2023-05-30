@@ -4,7 +4,6 @@
     # You can also split up your configuration and import pieces of it here:
     ./nvim
     ./git
-    ./kitty
     ./k9s
     ./zsh
     ./starship
@@ -29,6 +28,7 @@
       wget
       lua-language-server
       go-tools
+      wireguard-tools
     ];
   };
 
@@ -39,9 +39,11 @@
   };
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
-  programs.htop.enable = true;
-  programs.htop.settings.show_program_path = true;
-
+  programs.htop = {
+    enable = true;
+    package = pkgs.unstable.htop;
+    settings.show_program_path = true;
+  };
   xdg.enable = true;
 
   home.file."Backgrounds" = {
