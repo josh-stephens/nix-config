@@ -76,6 +76,8 @@
       source "$(fzf-share)/key-bindings.zsh"
       source "$(fzf-share)/completion.zsh"
 
+      export PATH=''${PATH}:''${HOME}/go/bin
+
       cd ~
     '';
   };
