@@ -86,9 +86,19 @@ in
     };
   };
 
-  networking.hostName = "ultraviolet";
-  networking.firewall.checkReversePath = "loose";
-  networking.firewall.allowedUDPPorts = [ 51820 ];
+  networking = {
+    hostName = "ultraviolet";
+    firewall = {
+      checkReversePath = "loose";
+      allowedUDPPorts = [ 51820 ];
+    };
+    defaultGateway = "192.168.1.1";
+    nameservers = [ "192.168.1.1" ];
+    networking.interfaces.eth0.ipv4.addresses = [{
+      address = "192.168.1.200";
+      prefixLength = 24;
+    }];
+  };
 
   boot = {
     kernelModules = [ "coretemp" "kvm-intel" ];
