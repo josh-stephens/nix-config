@@ -28,6 +28,7 @@
       wget
       lua-language-server
       go-tools
+      mozwire
       wireguard-tools
     ];
   };
