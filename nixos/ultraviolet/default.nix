@@ -20,7 +20,6 @@ in
   ];
 
   # Hardware setup
-  nixpkgs.config.
   hardware = {
     cpu = {
       intel.updateMicrocode = true;
