@@ -170,16 +170,19 @@ in
     };
   };
 
+  services.tailscale.enable = true;
+
   # Environment
   environment = {
     pathsToLink = [ "/share/zsh" ];
 
-    systemPackages = with pkgs; [
+    systemPackages = with pkgs.unstable; [
       polkit
       pciutils
       hwdata
       cachix
       docker-compose
+      tailscale
     ];
 
     loginShellInit = ''
