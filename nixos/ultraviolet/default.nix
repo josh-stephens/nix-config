@@ -88,8 +88,11 @@ in
   networking = {
     hostName = "ultraviolet";
     firewall = {
+      enable = true;
       checkReversePath = "loose";
-      allowedUDPPorts = [ 51820 ];
+      trustedInterfaces = [ "tailscale0" ];
+      allowedUDPPorts = [ 51820 config.services.tailscale.port ];
+      allowedTCPPorts = [ 22 ];
     };
     defaultGateway = "192.168.1.1";
     nameservers = [ "192.168.1.1" ];
