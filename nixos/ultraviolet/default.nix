@@ -26,7 +26,7 @@ in
     };
     opengl = {
       enable = true;
-      extraPackages = with pkgs.unstable; [
+      extraPackages = with pkgs; [
         intel-media-driver
         vaapiIntel
         vaapiVdpau
@@ -51,7 +51,7 @@ in
       # Disable if you don't want unfree packages
       allowUnfree = true;
       packageOverrides = pkgs: {
-        vaapiIntel = pkgs.unstable.vaapiIntel.override { enableHybridCodec = true; };
+        vaapiIntel = pkgs.vaapiIntel.override { enableHybridCodec = true; };
       };
     };
   };
@@ -105,6 +105,8 @@ in
     kernelParams = [ ];
     loader = {
       systemd-boot.enable = true;
+      efi.canTouchEfiVariables = true;
+      efi.efiSysMountPoint = "/boot/efi";
     };
   };
 
