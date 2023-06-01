@@ -189,7 +189,6 @@ in
       cachix
       docker-compose
       tailscale
-      nfs
     ];
 
     loginShellInit = ''
