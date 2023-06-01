@@ -9,7 +9,7 @@
 
       format = "[](fg:lavender)$directory$character";
 
-      right_format = "[](fg:rosewater)$cmd_duration[](fg:peach bg:rosewater)$git_branch$git_status[](bg:peach fg:teal)$kubernetes[](fg:teal)";
+      right_format = "[](fg:rosewater)$cmd_duration[](fg:sky bg:rosewater)$hostname[](fg:peach bg:sky)$git_branch$git_status[](bg:peach fg:teal)$kubernetes[](fg:teal)";
 
       add_newline = false;
 
@@ -33,6 +33,11 @@
       "cmd_duration" = {
         style = "bg:rosewater fg:base";
         format = "[ $duration ]($style)";
+      };
+
+      hostname = {
+        style = "bg:sky fg:base";
+        format = "[ $hostname ]($style)";
       };
 
       "git_branch" = {
