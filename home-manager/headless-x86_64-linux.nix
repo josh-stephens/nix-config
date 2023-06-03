@@ -1,7 +1,7 @@
 { inputs, lib, config, pkgs, ... }: {
   imports = [
     ./common.nix
-    # ./media.nix
+    ./media.nix
   ];
 
   home = {

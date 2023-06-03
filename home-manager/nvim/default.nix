@@ -70,7 +70,6 @@
       mini = {
         enable = true;
         ai.enable = true;
-        jump.enable = true;
       };
       lualine = {
         enable = true;
@@ -136,10 +135,21 @@
         "<c-d>" = "'<cmd>Telescope find_files theme=get_dropdown<cr>'";
         "<c-g>" = "'<cmd>Telescope live_grep theme=get_dropdown<cr>'";
         "<c-n>" = "'<cmd>Telescope manix<cr>'";
+        ";" = "'<cmd>Telescope resume<cr>'";
         "<leader>e" = "vim.diagnostic.open_float";
         "[d" = "vim.diagnostic.goto_prev";
         "]d" = "vim.diagnostic.goto_next";
         "<leader>q" = "vim.diagnostic.setloclist";
+        "<cr>" = "'ciw'";
+        "<Tab>" = "'<C-W>w'";
+        "<S-Tab>" = "'<C-W>W'";
+        "<BS>" = {
+          action = "':b#<CR>'";
+          silent = true;
+        };
+      };
+      visual = {
+        y = "'ygv<esc>'";
       };
     };
 
