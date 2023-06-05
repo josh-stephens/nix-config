@@ -1,7 +1,8 @@
 let
   system = "aarch64-darwin";
   user = "joshsymonds";
-in { inputs, outputs, lib, config, pkgs, ... }: {
+in
+{ inputs, outputs, lib, config, pkgs, ... }: {
   # You can import other NixOS modules here
   imports = [
     inputs.home-manager.darwinModules.home-manager
@@ -26,6 +27,12 @@ in { inputs, outputs, lib, config, pkgs, ... }: {
   nix = {
     package = inputs.darwin-nix.packages.${system}.nix;
     useDaemon = true;
+
+    gc = {
+      automatic = true;
+      interval = { Weekday = 0; Hour = 0; Minute = 0; };
+      options = "--delete-older-than 30d";
+    };
 
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
