@@ -28,11 +28,11 @@ in
     package = inputs.darwin-nix.packages.${system}.nix;
     useDaemon = true;
 
-    gc = {
-      automatic = true;
-      interval = { Weekday = 0; Hour = 0; Minute = 0; };
-      options = "--delete-older-than 30d";
-    };
+    # gc = {
+    #   automatic = true;
+    #   interval = { Weekday = 0; Hour = 0; Minute = 0; };
+    #   options = "--delete-older-than 30d";
+    # };
 
     # This will add each flake input as a registry
     # To make nix3 commands consistent with your flake
