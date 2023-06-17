@@ -159,6 +159,7 @@ in
   # Security
   security = {
     rtkit.enable = true;
+    polkit.enable = true;
     pam = {
       services.swaylock = {
         text = ''
@@ -223,6 +224,7 @@ in
   };
 
   programs.zsh.enable = true;
+  programs.sway.enable = true;
 
   # Fonts!
   fonts = {
