@@ -124,7 +124,10 @@ in
       });
     polkitPolicyOwners = [ "${user}" ];
   };
-  programs.xwayland.enable = true;
+  programs._1password = {
+    enable = true;
+    package = pkgs.unstable._1password;
+  };
   programs.gamemode.enable = true;
 
   # Users and their homes
@@ -266,6 +269,7 @@ in
 
     systemPackages = with pkgs.unstable; [
       polkit
+      polkit_gnome
       pciutils
       hwdata
       yubikey-manager
@@ -273,7 +277,6 @@ in
       cachix
       tts
       sox
-      _1password
     ];
 
     etc."greetd/environments".text = ''
