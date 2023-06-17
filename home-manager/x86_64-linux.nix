@@ -13,7 +13,7 @@
   home = {
     homeDirectory = "/home/joshsymonds";
 
-    packages = with pkgs; [
+    packages = with pkgs.unstable; [
       spotifywm
       (pkgs.makeDesktopItem {
         name = "Spotify";
@@ -24,8 +24,8 @@
       file
       steam
       unzip
-      unstable.cliphist
-      unstable.pavucontrol
+      cliphist
+      pavucontrol
       (pkgs.writeShellApplication {
         name = "discord";
         text = "${pkgs.unstable.discord}/bin/discord --use-gl=desktop";
@@ -35,18 +35,18 @@
         exec = "discord";
         desktopName = "Discord";
       })
-      unstable.nvtop
-      unstable.qbittorrent
+      nvtop
+      qbittorrent
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
-      unstable.hyprpicker
+      hyprpicker
       swaybg
       swaylock-effects
       swayidle
       psensor
-      unstable.piper
+      piper
       catppuccin-cursors.mochaLavender
-      unstable.signal-desktop-beta
-      unstable.slack
+      signal-desktop-beta
+      slack
     ];
 
     pointerCursor = {
