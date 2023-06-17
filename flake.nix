@@ -17,7 +17,7 @@
     agenix-rekey.url = "github:oddlama/agenix-rekey";
 
     # Home manager
-    home-manager.url = "github:nix-community/home-manager";
+    home-manager.url = "github:nix-community/home-manager/release-23.05";
     home-manager.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     # Hardware
