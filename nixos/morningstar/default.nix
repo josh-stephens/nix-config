@@ -10,7 +10,7 @@ in
     inputs.hardware.nixosModules.common-gpu-nvidia
     inputs.hyprland.nixosModules.default
     inputs.agenix.nixosModules.default
-    inputs.agenix-rekey.nixosModules.default
+    # inputs.agenix-rekey.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
     inputs.xremap-flake.nixosModules.default
 
@@ -62,11 +62,11 @@ in
     # Making legacy nix commands consistent as well, awesome!
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
-    gc = {
-      automatic = true;
-      interval = { Weekday = 0; Hour = 0; Minute = 0; };
-      options = "--delete-older-than 30d";
-    };
+    # gc = {
+    #   automatic = true;
+    #   interval = { Weekday = 0; Hour = 0; Minute = 0; };
+    #   options = "--delete-older-than 30d";
+    # };
 
     settings = {
       # Enable flakes and new 'nix' command
@@ -182,8 +182,10 @@ in
 
   services.openssh = {
     enable = true;
-    permitRootLogin = "no";
-    passwordAuthentication = false;
+    settings = {
+      PermitRootLogin = "no";
+      PasswordAuthentication = false;
+    };
   };
   programs.ssh.startAgent = true;
 
@@ -220,11 +222,16 @@ in
     };
   };
 
+  programs.zsh.enable = true;
+
   # Fonts!
   fonts = {
-    fonts = with pkgs; [
-      (nerdfonts.override { fonts = [ "NerdFontsSymbolsOnly" ]; })
-    ];
+    fonts = with pkgs;
+      [
+        (nerdfonts.override {
+          fonts = [ "NerdFontsSymbolsOnly" ];
+        })
+      ];
 
     fontconfig = {
       antialias = true;

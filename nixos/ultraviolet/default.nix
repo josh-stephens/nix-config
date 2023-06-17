@@ -8,7 +8,7 @@ in
     inputs.hardware.nixosModules.common-cpu-intel
     inputs.hyprland.nixosModules.default
     inputs.agenix.nixosModules.default
-    inputs.agenix-rekey.nixosModules.default
+    # inputs.agenix-rekey.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
     inputs.xremap-flake.nixosModules.default
 
@@ -159,8 +159,10 @@ in
 
   services.openssh = {
     enable = true;
-    permitRootLogin = "no";
-    passwordAuthentication = false;
+    settings = {
+      PermitRootLogin = "no";
+      PasswordAuthentication = false;
+    };
   };
   programs.ssh.startAgent = true;
 
@@ -183,6 +185,8 @@ in
     enable = true;
     package = pkgs.unstable.tailscale;
   };
+
+  programs.zsh.enable = true;
 
   # Environment
   environment = {
