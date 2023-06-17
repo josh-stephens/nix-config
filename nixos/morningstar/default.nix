@@ -268,16 +268,16 @@ in
       NIXOS_OZONE_WL = "1";
     };
 
-    systemPackages = with pkgs; [
+    systemPackages = with pkgs.unstable; [
       polkit
       pciutils
       hwdata
       yubikey-manager
       yubico-pam
       cachix
-      # tts
+      tts
       sox
-      unstable._1password
+      _1password
     ];
 
     etc."greetd/environments".text = ''
