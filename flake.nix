@@ -26,7 +26,7 @@
 
     # UI
     nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
-    hyprland.url = "github:hyprwm/Hyprland";
+    hyprland.url = "github:hyprwm/Hyprland?ref=d768226de9281828c6346d7acff3ddc10b3e657f";
     xdg-portal-hyprland.url = "github:hyprwm/xdg-desktop-portal-hyprland";
 
     # Neovim
