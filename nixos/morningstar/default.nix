@@ -275,7 +275,7 @@ in
       yubikey-manager
       yubico-pam
       cachix
-      tts
+      # tts
       sox
       unstable._1password
     ];
