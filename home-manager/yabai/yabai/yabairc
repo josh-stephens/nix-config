@@ -37,8 +37,8 @@ yabai -m config                              \
     window_placement            second_child \
     window_topmost              off          \
     window_shadow               off          \
-    window_animation_duration   0.20         \
-    window_opacity_duration     0.20         \
+    window_animation_duration   0.10         \
+    window_opacity_duration     0.10         \
     active_window_opacity       1.00         \
     normal_window_opacity       0.80         \
     active_window_border_color  0xff9399b2   \
