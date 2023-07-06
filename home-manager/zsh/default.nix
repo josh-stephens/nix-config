@@ -54,6 +54,13 @@
       autoload -Uz add-zsh-hook
       add-zsh-hook precmd set-title-precmd
       add-zsh-hook preexec set-title-preexec
+
+      function spacer-precmd() {
+        precmd() {
+          echo
+        }
+      }
+      add-zsh-hook precmd spacer-precmd
     '';
     initExtraBeforeCompInit = ''
       if type brew &>/dev/null

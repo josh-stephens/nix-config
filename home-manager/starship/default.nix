@@ -11,7 +11,11 @@
 
       right_format = "[](fg:rosewater)$cmd_duration[](fg:sky bg:rosewater)$hostname[](fg:peach bg:sky)$git_branch$git_status[](bg:peach fg:teal)$kubernetes[](fg:teal)";
 
-      add_newline = true;
+      add_newline = false;
+
+      "line_break" = {
+        disabled = true;
+      };
 
       directory = {
         style = "bg:lavender fg:base";
