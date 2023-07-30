@@ -3,4 +3,5 @@
 
 { pkgs ? (import ../nixpkgs.nix) { } }: {
   media = pkgs.callPackage ./media { };
+  TotallyNotCef = pkgs.callPackage ./TotallyNotCef { };
 }

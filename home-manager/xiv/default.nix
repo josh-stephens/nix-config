@@ -1,5 +1,8 @@
 { inputs, lib, config, pkgs, ... }: {
-  home.packages = [ pkgs.unstable.xivlauncher ];
+  home.packages = [
+    pkgs.unstable.xivlauncher
+    pkgs.TotallyNotCef
+  ];
 
   xdg.configFile."xiv" = {
     source = ./xiv;
@@ -9,7 +12,7 @@
   xdg.desktopEntries.ffxiv = {
     name = "FFXIV";
     genericName = "FFXIV Startup";
-    icon="ffxiv";
+    icon = "ffxiv";
     exec = "${config.xdg.configHome}/xiv/start.sh";
     comment = "Start FFXIV";
     categories = [ "Game" ];
