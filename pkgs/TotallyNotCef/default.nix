@@ -14,9 +14,10 @@ let
 in
 buildDotnetModule rec {
   pname = "TotallyNotCef";
-  version = rev;
+  version = "1.0.0";
   dotnet-sdk = dotnetCorePackages.sdk_7_0;
   dotnet-runtime = dotnetCorePackages.runtime_7_0;
+  runtimeId = "linux-x64";
 
   src = fetchFromGitHub {
     owner = "Veraticus";
@@ -33,6 +34,15 @@ buildDotnetModule rec {
   projectFile = "TotallyNotCef/TotallyNotCef.csproj";
 
   dotnetFlags = [
+    "-p:ImportByWildcardBeforeSolution=false"
+  ];
+
+  dotnetBuildFlags = [
+    "-r linux-x64"
+  ];
+
+  dotnetInstallFlags = [
+    "-r linux-x64"
   ];
 
   executables = [ "TotallyNotCef" ];
@@ -40,7 +50,7 @@ buildDotnetModule rec {
   runtimeDeps = [ chromium icu openssl ];
 
   postFixup = ''
-    wrapProgram ./TotallyNotCef/bin/Release/linux-x64/publish/TotallyNotCef --set CHROMIUM_PATH ${chromium}/bin/chromium
+    wrapProgram $out/bin/TotallyNotCef --set CHROME_PATH ${chromium}/bin/chromium
   '';
 
   meta = {
