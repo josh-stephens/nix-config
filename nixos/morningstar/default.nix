@@ -73,11 +73,13 @@ in
         "https://hyprland.cachix.org"
         "https://cache.nixos.org"
         "https://nixpkgs-wayland.cachix.org"
+        "https://nix-gaming.cachix.org"
       ];
       trusted-public-keys = [
         "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
         "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+        "nix-gaming.cachix.org-1:nbjlureqMbRAxR1gJ/f3hxemL9svXaZF/Ees8vCUUs4="
       ];
     };
   };
@@ -86,6 +88,7 @@ in
   networking.firewall.checkReversePath = "loose";
 
   boot = {
+    kernelPackages = pkgs.linuxPackages_xanmod;
     consoleLogLevel = 0;
     initrd.verbose = false;
     kernelModules = [ "coretemp" "kvm-intel" "nct6775" ];
@@ -277,6 +280,8 @@ in
       cachix
       tts
       sox
+    ] ++ [
+      inputs.nix-gaming.packages.${pkgs.system}.wine-ge
     ];
 
     etc."greetd/environments".text = ''

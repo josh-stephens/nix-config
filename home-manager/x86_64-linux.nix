@@ -14,6 +14,7 @@
     homeDirectory = "/home/joshsymonds";
 
     packages = with pkgs.unstable; [
+      appimage-run
       spotifywm
       (pkgs.makeDesktopItem {
         name = "Spotify";
