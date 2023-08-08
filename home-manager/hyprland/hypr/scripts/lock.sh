@@ -25,8 +25,6 @@ swaylock \
     --clock \
     --submit-on-touch \
     --screenshots \
-    --fade-in 0.2 \
-    --effect-blur 7x5 \
-    --effect-vignette 0.5:0.5 \
-    --effect-pixelate 10 \
+    --effect-blur 3x5 \
+    --effect-pixelate 5 \
     --indicator
