@@ -21,6 +21,7 @@
         exec = "spotifywm";
         desktopName = "Spotify";
       })
+      csharp_ls
       polkit-kde-agent
       file
       grim
@@ -64,6 +65,7 @@
   programs.zsh.shellAliases.update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
   programs.kitty.font.size = 10;
   programs.kitty.settings."kitty_mod" = "alt";
+  programs.nixneovim.plugins.lsp.csharp_ls.enable = true;
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";

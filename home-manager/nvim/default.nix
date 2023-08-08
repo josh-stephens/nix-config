@@ -6,7 +6,6 @@
 
   home.packages = [
     pkgs.unstable.nodejs_20
-    pkgs.unstable.csharp-ls
   ];
 
   imports = [
