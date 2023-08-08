@@ -10,7 +10,7 @@
 }:
 
 let
-  rev = "c324f30fb7ccc4fc3d69d3b7a0579933435be884";
+  rev = "36b6828d5c01383e29242f0767a058be9185f755";
 in
 buildDotnetModule rec {
   pname = "TotallyNotCef";
@@ -20,11 +20,11 @@ buildDotnetModule rec {
   runtimeId = "linux-x64";
 
   src = fetchFromGitHub {
-    owner = "Veraticus";
+    owner = "joshua-software-dev";
     repo = "TotallyNotCef";
     rev = rev;
     fetchSubmodules = true;
-    hash = "sha256-ap/+4YMJdvXELvmfVJrhCFUpG+d+hSt5g+lKuoJVh7I=";
+    hash = "sha256-SNwYRfapM0/vInOXBdRT4TbFAkjQBWaAOVTDXtBwLB0=";
   };
 
   nugetDeps = ./deps.nix;
