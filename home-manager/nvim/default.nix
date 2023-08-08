@@ -4,7 +4,10 @@
     recursive = true;
   };
 
-  home.packages = [ pkgs.unstable.nodejs_20 ];
+  home.packages = [
+    pkgs.unstable.nodejs_20
+    pkgs.unstable.csharp-ls
+  ];
 
   imports = [
     inputs.nixneovim.nixosModules.default

@@ -31,6 +31,10 @@
         (self: super: {
           xivlauncher = super.xivlauncher.overrideAttrs (oldAttrs: {
             desktopItems = [ ];
+            steam = (self.pkgs.steam.override {
+              extraLibraries = pkgs: [ self.pkgs.gamemode.lib ];
+            });
+            extraLibraries = [ self.pkgs.gamemode.lib ];
           });
         })
       ];

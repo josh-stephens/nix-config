@@ -308,7 +308,6 @@ in
     enable = true;
     wlr.enable = false;
     extraPortals = [
-      pkgs.unstable.xdg-desktop-portal-gtk
       inputs.xdg-portal-hyprland.packages.${system}.default
     ];
   };

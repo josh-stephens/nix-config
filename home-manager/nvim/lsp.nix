@@ -11,6 +11,8 @@
         gopls.enable = true;
         rust-analyzer.enable = true;
         terraform-ls.enable = true;
+        nil.enable = true;
+        csharp_ls.enable = true;
       };
     };
     lspkind = {
