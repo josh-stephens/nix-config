@@ -22,9 +22,9 @@
         desktopName = "Spotify";
       })
       csharp-ls
+      inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
       polkit-kde-agent
       file
-      grim
       steam
       unzip
       cliphist
@@ -42,10 +42,8 @@
       qbittorrent
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
       hyprpicker
-      slurp
       swaybg
       swaylock-effects
-      swappy
       swayidle
       psensor
       piper

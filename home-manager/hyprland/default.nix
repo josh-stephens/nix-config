@@ -154,8 +154,7 @@
       bind = SUPER, M, exec, spotifywm
       bind = SUPER, Escape, exec, wlogout --protocol layer-shell -b 4 -T 400 -B 400hyp
       bind = SUPER SHIFT, V, exec, cliphist list | wofi --show dmenu | cliphist decode | wl-copy
-      bind = , PRINT, exec, grim -g "$(slurp)" - | swappy -f -
-      bind = SUPER, PRINT, exec, grim - | swappy -f -
+      bind = , PRINT, exec, grimblast --freeze copysave area ~/Downloads/$(date +%s).png
 
       ################################## Window Management ###########################################
       bind = SUPER, Q, killactive,

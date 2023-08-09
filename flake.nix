@@ -17,8 +17,10 @@
     agenix-rekey.url = "github:oddlama/agenix-rekey";
 
     # Home manager
-    home-manager.url = "github:nix-community/home-manager/release-23.05";
-    home-manager.inputs.nixpkgs.follows = "nixpkgs-unstable";
+    home-manager = {
+      url = "github:nix-community/home-manager/release-23.05";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     # Hardware
     hardware.url = "github:nixos/nixos-hardware";
@@ -27,6 +29,10 @@
     # UI
     nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
     hyprland.url = "github:hyprwm/Hyprland?ref=f7cdebd84a69432fd80fa3d3f69dd829e3941376";
+    hyprland-contrib = {
+      url = "github:hyprwm/contrib";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
     xdg-portal-hyprland.url = "github:hyprwm/xdg-desktop-portal-hyprland";
 
     # Neovim
