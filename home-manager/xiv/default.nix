@@ -2,7 +2,6 @@
   home.packages = [
     pkgs.unstable.xivlauncher
     pkgs.TotallyNotCef
-    pkgs.unstable.gamescope
   ];
 
   xdg.configFile."xiv" = {

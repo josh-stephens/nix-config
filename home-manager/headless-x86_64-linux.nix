@@ -8,7 +8,7 @@
     homeDirectory = "/home/joshsymonds";
 
     packages = with pkgs.unstable; [
-      csharp_ls
+      csharp-ls
       file
       unzip
       nvtop
@@ -17,7 +17,7 @@
   };
 
   programs.zsh.shellAliases.update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
-  programs.nixneovim.plugins.lsp.csharp_ls.enable = true;
+  programs.nixneovim.plugins.lsp.servers.csharp_ls.enable = true;
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
