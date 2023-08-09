@@ -4,4 +4,5 @@
 { pkgs ? (import ../nixpkgs.nix) { } }: {
   media = pkgs.callPackage ./media { };
   TotallyNotCef = pkgs.callPackage ./TotallyNotCef { };
+  wine-xiv = pkgs.callPackage ./wine-xiv { };
 }

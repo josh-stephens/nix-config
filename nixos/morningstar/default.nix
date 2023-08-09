@@ -281,8 +281,6 @@ in
       cachix
       tts
       sox
-    ] ++ [
-      inputs.nix-gaming.packages.${pkgs.system}.wine-ge
     ];
 
     etc."greetd/environments".text = ''
