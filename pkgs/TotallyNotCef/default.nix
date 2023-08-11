@@ -7,6 +7,7 @@
 , chromium
 , icu
 , openssl
+, systemd
 }:
 
 let
