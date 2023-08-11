@@ -19,11 +19,15 @@
   };
 
   systemd.user.services.TotallyNotCef = {
-    Type = "simple";
-    serviceConfig = {
-      ExecStart = "${pkgs.TotallyNotCef.bin}/bin/TotallyNotCef 'https://quisquous.github.io/cactbot/ui/raidboss/raidboss.html?OVERLAY_WS=ws://127.0.0.1:10501/ws' 18283 1 1";
+    Unit = {
+      Description = "TotallyNotCef";
     };
-    environment = [ "DISPLAY=:0" ];
-    wantedBy = [ "" ];
+    Service = {
+      Type = "simple";
+      ExecStart = "${pkgs.TotallyNotCef}/bin/TotallyNotCef 'https://quisquous.github.io/cactbot/ui/raidboss/raidboss.html?OVERLAY_WS=ws://127.0.0.1:10501/ws' 18283 1 1";
+    };
+    Install = {
+      WantedBy = [ "" ];
+    };
   };
 }
