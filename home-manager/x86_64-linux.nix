@@ -50,6 +50,7 @@
       catppuccin-cursors.mochaLavender
       signal-desktop-beta
       slack
+      xclip
     ];
 
     pointerCursor = {

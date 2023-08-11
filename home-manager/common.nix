@@ -19,6 +19,7 @@
       ripgrep
       ranger
       bat
+      killall
       exa
       jq
       xdg-utils

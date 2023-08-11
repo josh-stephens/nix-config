@@ -22,6 +22,7 @@
       exec-once=systemctl --user restart waybar
       exec-once=wl-paste --type text --watch cliphist store
       exec-once=wl-paste --type image --watch cliphist store
+      exec-once=wl-paste --type text -w sh -c 'xclip -selection clipboard -o > /dev/null 2> /dev/null || xclip -selection clipboard'
       exec-once=swaybg -m fill -i ~/Backgrounds/catppuccin.png
       exec-once=rm "$HOME/.cache/cliphist/db"
       exec-once="/run/current-system/sw/bin/ratbagctl warbling-mara dpi set 1000"
