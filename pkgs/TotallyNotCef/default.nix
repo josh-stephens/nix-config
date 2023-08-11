@@ -7,11 +7,11 @@
 , chromium
 , icu
 , openssl
-, systemd
+, speechd
 }:
 
 let
-  rev = "36b6828d5c01383e29242f0767a058be9185f755";
+  rev = "2c013457531439e1907299b34e5d5cac5c79302a";
 in
 buildDotnetModule rec {
   pname = "TotallyNotCef";
@@ -21,11 +21,11 @@ buildDotnetModule rec {
   runtimeId = "linux-x64";
 
   src = fetchFromGitHub {
-    owner = "joshua-software-dev";
+    owner = "Veraticus";
     repo = "TotallyNotCef";
     rev = rev;
     fetchSubmodules = true;
-    hash = "sha256-SNwYRfapM0/vInOXBdRT4TbFAkjQBWaAOVTDXtBwLB0=";
+    hash = "sha256-1K2EMJ1/wOHQWPnoks7Vk7uQms0Ypdm2aoGaR/Sr2nQ=";
   };
 
   nugetDeps = ./deps.nix;
@@ -48,16 +48,20 @@ buildDotnetModule rec {
 
   executables = [ "TotallyNotCef" ];
 
-  runtimeDeps = [ chromium icu openssl ];
+  runtimeDeps = [ speechd chromium icu openssl ];
 
   postFixup = ''
-    wrapProgram $out/bin/TotallyNotCef --set CHROME_PATH ${chromium}/bin/chromium
+    wrapProgram $out/bin/TotallyNotCef \
+      --set CHROME_PATH ${chromium}/bin/chromium \
+      --prefix LD_LIBRARY_PATH : "${lib.makeLibraryPath [
+        speechd
+      ]}"
   '';
 
   meta = {
     description = "TotallyNotCef";
     homepage = "https://github.com/Veraticus/TotallyNotCef";
     platforms = [ "x86_64-linux" ];
-    mainProgram = "TOtallyNotCef";
+    mainProgram = "TotallyNotCef";
   };
 }

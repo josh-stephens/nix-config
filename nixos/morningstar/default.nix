@@ -279,7 +279,7 @@ in
       yubikey-manager
       yubico-pam
       cachix
-      tts
+      speechd
       sox
     ];
 
