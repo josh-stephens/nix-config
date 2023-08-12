@@ -9,6 +9,13 @@
     recursive = true;
   };
 
+  xdg.dataFile."dbus-1/services/swaync.service".text = ''
+    [D-BUS Service]
+    Name=org.freedesktop.Notifications
+    Exec=${pkgs.swaynotificationcenter}/bin/swaync
+    SystemdService=swaync.service
+  '';
+
   systemd.user.services.swaync = {
     Unit = {
       Description = "swaynotificationcenter";
@@ -18,8 +25,9 @@
     };
     Service = {
       Type = "dbus";
-      ExecStart = "${pkgs.swaync}/bin/swaync";
-      ExecReload = "${pkgs.swaync}/bin/swaync-client --reload-config ; ${pkgs.swaync}/bin/swaync-client --reload-css";
+      BusName = "org.freedesktop.Notifications";
+      ExecStart = "${pkgs.swaynotificationcenter}/bin/swaync";
+      ExecReload = "${pkgs.swaynotificationcenter}/bin/swaync-client --reload-config ; ${pkgs.swaynotificationcenter}/bin/swaync-client --reload-css";
       Restart = "on-failure";
 
     };
