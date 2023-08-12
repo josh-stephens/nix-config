@@ -271,7 +271,6 @@ in
 
     systemPackages = with pkgs.unstable; [
       polkit
-      polkit_gnome
       pciutils
       hwdata
       yubikey-manager

@@ -1,6 +1,12 @@
 { config, pkgs, theme, ... }:
-
 {
+  xdg.desktopEntries.firefox = {
+    name = "Firefox";
+    genericName = "Firefox";
+    icon = "firefox";
+    exec = "firefox";
+  };
+
   programs.firefox = {
     enable = true;
     package = pkgs.wrapFirefox pkgs.unstable.firefox-unwrapped {
@@ -27,22 +33,6 @@
         };
       };
     };
-    extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-      ublock-origin
-      privacy-badger
-      https-everywhere
-      bitwarden
-      clearurls
-      decentraleyes
-      duckduckgo-privacy-essentials
-      floccus
-      ghostery
-      privacy-redirect
-      privacy-badger
-      languagetool
-      disconnect
-      onepassword-password-manager
-    ];
     profiles = {
       josh = {
         id = 0;
@@ -90,6 +80,11 @@
         userContent = ''
           # Here too
         '';
+        extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          ublock-origin
+          onepassword-password-manager
+          darkreader
+        ];
       };
     };
   };
