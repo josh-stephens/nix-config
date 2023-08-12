@@ -7,6 +7,7 @@
     ./waybar
     ./hyprland
     ./wlogout
+    ./swaync
     ./xiv
   ];
 
