@@ -13,6 +13,7 @@ in
     # inputs.agenix-rekey.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
     inputs.xremap-flake.nixosModules.default
+    inputs.nur.nixosModules.nur
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
@@ -42,6 +43,7 @@ in
     # You can add overlays here
     overlays = [
       inputs.nixneovim.overlays.default
+      inputs.nur.overlay
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
@@ -116,10 +118,6 @@ in
 
   # Default programs everyone wants
   virtualisation.docker.enable = true;
-  programs.firefox = {
-    enable = true;
-    package = pkgs.unstable.firefox-wayland;
-  };
   programs._1password-gui = {
     enable = true;
     package = pkgs.unstable._1password-gui.override

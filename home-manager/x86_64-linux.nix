@@ -9,6 +9,7 @@
     ./wlogout
     ./swaync
     ./xiv
+    ./firefox
   ];
 
   home = {

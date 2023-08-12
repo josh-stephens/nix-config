@@ -9,19 +9,16 @@
       position = "top";
       height = 40;
       spacing = 4;
-      tray = { spacing = 10; };
-      modules-left = [ "wlr/workspaces" ];
-      modules-center = [ "hyprland/window" ];
-      modules-right = [
-        "pulseaudio"
-        "network"
-        "cpu"
-        "memory"
-        "temperature"
-        "clock"
-        "custom/notification"
+
+      modules-left = [
+        "custom/nixos"
+        "hyprland/workspaces"
       ];
-      "wlr/workspaces" = {
+      "custom/nixos" = {
+        format = " ";
+        tooltip = false;
+      };
+      "hyprland/workspaces" = {
         disable-scroll = true;
         all-outputs = true;
         format = "{icon}";
@@ -37,6 +34,18 @@
           "default" = " ";
         };
       };
+
+      modules-center = [ "hyprland/window" ];
+
+      modules-right = [
+        "pulseaudio"
+        "network"
+        "cpu"
+        "memory"
+        "temperature"
+        "clock"
+        "custom/notification"
+      ];
       clock = {
         format = "  {:%I:%M %p}";
         tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
