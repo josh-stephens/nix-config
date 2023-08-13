@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
-export XL_SECRET_PROVIDER=FILE
-export WINEDLLOVERRIDES="d3dcompiler_47=n;dxgi=n,b"
-export TZ="America/Los_Angeles"
+
+nohup wget --wait=4 "http://127.0.0.1:4646/ffxivlauncher/$(op item get "Square Enix" --otp)" &
 
 systemctl --user start TotallyNotCef.service
 gamemoderun XIVLauncher.Core

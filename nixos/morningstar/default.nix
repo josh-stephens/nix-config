@@ -165,6 +165,7 @@ in
           auth sufficient pam_yubico.so mode=challenge-response
           auth include login
         '';
+        enableGnomeKeyring = true;
       };
       yubico = {
         enable = true;
@@ -179,6 +180,8 @@ in
   services.ratbagd.enable = true;
   services.xserver.videoDrivers = [ "nvidia" ];
   services.getty.autologinUser = "${user}";
+  services.gnome.gnome-keyring.enable = true;
+  services.dbus.packages = [ pkgs.gnome3.gnome-keyring ];
 
   services.openssh = {
     enable = true;
