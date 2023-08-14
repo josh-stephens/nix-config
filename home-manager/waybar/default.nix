@@ -12,10 +12,15 @@
 
       modules-left = [
         "custom/nixos"
+        "custom/separator1"
         "hyprland/workspaces"
       ];
       "custom/nixos" = {
         format = " ";
+        tooltip = false;
+      };
+      "custom/separator1" = {
+        format = "";
         tooltip = false;
       };
       "hyprland/workspaces" = {
@@ -36,33 +41,22 @@
       };
 
       modules-center = [ "hyprland/window" ];
+      "hyprland/window" = {
+        format = " {title} ";
+      };
 
       modules-right = [
         "pulseaudio"
+        "custom/separator2"
         "network"
+        "custom/separator3"
         "cpu"
         "memory"
-        "temperature"
+        "custom/separator4"
         "clock"
+        "custom/separator5"
         "custom/notification"
       ];
-      clock = {
-        format = "  {:%I:%M %p}";
-        tooltip-format = "<big>{:%Y %B}</big>\n<tt><small>{calendar}</small></tt>";
-        format-alt = "{:%Y-%m-%d}";
-      };
-      cpu = {
-        format = "{usage}%  ";
-        tooltip = false;
-      };
-      memory = { format = "{}%  "; };
-      network = {
-        format-alt = "{ipaddr}/{cidr}";
-        format-disconnected = "Disconnected ⚠ ";
-        format-ethernet = "{ipaddr}/{cidr} 󰈀 ";
-        format-linked = "{ifname} (No IP) ";
-        format-wifi = "{essid} ({signalStrength}%)  ";
-      };
       pulseaudio = {
         format = "{volume}% {icon} {format_source}";
         format-bluetooth = "{volume}% {icon} {format_source}";
@@ -81,10 +75,40 @@
         format-source-muted = " ";
         on-click = "/etc/profiles/per-user/joshsymonds/bin/pavucontrol";
       };
-      temperature = {
-        critical-threshold = 80;
-        format = "{temperatureC}°C {icon}";
-        format-icons = [ "" "" "" ];
+      "custom/separator2" = {
+        format = "";
+        tooltip = false;
+      };
+      network = {
+        format-alt = "{ipaddr}/{cidr}";
+        format-disconnected = "Disconnected ⚠ ";
+        format-ethernet = "{ipaddr}/{cidr} 󰈀 ";
+        format-linked = "{ifname} (No IP) ";
+        format-wifi = "{essid} ({signalStrength}%)  ";
+      };
+      "custom/separator3" = {
+        format = "";
+        tooltip = false;
+      };
+      cpu = {
+        format = "{usage}%  ";
+        tooltip = false;
+      };
+      memory = {
+        format = "{}%  ";
+        tooltip = false;
+      };
+      "custom/separator4" = {
+        format = "";
+        tooltip = false;
+      };
+      clock = {
+        format = "  {:%H:%M %m-%d-%Y}";
+        tooltip = false;
+      };
+      "custom/separator5" = {
+        format = "";
+        tooltip = false;
       };
       "custom/notification" = {
         tooltip = false;
