@@ -160,12 +160,27 @@ in
     rtkit.enable = true;
     polkit.enable = true;
     pam = {
-      services.swaylock = {
-        text = ''
-          auth sufficient pam_yubico.so mode=challenge-response
-          auth include login
-        '';
-        enableGnomeKeyring = true;
+      services = {
+        swaylock = {
+          text = ''
+            auth sufficient pam_yubico.so mode=challenge-response
+            auth include login
+          '';
+          enableGnomeKeyring = true;
+        };
+        gnome_keyring = {
+          text = ''
+            auth     optional    ${pkgs.unstable.gnome3.gnome-keyring}/lib/security/pam_gnome_keyring.so
+            session  optional    ${pkgs.unstable.gnome3.gnome-keyring}/lib/security/pam_gnome_keyring.so auto_start
+            password  optional    ${pkgs.unstable.gnome3.gnome-keyring}/lib/security/pam_gnome_keyring.so
+          '';
+        };
+        polkit = {
+          text = ''
+            session	 optional	pam_xauth.so
+          '';
+        };
+
       };
       yubico = {
         enable = true;
@@ -181,7 +196,7 @@ in
   services.xserver.videoDrivers = [ "nvidia" ];
   services.getty.autologinUser = "${user}";
   services.gnome.gnome-keyring.enable = true;
-  services.dbus.packages = [ pkgs.gnome3.gnome-keyring ];
+  services.dbus.packages = [ pkgs.unstable.gnome3.gnome-keyring ];
 
   services.openssh = {
     enable = true;
@@ -270,6 +285,8 @@ in
       WLR_NO_HARDWARE_CURSORS = "1";
       MOZ_ENABLE_WAYLAND = "1";
       NIXOS_OZONE_WL = "1";
+
+      GTK_THEME = "Catppuccin-Mocha-Compact-Lavender-Dark";
     };
 
     systemPackages = with pkgs.unstable; [
@@ -281,6 +298,10 @@ in
       cachix
       speechd
       sox
+      catppuccin-gtk
+      catppuccin-plymouth
+    ] ++ [
+      pkgs.configure-gtk
     ];
 
     etc."greetd/environments".text = ''
@@ -299,15 +320,6 @@ in
     loginShellInit = ''
       eval $(ssh-agent)
     '';
-  };
-
-  # xdg
-  xdg.portal = {
-    enable = true;
-    wlr.enable = false;
-    extraPortals = [
-      inputs.xdg-portal-hyprland.packages.${system}.default
-    ];
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion

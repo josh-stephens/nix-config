@@ -20,6 +20,8 @@
       "kitty_mod+4" = "goto_tab 4";
       "kitty_mod+5" = "goto_tab 5";
       "kitty_mod+6" = "goto_tab 6";
+      "kitty_mod+shift+]" = "next_tab";
+      "kitty_mod+shift+[" = "previous_tab";
       "cmd+enter" = "no_op";
       "cmd+shift+enter" = "no_op";
     };

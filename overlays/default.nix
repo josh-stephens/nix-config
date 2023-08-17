@@ -28,6 +28,30 @@
           });
         })
 
+        # Fix Catppuccino theme
+        (self: super: {
+          catppuccin-gtk = super.catppuccin-gtk.override
+            {
+              accents = [ "lavender" ]; # You can specify multiple accents here to output multiple themes
+              size = "compact";
+              tweaks = [ "rimless" "black" ]; # You can also specify multiple tweaks here
+              variant = "mocha";
+            };
+        })
+        (self: super: {
+          catppuccin-gtk = super.catppuccin-plymouth.override
+            {
+              variant = "mocha";
+            };
+        })
+
+        # Update Waybar
+        (self: super: {
+          waybar = super.waybar.overrideAttrs (oldAttrs: {
+            version = "0.9.21";
+          });
+        })
+
         # We are setting this ourselves
         (self: super: {
           xivlauncher = super.xivlauncher.overrideAttrs (oldAttrs: {

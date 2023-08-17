@@ -8,19 +8,14 @@
       layer = "bottom";
       position = "top";
       height = 40;
-      spacing = 4;
+      spacing = 0;
 
       modules-left = [
         "custom/nixos"
-        "custom/separator1"
         "hyprland/workspaces"
       ];
       "custom/nixos" = {
-        format = " ";
-        tooltip = false;
-      };
-      "custom/separator1" = {
-        format = "";
+        format = "";
         tooltip = false;
       };
       "hyprland/workspaces" = {
@@ -28,33 +23,28 @@
         all-outputs = true;
         format = "{icon}";
         format-icons = {
-          "1" = " ";
-          "2" = " ";
-          "3" = " ";
-          "4" = " ";
-          "5" = " ";
-          "6" = " ";
-          "urgent" = " ";
-          "focused" = " ";
-          "default" = " ";
+          "1" = "";
+          "2" = "";
+          "3" = "";
+          "4" = "";
+          "5" = "";
+          "6" = "";
+          "urgent" = "";
+          "focused" = "";
+          "default" = "";
         };
       };
 
-      modules-center = [ "hyprland/window" ];
-      "hyprland/window" = {
-        format = " {title} ";
-      };
+      modules-center = [
+        "hyprland/window"
+      ];
 
       modules-right = [
         "pulseaudio"
-        "custom/separator2"
         "network"
-        "custom/separator3"
         "cpu"
         "memory"
-        "custom/separator4"
         "clock"
-        "custom/separator5"
         "custom/notification"
       ];
       pulseaudio = {
@@ -62,7 +52,7 @@
         format-bluetooth = "{volume}% {icon} {format_source}";
         format-bluetooth-muted = " {icon} {format_source}";
         format-icons = {
-          car = " ";
+          car = "";
           default = [ "" "" " " ];
           handsfree = "";
           headphones = " ";
@@ -75,39 +65,23 @@
         format-source-muted = " ";
         on-click = "/etc/profiles/per-user/joshsymonds/bin/pavucontrol";
       };
-      "custom/separator2" = {
-        format = "";
-        tooltip = false;
-      };
       network = {
         format-alt = "{ipaddr}/{cidr}";
-        format-disconnected = "Disconnected ⚠ ";
-        format-ethernet = "{ipaddr}/{cidr} 󰈀 ";
+        format-disconnected = "Disconnected ⚠";
+        format-ethernet = "{ipaddr}/{cidr} 󰈀";
         format-linked = "{ifname} (No IP) ";
-        format-wifi = "{essid} ({signalStrength}%)  ";
-      };
-      "custom/separator3" = {
-        format = "";
-        tooltip = false;
+        format-wifi = "{essid} ({signalStrength}%) ";
       };
       cpu = {
-        format = "{usage}%  ";
+        format = "{usage}% ";
         tooltip = false;
       };
       memory = {
-        format = "{}%  ";
-        tooltip = false;
-      };
-      "custom/separator4" = {
-        format = "";
+        format = "{}% ";
         tooltip = false;
       };
       clock = {
         format = "  {:%H:%M %m-%d-%Y}";
-        tooltip = false;
-      };
-      "custom/separator5" = {
-        format = "";
         tooltip = false;
       };
       "custom/notification" = {
@@ -116,12 +90,12 @@
         "format-icons" = {
           "notification" = "<span foreground='red'><sup></sup></span>";
           "dnd-notification" = "<span foreground='red'><sup></sup></span>";
-          "none" = " ";
-          "dnd-none" = " ";
-          "inhibited-notification" = " <span foreground='red'><sup></sup></span>";
-          "inhibited-none" = " ";
-          "dnd-inhibited-notification" = " <span foreground='red'><sup></sup></span>";
-          "dnd-inhibited-none" = " ";
+          "none" = "";
+          "dnd-none" = "";
+          "inhibited-notification" = "<span foreground='red'><sup></sup></span>";
+          "inhibited-none" = "";
+          "dnd-inhibited-notification" = "<span foreground='red'><sup></sup></span>";
+          "dnd-inhibited-none" = "";
         };
         "return-type" = "json";
         "exec-if" = "${pkgs.swaynotificationcenter}/bin/swaync-client";
