@@ -290,6 +290,8 @@ in
     };
 
     systemPackages = with pkgs.unstable; [
+      glib
+      gsettings-desktop-schemas
       polkit
       pciutils
       hwdata

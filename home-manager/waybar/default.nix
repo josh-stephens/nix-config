@@ -15,8 +15,25 @@
         "hyprland/workspaces"
       ];
       "custom/nixos" = {
-        format = "";
         tooltip = false;
+        format = "{icon}";
+        "format-icons" = {
+          "notification" = "<span foreground='red'><sup></sup></span>";
+          "dnd-notification" = "<span foreground='red'><sup></sup></span>";
+          "none" = "";
+          "dnd-none" = "";
+          "inhibited-notification" = "<span foreground='red'><sup></sup></span>";
+          "inhibited-none" = "";
+          "dnd-inhibited-notification" = "<span foreground='red'><sup></sup></span>";
+          "dnd-inhibited-none" = "";
+        };
+        "return-type" = "json";
+        "exec-if" = "${pkgs.swaynotificationcenter}/bin/swaync-client";
+        "exec" = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
+        "on-click" = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
+        "on-click-right" = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
+        "escape" = true;
+
       };
       "hyprland/workspaces" = {
         disable-scroll = true;
@@ -45,12 +62,11 @@
         "cpu"
         "memory"
         "clock"
-        "custom/notification"
       ];
       pulseaudio = {
         format = "{volume}% {icon} {format_source}";
         format-bluetooth = "{volume}% {icon} {format_source}";
-        format-bluetooth-muted = " {icon} {format_source}";
+        format-bluetooth-muted = "{icon} {format_source}";
         format-icons = {
           car = "";
           default = [ "" "" " " ];
@@ -83,26 +99,6 @@
       clock = {
         format = "  {:%H:%M %m-%d-%Y}";
         tooltip = false;
-      };
-      "custom/notification" = {
-        tooltip = false;
-        format = "{icon}";
-        "format-icons" = {
-          "notification" = "<span foreground='red'><sup></sup></span>";
-          "dnd-notification" = "<span foreground='red'><sup></sup></span>";
-          "none" = "";
-          "dnd-none" = "";
-          "inhibited-notification" = "<span foreground='red'><sup></sup></span>";
-          "inhibited-none" = "";
-          "dnd-inhibited-notification" = "<span foreground='red'><sup></sup></span>";
-          "dnd-inhibited-none" = "";
-        };
-        "return-type" = "json";
-        "exec-if" = "${pkgs.swaynotificationcenter}/bin/swaync-client";
-        "exec" = "${pkgs.swaynotificationcenter}/bin/swaync-client -swb";
-        "on-click" = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
-        "on-click-right" = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
-        "escape" = true;
       };
     }];
   };
