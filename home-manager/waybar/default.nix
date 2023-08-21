@@ -7,7 +7,7 @@
     settings = [{
       layer = "bottom";
       position = "top";
-      height = 40;
+      height = 35;
       spacing = 0;
 
       modules-left = [
@@ -97,7 +97,7 @@
         tooltip = false;
       };
       clock = {
-        format = "  {:%H:%M %m-%d-%Y}";
+        format = "{:%H:%M %m-%d-%Y} ";
         tooltip = false;
       };
     }];
