@@ -52,14 +52,16 @@
 }
 
 window#waybar {
-  background-color: transparent;
   color: @text;
+  background-color: transparent;
   transition-property: background-color;
   transition-duration: .5s;
+  border-bottom: 2px solid @overlay2;
 }
 
 window#waybar.hidden {
-  opacity: 0.2;
+  background-color: @base;
+  opacity: 0.9;
 }
 
 #custom-nixos {

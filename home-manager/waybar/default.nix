@@ -33,7 +33,6 @@
         "on-click" = "${pkgs.swaynotificationcenter}/bin/swaync-client -t -sw";
         "on-click-right" = "${pkgs.swaynotificationcenter}/bin/swaync-client -d -sw";
         "escape" = true;
-
       };
       "hyprland/workspaces" = {
         disable-scroll = true;
@@ -79,10 +78,9 @@
         format-muted = " {format_source}";
         format-source = "{volume}% ";
         format-source-muted = " ";
-        on-click = "/etc/profiles/per-user/joshsymonds/bin/pavucontrol";
+        on-click = "${pkgs.pavucontrol}/bin/pavucontrol";
       };
       network = {
-        format-alt = "{ipaddr}/{cidr}";
         format-disconnected = "Disconnected ⚠";
         format-ethernet = "{ipaddr}/{cidr} 󰈀";
         format-linked = "{ifname} (No IP) ";
