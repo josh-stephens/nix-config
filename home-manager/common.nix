@@ -14,14 +14,13 @@
     username = "joshsymonds";
 
     packages = with pkgs.unstable; [
-      coreutils
+      coreutils-full
       curl
       ripgrep
       ranger
       bat
       killall
       exa
-      jq
       xdg-utils
       fzf
       vivid
@@ -30,6 +29,7 @@
       wget
       lua-language-server
       go-tools
+      socat
       mozwire
       wireguard-tools
     ];

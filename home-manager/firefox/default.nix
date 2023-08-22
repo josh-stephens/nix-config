@@ -39,7 +39,7 @@
         name = "josh";
         search = {
           force = true;
-          default = "DuckDuckGo";
+          default = "Google";
           engines = {
             "Nix Packages" = {
               urls = [{
