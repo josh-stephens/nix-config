@@ -3,6 +3,7 @@
     lsp = {
       enable = true;
       servers = {
+        clangd.enable = true;
         bashls.enable = true;
         html.enable = true;
         jsonls.enable = true;

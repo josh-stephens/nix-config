@@ -24,7 +24,7 @@
       exec-once=wl-paste --type text --watch cliphist store
       exec-once=wl-paste --type image --watch cliphist store
       exec-once=wl-paste --type text -w sh -c 'xclip -selection clipboard -o > /dev/null 2> /dev/null || xclip -selection clipboard'
-      exec-once=${pkgs.unstable.swaybg}/bin/swaybg -m fill -i ~/Backgrounds/Paisley.png
+      exec-once=${pkgs.unstable.swaybg}/bin/swaybg -i ~/Backgrounds/Paisley.jpg -m tile
       exec-once=rm "$HOME/.cache/cliphist/db"
       exec-once="${pkgs.libratbag}/bin/ratbagctl thundering-gerbil dpi set 1000"
       exec-once=dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY
