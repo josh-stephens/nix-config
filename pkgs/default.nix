@@ -5,4 +5,5 @@
   media = pkgs.callPackage ./media { };
   TotallyNotCef = pkgs.callPackage ./TotallyNotCef { };
   configure-gtk = pkgs.callPackage ./configure-gtk { };
+  eww-exclusiver = pkgs.callPackage ./eww-exclusiver { };
 }
