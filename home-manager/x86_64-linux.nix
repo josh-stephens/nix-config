@@ -2,6 +2,7 @@
   imports = [
     ./common.nix
 
+    ./eww
     ./kitty
     ./wofi
     ./waybar
