@@ -20,11 +20,11 @@
     extraConfig = ''
       exec-once=${pkgs.unstable.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1
       exec-once=systemctl --user restart xremap
-      exec-once=systemctl --user restart waybar
+      exec-once=eww daemon && eww open-many main-bar main-bar-background
+      exec-once=swww init && swww img ~/Backgrounds/Paisley.jpg
       exec-once=wl-paste --type text --watch cliphist store
       exec-once=wl-paste --type image --watch cliphist store
       exec-once=wl-paste --type text -w sh -c 'xclip -selection clipboard -o > /dev/null 2> /dev/null || xclip -selection clipboard'
-      exec-once=${pkgs.unstable.swaybg}/bin/swaybg -i ~/Backgrounds/Paisley.jpg -m tile
       exec-once=rm "$HOME/.cache/cliphist/db"
       exec-once="${pkgs.libratbag}/bin/ratbagctl thundering-gerbil dpi set 1000"
       exec-once=dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY
@@ -72,6 +72,8 @@
         blurls = gtk-layer-shell
         blurls = waybar
         blurls = lockscreen
+        blurls = apply-blur
+        blurls = remove,no-blur
 
         blur {
           enabled = true
@@ -94,7 +96,6 @@
         animation = fade, 1, 3, smoothIn
         animation = fadeDim, 1, 3, smoothIn
         animation = workspaces, 1, 3, default
-
       }
 
       dwindle {
@@ -106,6 +107,7 @@
       layerrule = blur, gtk-layer-shell
       layerrule = blur, lockscreen
       layerrule = blur, waybar
+      layerrule = blur, apply-blur
 
       windowrule = float, org.kde.polkit-kde-authentication-agent-1
       windowrule = float, title:Confirm to replace files

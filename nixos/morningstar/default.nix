@@ -43,6 +43,8 @@ in
     # You can add overlays here
     overlays = [
       inputs.nixneovim.overlays.default
+      inputs.rust-overlay.overlays.default
+      inputs.eww-exclusiver.overlays.default
       inputs.nur.overlay
       outputs.overlays.additions
       outputs.overlays.modifications
@@ -302,8 +304,6 @@ in
       sox
       catppuccin-gtk
       catppuccin-plymouth
-    ] ++ [
-      pkgs.configure-gtk
     ];
 
     etc."greetd/environments".text = ''

@@ -35,6 +35,11 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     xdg-portal-hyprland.url = "github:hyprwm/xdg-desktop-portal-hyprland";
+    eww-exclusiver = {
+      url = "github:matt1432/eww-exclusiver";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    rust-overlay.url = "github:oxalica/rust-overlay";
 
     # Neovim
     nixneovim.url = "github:Veraticus/nixneovim";

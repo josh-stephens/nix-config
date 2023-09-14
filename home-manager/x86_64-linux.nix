@@ -5,7 +5,6 @@
     ./eww
     ./kitty
     ./wofi
-    ./waybar
     ./hyprland
     ./wlogout
     ./swaync
@@ -25,6 +24,7 @@
         desktopName = "Spotify";
       })
       csharp-ls
+      google-chrome
       inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
       polkit-kde-agent
       file
@@ -45,15 +45,16 @@
       qbittorrent
       inputs.nixpkgs-wayland.packages.${system}.wl-clipboard
       hyprpicker
-      swaybg
       swaylock-effects
       swayidle
+      swww
       psensor
       piper
       catppuccin-cursors.mochaLavender
       signal-desktop-beta
       slack
       xclip
+      inputs.nix-gaming.packages.${system}.wine-ge
     ];
 
     pointerCursor = {

@@ -1,65 +1,122 @@
 (defvar script_dir "$XDG_CONFIG_HOME/eww/scripts")
 
-(defwindow bar
+(defwindow main-bar
 	:monitor 0
+  :namespace "no-blur"
 	:geometry (geometry
       :vexpand true
       :hexpand true
-			:width "100%"
-			:height "4%"
+			:width "1910px"
+			:height "40px"
 			:anchor "top center"
-      :x "0px"
-      :y "0px"
+      :x "5px"
+      :y "5px"
 			)
-	:exclusive true
-  :stacking "overlay"
+	:exclusive "exclusive"
+  :stacking "fg"
   :focusable false
 
   (centerbox
-    :geometry (geometry
-      :width "100%"
-      :height "100%"
-      :vexpand true
-      :hexpand true
-      :anchor "top center"
-    )
     :class "modules"
 
     (box
       :class "modules-left"
+      :halign "start"
+      :valign "center"
+      :space-evenly false
 
-      "Left!"
+      (nixos_logo)
+      (workspaces)
     )
 
     (box
       :class "modules-center"
+      :halign "start"
+      :valign "center"
+      :space-evenly false
 
-      "Center!"
+      (window_title)
     )
 
     (box
       :class "modules-right"
+      :halign "end"
+      :valign "center"
+      :space-evenly false
 
-      "Right!"
+      (current_time_widget)
     )
   )
 )
 
-(defwindow bar-background
+(defwindow main-bar-background
 	:monitor 0
 	:windowtype "dock"
+  :space-evenly false
 	:geometry (geometry
       :vexpand true
       :hexpand true
-			:width "100%"
-			:height "4%"
+			:width "1910px"
+			:height "40px"
 			:anchor "top center"
-      :x "0px"
-      :y "0px"
+      :x "5px"
+      :y "5px"
 			)
-	:exclusive false
-  :stacking "bottom"
+	:exclusive "ignore"
+  :stacking "bg"
   :focusable false
+  :namespace "apply-blur"
 
   ""
+)
+
+(defwidget nixos_logo []
+  (label
+    :class "nixos-logo"
+    :text ""
+
+  )
+)
+
+(deflisten workspaces :initial "[]" "bash ~/.config/eww/scripts/get-workspaces.sh")
+(deflisten current_workspace :initial "1" "bash ~/.config/eww/scripts/get-active-workspace.sh")
+(defwidget workspaces []
+  (eventbox
+    :onscroll "bash ~/.config/eww/scripts/change-active-workspace.sh {} ${current_workspace}"
+    :class "workspaces-widget"
+
+    (box
+      :space-evenly true
+
+      (label
+        :text "${workspaces}${current_workspace}"
+        :visible false
+      )
+
+      (for workspace in workspaces
+        (eventbox
+          :onclick "hyprctl dispatch workspace ${workspace.id}"
+
+          (box
+            :class "workspace-entry ${workspace.id == current_workspace ? "current" : ""} ${workspace.windows > 0 ? "occupied" : "empty"}"
+
+            (label :text "${workspace.icon}")
+          )
+        )
+      )
+    )
+  )
+)
+
+(deflisten window_title :initial "..." "sh ~/.config/eww/scripts/get-window-title.sh")
+(defwidget window_title []
+  (box
+    (label :text "${window_title}"
+    )
+  )
+)
+
+(deflisten current_time :initial "..." "date '+%H:%M:%S'")
+(defwidget current_time_widget []
+  (label :text "${current_time}")
 )
