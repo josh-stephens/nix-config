@@ -64,5 +64,24 @@ $rosewater: #f5e0dc;
   margin-left: 6px; font-size: 21px; padding: 3px; border-radius: 9px;
 }
 
-.workspaces-widget .horizontal {background-color: red; padding: 0 4px; font-size: 20px;}
-.workspaces-widget .horizontal label {font-size: 16px;}
+.workspaces-widget .horizontal {
+  background-image: linear-gradient(45deg, $blue 0%, $sapphire 52%, $sky 90%);
+  padding: 0 4px;
+  font-size: 20px;
+  border-radius: 9px;
+  margin-left: 6px;
+}
+
+.workspaces-widget .horizontal .workspace-entry {
+  margin: 2px 4px;
+	padding: 0px 4px;
+  font-size: 16px;
+  color: $text;
+  background: $base;
+  border-radius: 20px;
+}
+
+.workspaces-widget .horizontal .current {
+  color: $base;
+  background-color: #acddf4;
+}
