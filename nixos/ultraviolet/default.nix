@@ -99,6 +99,23 @@ in
       address = "192.168.1.200";
       prefixLength = 24;
     }];
+    wireguard.interfaces = {
+      wg0 = {
+        # Determines the IP address and subnet of the client's end of the tunnel interface.
+        ips = [ "10.131.93.142/32" "fc00:bbbb:bbbb:bb01:d:0:3:5d8e/128" ];
+        listenPort = 51820;
+        privateKeyFile = "/etc/wireguard/keys/private.key";
+
+        peers = [
+          {
+            publicKey = "AcExK2CiCHYWU6Sft49uYnLUhIZiId1M+ISzupOJznI=";
+            allowedIPs = [ "0.0.0.0/0" "::0/0" ];
+            endpoint = "204.152.216.114:51820";
+            persistentKeepalive = 25;
+          }
+        ];
+      };
+    };
   };
 
   boot = {
