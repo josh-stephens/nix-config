@@ -31,7 +31,6 @@
       lua-language-server
       go-tools
       socat
-      mozwire
       wireguard-tools
     ];
   };
