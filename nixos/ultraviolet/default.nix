@@ -196,6 +196,7 @@ in
   services.jellyfin = {
     enable = true;
     package = pkgs.unstable.jellyfin;
+    openFirewall = true;
   };
 
   services.rpcbind.enable = true;
