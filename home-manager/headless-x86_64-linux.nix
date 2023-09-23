@@ -8,7 +8,6 @@
     homeDirectory = "/home/joshsymonds";
 
     packages = with pkgs.unstable; [
-      csharp-ls
       file
       unzip
       nvtop
