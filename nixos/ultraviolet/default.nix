@@ -6,7 +6,6 @@ in
   # You can import other NixOS modules here
   imports = [
     inputs.hardware.nixosModules.common-cpu-intel
-    inputs.hyprland.nixosModules.default
     inputs.agenix.nixosModules.default
     # inputs.agenix-rekey.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
