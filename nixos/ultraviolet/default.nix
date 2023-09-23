@@ -191,8 +191,6 @@ in
     package = pkgs.unstable.tailscale;
   };
 
-  services.mozillavpn.enable = true;
-
   programs.zsh.enable = true;
 
   services.jellyfin = {
