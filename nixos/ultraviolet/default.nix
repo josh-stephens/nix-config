@@ -147,6 +147,17 @@ in
   # Security
   security = {
     rtkit.enable = true;
+    sudo.extraRules = [
+      {
+        users = [ "${user}" ];
+        commands = [
+          {
+            command = "ALL";
+            options = [ "SETENV" "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
   };
 
   # Services
@@ -182,6 +193,29 @@ in
   };
 
   programs.zsh.enable = true;
+
+  services.jellyfin = {
+    enable = true;
+    package = pkgs.unstable.jellyfin;
+  };
+
+  services.rpcbind.enable = true;
+
+  # Mount filesystems
+  fileSystems = {
+    "/mnt/video" = {
+      device = "192.168.1.100:/video";
+      fsType = "nfs";
+    };
+    "/mnt/music" = {
+      device = "192.168.1.100:/music";
+      fsType = "nfs";
+    };
+    "/mnt/books" = {
+      device = "192.168.1.100:/books";
+      fsType = "nfs";
+    };
+  };
 
   # Environment
   environment = {
