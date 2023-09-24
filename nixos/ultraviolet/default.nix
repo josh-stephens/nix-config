@@ -204,6 +204,24 @@ in
     openFirewall = true;
   };
 
+  services.sonarr = {
+    enable = true;
+    openFirewall = true;
+    package = pkgs.unstable.sonarr;
+  };
+
+  services.radarr = {
+    enable = true;
+    openFirewall = true;
+    package = pkgs.unstable.radarr;
+  };
+
+  services.prowlarr = {
+    enable = true;
+    openFirewall = true;
+    package = pkgs.unstable.prowlarr;
+  };
+
   services.rpcbind.enable = true;
 
   # Mount filesystems
