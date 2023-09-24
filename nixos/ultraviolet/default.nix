@@ -231,6 +231,19 @@ in
     };
   };
 
+  virtualisation.oci-containers = {
+    backend = "podman";
+    containers = {
+      flaresolverr = {
+        image = "flaresolverr/flaresolverr:v3.3.6";
+        ports = [
+          "8191:8191"
+        ];
+      };
+    };
+  };
+
+
   services.rpcbind.enable = true;
 
   # Mount filesystems
