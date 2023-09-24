@@ -219,7 +219,6 @@ in
   services.prowlarr = {
     enable = true;
     openFirewall = true;
-    package = pkgs.unstable.prowlarr;
   };
 
   services.rpcbind.enable = true;
