@@ -221,6 +221,16 @@ in
     openFirewall = true;
   };
 
+  services.deluge = {
+    enable = true;
+    openFirewall = true;
+    package = pkgs.unstable.deluge;
+    web = {
+      enable = true;
+      openFirewall = true;
+    };
+  };
+
   services.rpcbind.enable = true;
 
   # Mount filesystems
