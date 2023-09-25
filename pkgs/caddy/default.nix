@@ -26,7 +26,7 @@ buildGoModule {
     hash = "sha256-Tke/eNoeRWXOB1AxagaxPFeyV9HLm9RXjQNQRtcZI0A=";
   };
 
-  vendorHash = "sha256-CnWAVGPrHIjWJgh4LwJvrjQJp/Pz92QHdANXZIcIhg8=";
+  vendorHash = "sha256-NKn+A9oTS7DUk1qaZPSxFh80MBM2nOrgtDjngGXVxk0=";
 
   subPackages = [ "cmd/caddy" ];
 

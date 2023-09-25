@@ -233,7 +233,7 @@ in
 
   services.caddy = {
     enable = true;
-    package = pkgs.myCaddy;
+    package = pkgs.unstable.caddy;
     virtualHosts."home.husbuddies.gay".extraConfig = ''
       respond "Hello, world!"
     '';
