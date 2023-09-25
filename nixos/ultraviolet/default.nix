@@ -236,8 +236,6 @@ in
     package = pkgs.myCaddy;
     virtualHosts."home.husbuddies.gay".extraConfig = ''
       respond "Hello, world!"
-    '';
-    extraConfig = ''
       tls {
         dns cloudflare {file./etc/cloudflare/token}
       }
