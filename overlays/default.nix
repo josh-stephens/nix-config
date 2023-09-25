@@ -72,12 +72,11 @@
         (self: super: {
           caddy = super.caddy.overrideAttrs (oldAttrs: {
             src = super.fetchFromGitHub {
-              owner = "caddyserver";
+              owner = "Veraticus";
               repo = "caddy";
-              rev = "52459de4583c15f2caf5d5d21b0fb03ed16f7850"; # file.* global replacements branch @ https://github.com/caddyserver/caddy/pull/5463
-              hash = "sha256-zeqgEwFOPW82JAlR+v6/REPJhoSSmTTFOXr6JDosUlg=";
+              rev = "master"; # file.* global replacements branch @ https://github.com/caddyserver/caddy/pull/5463
+              hash = "";
             };
-            vendorHash = "";
           });
         })
       ];
