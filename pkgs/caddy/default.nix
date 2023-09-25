@@ -17,7 +17,7 @@ let
 in
 buildGoModule {
   pname = "caddy";
-  inherit version;
+  version = "master";
 
   src = fetchFromGitHub {
     owner = "Veraticus";
