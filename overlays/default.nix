@@ -75,7 +75,7 @@
               owner = "Veraticus";
               repo = "caddy";
               rev = "master"; # file.* global replacements branch @ https://github.com/caddyserver/caddy/pull/5463
-              hash = "";
+              hash = "sha256-Tke/eNoeRWXOB1AxagaxPFeyV9HLm9RXjQNQRtcZI0A=";
             };
           });
         })
