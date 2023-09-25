@@ -69,18 +69,16 @@
             };
         })
 
-        # Override gamescope with a version that supports mouse sensitivity:
-        # https://github.com/ValveSoftware/gamescope/pull/915
-        # (self: super: {
-        #   gamescope = super.gamescope.overrideAttrs (oldAttrs: rec {
-        #     src = super.fetchFromGitHub {
-        #       owner = "ValveSoftware";
-        #       repo = "gamescope";
-        #       rev = "4d92843a76d0792c85b408c04d8727bf2f2fdceb";
-        #       sha256 = "sha256-jbx8P6Vi0N5FD581rg6Qf3rr0grnHHigW0Fcn/7pn9I=";
-        #     };
-        #   });
-        # })
+        (self: super: {
+          caddy = super.caddy.overrideAttrs (oldAttrs: {
+            src = super.fetchFromGitHub {
+              owner = "caddyserver";
+              repo = "caddy";
+              rev = "52459de4583c15f2caf5d5d21b0fb03ed16f7850"; # file.* global replacements branch @ https://github.com/caddyserver/caddy/pull/5463
+              hash = "";
+            };
+          });
+        })
       ];
     };
   };

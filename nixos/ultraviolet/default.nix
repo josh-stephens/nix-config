@@ -231,6 +231,19 @@ in
     };
   };
 
+  services.caddy = {
+    enable = true;
+    package = pkgs.unstable.caddy;
+    virtualHosts."home.husbuddies.gay".extraConfig = ''
+      respond "Hello, world!"
+    '';
+    extraConfig = ''
+      tls {
+        dns cloudflare {file./etc/cloudflare/token}
+      }
+    '';
+  };
+
   virtualisation.oci-containers = {
     backend = "podman";
     containers = {
@@ -238,6 +251,15 @@ in
         image = "flaresolverr/flaresolverr:v3.3.6";
         ports = [
           "8191:8191"
+        ];
+      };
+      homepage = {
+        image = "ghcr.io/benphelps/homepage:v0.6.35";
+        ports = [
+          "3000:3000"
+        ];
+        volumes = [
+
         ];
       };
     };
