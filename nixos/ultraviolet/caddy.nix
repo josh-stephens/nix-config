@@ -53,7 +53,7 @@ in
   ];
 
   # interface
-  options.services.caddy = {
+  options.services.myCaddy = {
     enable = mkEnableOption (lib.mdDoc "Caddy web server");
 
     user = mkOption {
