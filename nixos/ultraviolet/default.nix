@@ -263,28 +263,28 @@ in
       - Media Management:
         - Sonarr:
             icon: sonarr.png
-            href: http://192.168.1.200:8989/
+            href: http://192.168.1.200:8989
             description: Series management
             widget:
               type: sonarr
-              url: http://192.168.1.200:8989/
+              url: http://192.168.1.200:8989
               key: {{HOMEPAGE_FILE_SONARR_API_KEY}}
         - Radarr:
             icon: radarr.png
-            href: http://192.168.1.200:7878/
+            href: http://192.168.1.200:7878
             description: Movie management
             widget:
               type: radarr
-              url: http://192.168.1.200:7878/
+              url: http://192.168.1.200:7878
               key: {{HOMEPAGE_FILE_RADARR_API_KEY}}
       - Media:
         - Jellyfin:
             icon: jellyfin.png
-            href: http://192.168.1.200:7878/
+            href: http://192.168.1.200:8096
             description: Movie management
             widget:
-              type: radarr
-              url: http://192.168.1.200:7878/
+              type: jellyfin
+              url: http://192.168.1.200:8096
               key: {{HOMEPAGE_FILE_JELLYFIN_API_KEY}}
     '';
   };

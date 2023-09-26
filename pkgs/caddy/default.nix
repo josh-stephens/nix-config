@@ -5,14 +5,15 @@
 , caddy
 , testers
 , installShellFiles
+, mullvad-vpn
 }:
 let
   version = "2.7.5";
   dist = fetchFromGitHub {
-    owner = "caddyserver";
+    owner = "Veraticus";
     repo = "dist";
-    rev = "v2.7.4";
-    hash = "sha256-8wdSRAONIPYe6kC948xgAGHm9cePbXsOBp9gzeDI0AI=";
+    rev = "v2.7.5";
+    hash = "";
   };
 in
 buildGoModule {
@@ -36,13 +37,15 @@ buildGoModule {
     "-X github.com/caddyserver/caddy/v2.CustomVersion=${version}"
   ];
 
+  buildInputs = [ mullvad-vpn ];
+
   nativeBuildInputs = [ installShellFiles ];
 
   postInstall = ''
     install -Dm644 ${dist}/init/caddy.service ${dist}/init/caddy-api.service -t $out/lib/systemd/system
 
-    substituteInPlace $out/lib/systemd/system/caddy.service --replace "/usr/bin/caddy" "$out/bin/caddy"
-    substituteInPlace $out/lib/systemd/system/caddy-api.service --replace "/usr/bin/caddy" "$out/bin/caddy"
+    substituteInPlace $out/lib/systemd/system/caddy.service --replace "/usr/bin/caddy" "${mullvad-vpn}/vin/mullvad-exclude $out/bin/caddy"
+    substituteInPlace $out/lib/systemd/system/caddy-api.service --replace "/usr/bin/caddy" "${mullvad-vpn}/vin/mullvad-exclude $out/bin/caddy"
 
     $out/bin/caddy manpage --directory manpages
     installManPage manpages/*
