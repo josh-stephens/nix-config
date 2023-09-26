@@ -241,20 +241,19 @@ in
       storage file_system {
         root /var/lib/caddy
       }
+      tls {
+        dns cloudflare {env.CF_API_TOKEN}
+        resolvers 1.1.1.1
+      }
     '';
     virtualHosts."home.husbuddies.gay" = {
-      hostName = "home.husbuddies.gay";
-      serverAliases = [ "192.168.1.200" "localhost" ];
       extraConfig = ''
-        handle_path /radarr/* { reverse_proxy /* 192.168.1.200:8989 }
-        handle_path /sonarr/* { reverse_proxy /* 192.168.1.200:7878 }
-        handle_path /jellyfin/* { reverse_proxy /* 192.168.1.200:8096 }
         reverse_proxy /* localhost:3000
-
-        tls {
-          dns cloudflare {env.CF_API_TOKEN}
-          resolvers 1.1.1.1
-        }
+      '';
+    };
+    virtualHosts."jellyfin.home.husbuddies.gay" = {
+      extraConfig = ''
+        reverse_proxy /* localhost:8096
       '';
     };
   };
