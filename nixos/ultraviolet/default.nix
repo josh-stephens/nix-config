@@ -240,6 +240,8 @@ in
       serverAliases = [ "192.168.1.200" "localhost" ];
       extraConfig = ''
         respond "Hello, world!"
+
+        tls internal
       '';
     };
   };
