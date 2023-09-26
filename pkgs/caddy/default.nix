@@ -64,16 +64,15 @@ buildGoModule {
   '';
 
   overrideModAttrs = _: {
-    preBuild = lib.flip lib.concatMapStrings plugins
+    preBuild = lib.flip lib.strings.concatMapStrings plugins
       ({ name
        , version
        ,
        }: "go get ${lib.escapeShellArg name}@${lib.escapeShellArg version}\n");
   };
 
-  postPatch = lib.flip lib.concatMapStrings plugins
+  postPatch = lib.flip lib.strings.concatMapStrings plugins
     ({ name, ... }: "sed -i '/plug in Caddy modules here/a \\\\t_ \"${name}\"' cmd/caddy/main.go\n");
-  postConfigure = "cp vendor/go.mod vendor/go.sum .";
 
   passthru.tests = {
     inherit (nixosTests) caddy;
