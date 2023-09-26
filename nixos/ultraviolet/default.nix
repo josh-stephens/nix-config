@@ -252,8 +252,7 @@ in
   environment.etc."homepage/config/settings.yml" = {
     mode = "0644";
     text = ''
-      title: home.husbuddies.gay
-      - Media:
+      - Media Management:
         - Sonarr:
             icon: sonarr.png
             href: http://192.168.1.200:8989/
@@ -270,6 +269,7 @@ in
               type: radarr
               url: http://192.168.1.200:7878/
               key: {{HOMEPAGE_FILE_RADARR_API_KEY}}
+      - Media:
         - Jellyfin:
             icon: jellyfin.png
             href: http://192.168.1.200:7878/
