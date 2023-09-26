@@ -239,7 +239,7 @@ in
       hostName = "home.husbuddies.gay";
       serverAliases = [ "192.168.1.200" "localhost" ];
       extraConfig = ''
-        respond "Hello, world!"
+        reverse_proxy /* localhost:3000
 
         tls internal
       '';
