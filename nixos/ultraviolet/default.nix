@@ -239,6 +239,10 @@ in
       serverAliases = [ "192.168.1.200" "localhost" ];
       extraConfig = ''
         respond "Hello, world!"
+
+        tls {
+          dns cloudflare {file./etc/cloudflare/token}
+        }
       '';
     };
   };
@@ -294,8 +298,6 @@ in
       cachix
       docker-compose
       tailscale
-      lsof
-      nssTools
     ];
 
     loginShellInit = ''
