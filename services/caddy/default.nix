@@ -51,7 +51,7 @@ in
     enable = mkEnableOption (lib.mdDoc "Caddy web server");
 
     user = mkOption {
-      default = "caddy";
+      default = "root";
       type = types.str;
       description = lib.mdDoc ''
         User account under which caddy runs.
@@ -65,7 +65,7 @@ in
     };
 
     group = mkOption {
-      default = "caddy";
+      default = "root";
       type = types.str;
       description = lib.mdDoc ''
         Group account under which caddy runs.
