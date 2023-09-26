@@ -68,8 +68,8 @@
 
       # Common configurations for NixOS and Darwin
       commonConfig = system: specialArgs: modules: {
-        inherit system specialArgs;
-        modules = modules ++ [ ./services/default.nix ]; # Add your services here
+        specialArgs = { inherit inputs outputs; };
+        modules = modules;
       };
 
       nixosConfiguration = hostName: modules: nixpkgs.lib.nixosSystem (
@@ -95,12 +95,12 @@
       overlays = import ./overlays { inherit inputs; };
 
       nixosConfigurations = {
-        morningstar = nixosConfiguration "morningstar" [ ./nixos/morningstar ];
-        ultraviolet = nixosConfiguration "ultraviolet" [ ./nixos/ultraviolet ];
+        morningstar = nixosConfiguration "morningstar" [ ./hosts/morningstar ];
+        ultraviolet = nixosConfiguration "ultraviolet" [ ./hosts/ultraviolet ];
       };
 
       darwinConfigurations = {
-        cloudbank = darwinConfiguration "cloudbank" [ ./nixos/cloudbank ];
+        cloudbank = darwinConfiguration "cloudbank" [ ./hosts/cloudbank ];
       };
 
       homeConfigurations = {

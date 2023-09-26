@@ -1,9 +1,10 @@
 # From https://github.com/IvarWithoutBones/dotfiles/blob/main/modules/darwin/applications.nix
 
-let 
+let
   system = "aarch64-darwin";
   user = "joshsymonds";
-in { inputs, lib, config, pkgs, ... }: {
+in
+{ inputs, lib, config, pkgs, ... }: {
   # Nix-darwin does not link installed applications to the user environment. This means apps will not show up
   # in spotlight, and when launched through the dock they come with a terminal window. This is a workaround.
   # Upstream issue: https://github.com/LnL7/nix-darwin/issues/214
@@ -29,7 +30,7 @@ in { inputs, lib, config, pkgs, ... }: {
             # It does understand MacOS aliases though, a unique filesystem feature. Sadly they cannot be created
             # from bash (as far as I know), so we use the oh-so-great Apple Script instead.
             /usr/bin/osascript -e "
-                set fileToAlias to POSIX file \"$src\" 
+                set fileToAlias to POSIX file \"$src\"
                 set applicationsFolder to POSIX file \"$nix_apps\"
 
                 tell application \"Finder\"
@@ -40,7 +41,4 @@ in { inputs, lib, config, pkgs, ... }: {
             " 1>/dev/null
         done
   '';
-
-
 }
-
