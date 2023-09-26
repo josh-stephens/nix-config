@@ -311,7 +311,7 @@ in
         environment = {
           HOMEPAGE_FILE_SONARR_API_KEY = "/app/keys/sonarr-api-key";
           HOMEPAGE_FILE_RADARR_API_KEY = "/app/keys/radarr-api-key";
-          HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfyin-api-key";
+          HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
         };
       };
     };
