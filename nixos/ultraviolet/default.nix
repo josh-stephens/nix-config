@@ -235,7 +235,7 @@ in
     enable = true;
     package = pkgs.myCaddy;
     virtualHosts."home.husbuddies.gay" = {
-      hostname = "home.husbuddies.gay";
+      hostName = "home.husbuddies.gay";
       serverAliases = [ "192.168.1.200" "127.0.0.1" "localhost" ];
       listenAddresses = [ "127.0.0.1" "localhost" "::1" ];
       extraConfig = ''
