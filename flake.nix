@@ -79,7 +79,7 @@
       darwinConfiguration = system: hostName: modules: darwin.lib.darwinSystem (
         commonConfig system { inherit inputs outputs; } modules
       );
-      homeConfiguration = system: userName: modules: home-manager.lib.homeManagerConfiguration {
+      homeConfiguration = system: modules: home-manager.lib.homeManagerConfiguration {
         inherit system;
         pkgs = nixpkgs.legacyPackages.${system};
         extraSpecialArgs = { inherit inputs outputs; };
@@ -104,9 +104,9 @@
       };
 
       homeConfigurations = {
-        "joshsymonds@morningstar" = homeConfiguration "x86_64-linux" "joshsymonds@morningstar" [ ./home-manager ];
-        "joshsymonds@ultraviolet" = homeConfiguration "x86_64-linux" "joshsymonds@ultraviolet" [ ./home-manager ];
-        "joshsymonds@cloudbank" = homeConfiguration "aarch64-darwin" "joshsymonds@cloudbank" [ ./home-manager ];
+        "joshsymonds@morningstar" = homeConfiguration "x86_64-linux" [ ./home-manager ];
+        "joshsymonds@ultraviolet" = homeConfiguration "x86_64-linux" [ ./home-manager ];
+        "joshsymonds@cloudbank" = homeConfiguration "aarch64-darwin" [ ./home-manager ];
       };
     };
 }
