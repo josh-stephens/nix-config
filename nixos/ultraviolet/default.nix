@@ -244,7 +244,10 @@ in
         handle_path /jellyfin/* { reverse_proxy /* 192.168.1.200:8096 }
         reverse_proxy /* localhost:3000
 
-        tls internal
+        tls {
+          dns cloudflare {env.CF_API_TOKEN}
+          resolvers 1.1.1.1
+        }
       '';
     };
   };
