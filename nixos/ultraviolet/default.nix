@@ -91,7 +91,7 @@ in
       checkReversePath = "loose";
       trustedInterfaces = [ "tailscale0" ];
       allowedUDPPorts = [ 51820 config.services.tailscale.port ];
-      allowedTCPPorts = [ 22 ];
+      allowedTCPPorts = [ 22 80 443 ];
     };
     defaultGateway = "192.168.1.1";
     nameservers = [ "192.168.1.1" ];
@@ -234,12 +234,14 @@ in
   services.caddy = {
     enable = true;
     package = pkgs.myCaddy;
-    virtualHosts."home.husbuddies.gay".extraConfig = ''
-      respond "Hello, world!"
-      tls {
-        dns cloudflare {file./etc/cloudflare/token}
-      }
-    '';
+    virtualHosts."home.husbuddies.gay" = {
+      hostname = "home.husbuddies.gay";
+      serverAliases = [ "192.168.1.200" "127.0.0.1" "localhost" ];
+      listenAddresses = [ "127.0.0.1" "localhost" "::1" ];
+      extraConfig = ''
+        respond "Hello, world!"
+      '';
+    };
   };
 
   virtualisation.oci-containers = {
