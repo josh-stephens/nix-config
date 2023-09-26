@@ -13,7 +13,7 @@ let
     owner = "Veraticus";
     repo = "dist";
     rev = "v2.7.5";
-    hash = "";
+    hash = "sha256-/7EnQXGh9WhD7jQRWiHJFb7eMSq6Hiw7IGUdymr06pA=";
   };
 in
 buildGoModule {
