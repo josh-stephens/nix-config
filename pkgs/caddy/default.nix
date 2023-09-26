@@ -5,10 +5,6 @@
 , caddy
 , testers
 , installShellFiles
-, flip
-, escapeShellArg
-, concatMapStrings
-, flatten
 }:
 let
   version = "2.7.4";
@@ -68,14 +64,14 @@ buildGoModule {
   '';
 
   overrideModAttrs = _: {
-    preBuild = flip concatMapStrings plugins
+    preBuild = lib.flip lib.concatMapStrings plugins
       ({ name
        , version
        ,
-       }: "go get ${escapeShellArg name}@${escapeShellArg version}\n");
+       }: "go get ${lib.escapeShellArg name}@${lib.escapeShellArg version}\n");
   };
 
-  postPatch = flip concatMapStrings plugins
+  postPatch = lib.flip lib.concatMapStrings plugins
     ({ name, ... }: "sed -i '/plug in Caddy modules here/a \\\\t_ \"${name}\"' cmd/caddy/main.go\n");
   postConfigure = "cp vendor/go.mod vendor/go.sum .";
 
