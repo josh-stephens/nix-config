@@ -249,7 +249,7 @@ in
     };
   };
 
-  environment.etc."homepage/config/settings.yml" = {
+  environment.etc."homepage/config/settings.yaml" = {
     mode = "0644";
     text = ''
       - Media Management:
