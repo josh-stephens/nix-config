@@ -68,19 +68,19 @@
 
       # Common configurations for NixOS and Darwin
       commonConfig = system: specialArgs: modules: {
-        specialArgs = { inherit inputs outputs; };
+        inherit system specialArgs;
         modules = modules;
       };
 
-      nixosConfiguration = hostName: modules: nixpkgs.lib.nixosSystem (
-        commonConfig "x86_64-linux" { inherit inputs outputs; } modules
+      nixosConfiguration = system: hostName: modules: nixpkgs.lib.nixosSystem (
+        commonConfig system { inherit inputs outputs; } modules
       );
 
-      darwinConfiguration = hostName: modules: darwin.lib.darwinSystem (
-        commonConfig "aarch64-darwin" { inherit inputs outputs; } modules
+      darwinConfiguration = system: hostName: modules: darwin.lib.darwinSystem (
+        commonConfig system { inherit inputs outputs; } modules
       );
-
       homeConfiguration = system: userName: modules: home-manager.lib.homeManagerConfiguration {
+        inherit system;
         pkgs = nixpkgs.legacyPackages.${system};
         extraSpecialArgs = { inherit inputs outputs; };
         modules = modules;
@@ -95,12 +95,12 @@
       overlays = import ./overlays { inherit inputs; };
 
       nixosConfigurations = {
-        morningstar = nixosConfiguration "morningstar" [ ./hosts/morningstar ];
-        ultraviolet = nixosConfiguration "ultraviolet" [ ./hosts/ultraviolet ];
+        morningstar = nixosConfiguration "x86_64-linux" "morningstar" [ ./hosts/morningstar ];
+        ultraviolet = nixosConfiguration "x86_64-linux" "ultraviolet" [ ./hosts/ultraviolet ];
       };
 
       darwinConfigurations = {
-        cloudbank = darwinConfiguration "cloudbank" [ ./hosts/cloudbank ];
+        cloudbank = darwinConfiguration "aarch64-darwin" "cloudbank" [ ./hosts/cloudbank ];
       };
 
       homeConfigurations = {
