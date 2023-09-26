@@ -232,6 +232,7 @@ in
   };
 
   services.caddy = {
+    acmeCA = null;
     enable = true;
     package = pkgs.myCaddy;
     virtualHosts."home.husbuddies.gay" = {
