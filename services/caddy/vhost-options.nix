@@ -50,7 +50,7 @@ in
         output file ${cfg.logDir}/access-${config.hostName}.log
       '';
       defaultText = ''
-        output file ''${config.services.caddy.logDir}/access-''${hostName}.log
+        output file ''${config.services.myCaddy.logDir}/access-''${hostName}.log
       '';
       example = literalExpression ''
         mkForce '''
