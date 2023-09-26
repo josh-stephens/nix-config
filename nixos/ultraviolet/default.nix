@@ -16,6 +16,7 @@ in
 
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
+    ./caddy.nix
   ];
 
   # Hardware setup
@@ -231,10 +232,11 @@ in
     };
   };
 
-  services.caddy = {
+  services.myCaddy = {
     acmeCA = null;
     enable = true;
     package = pkgs.myCaddy;
+    mullvadVpnPackage = pkgs.unstable.mullvad-vpn;
     virtualHosts."home.husbuddies.gay" = {
       hostName = "home.husbuddies.gay";
       serverAliases = [ "192.168.1.200" "localhost" ];
