@@ -237,6 +237,11 @@ in
     enable = true;
     package = pkgs.myCaddy;
     mullvadVpnPackage = pkgs.unstable.mullvad-vpn;
+    globalConfig = ''
+      storage file_system {
+        root /var/lib/caddy
+      }
+    '';
     virtualHosts."home.husbuddies.gay" = {
       hostName = "home.husbuddies.gay";
       serverAliases = [ "192.168.1.200" "localhost" ];
