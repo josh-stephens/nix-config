@@ -239,12 +239,48 @@ in
       hostName = "home.husbuddies.gay";
       serverAliases = [ "192.168.1.200" "localhost" ];
       extraConfig = ''
+        handle_path /radarr/* { reverse_proxy /* 192.168.1.200:8989 }
+        handle_path /sonarr/* { reverse_proxy /* 192.168.1.200:7878 }
+        handle_path /jellyfin/* { reverse_proxy /* 192.168.1.200:8096 }
         reverse_proxy /* localhost:3000
 
         tls internal
       '';
     };
   };
+
+  environment.etc."homepage/config/settings.yml" = {
+    mode = "0644";
+    text = ''
+      title: home.husbuddies.gay
+      - Media:
+        - Sonarr:
+            icon: sonarr.png
+            href: http://192.168.1.200:8989/
+            description: Series management
+            widget:
+              type: sonarr
+              url: http://192.168.1.200:8989/
+              key: {{HOMEPAGE_FILE_SONARR_API_KEY}}
+        - Radarr:
+            icon: radarr.png
+            href: http://192.168.1.200:7878/
+            description: Movie management
+            widget:
+              type: radarr
+              url: http://192.168.1.200:7878/
+              key: {{HOMEPAGE_FILE_RADARR_API_KEY}}
+        - Jellyfin:
+            icon: jellyfin.png
+            href: http://192.168.1.200:7878/
+            description: Movie management
+            widget:
+              type: radarr
+              url: http://192.168.1.200:7878/
+              key: {{HOMEPAGE_FILE_JELLYFIN_API_KEY}}
+    '';
+  };
+
 
   virtualisation.oci-containers = {
     backend = "podman";
@@ -261,8 +297,14 @@ in
           "3000:3000"
         ];
         volumes = [
-
+          "/etc/homepage/config:/app/config"
+          "/etc/homepage/keys:/app/keys"
         ];
+        environment = {
+          HOMEPAGE_FILE_SONARR_API_KEY = "/app/keys/sonarr-api-key";
+          HOMEPAGE_FILE_RADARR_API_KEY = "/app/keys/radarr-api-key";
+          HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfyin-api-key";
+        };
       };
     };
   };
