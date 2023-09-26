@@ -55,15 +55,38 @@
   outputs = { nixpkgs, darwin, home-manager, self, ... }@inputs:
     let
       inherit (self) outputs;
-      forAllSystems = nixpkgs.lib.genAttrs [
+
+      systems = [
         "aarch64-linux"
         "i686-linux"
         "x86_64-linux"
         "aarch64-darwin"
         "x86_64-darwin"
       ];
+
+      forAllSystems = f: nixpkgs.lib.genAttrs systems f;
+
+      # Common configurations for NixOS and Darwin
+      commonConfig = system: specialArgs: modules: {
+        inherit system specialArgs;
+        modules = modules ++ [ ./services/default.nix ]; # Add your services here
+      };
+
+      nixosConfiguration = hostName: modules: nixpkgs.lib.nixosSystem (
+        commonConfig "x86_64-linux" { inherit inputs outputs; } modules
+      );
+
+      darwinConfiguration = hostName: modules: darwin.lib.darwinSystem (
+        commonConfig "aarch64-darwin" { inherit inputs outputs; } modules
+      );
+
+      homeConfiguration = system: userName: modules: home-manager.lib.homeManagerConfiguration {
+        pkgs = nixpkgs.legacyPackages.${system};
+        extraSpecialArgs = { inherit inputs outputs; };
+        modules = modules;
+      };
     in
-    rec {
+    {
       packages = forAllSystems (system:
         let pkgs = nixpkgs.legacyPackages.${system};
         in import ./pkgs { inherit pkgs; }
@@ -71,43 +94,19 @@
 
       overlays = import ./overlays { inherit inputs; };
 
-      nixosConfigurations.morningstar = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
-        # > Our main nixos configuration file <
-        modules = [ ./nixos/morningstar ];
+      nixosConfigurations = {
+        morningstar = nixosConfiguration "morningstar" [ ./nixos/morningstar ];
+        ultraviolet = nixosConfiguration "ultraviolet" [ ./nixos/ultraviolet ];
       };
 
-      nixosConfigurations.ultraviolet = nixpkgs.lib.nixosSystem {
-        specialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
-        # > Our main nixos configuration file <
-        modules = [ ./nixos/ultraviolet ];
-      };
-
-      darwinConfigurations.cloudbank = darwin.lib.darwinSystem {
-        system = "aarch64-darwin"; # "x86_64-darwin" if you're using a pre M1 mac
-        specialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
-        modules = [ ./nixos/cloudbank ]; # will be important later
+      darwinConfigurations = {
+        cloudbank = darwinConfiguration "cloudbank" [ ./nixos/cloudbank ];
       };
 
       homeConfigurations = {
-        "joshsymonds@morningstar" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-          extraSpecialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
-          # > Our main home-manager configuration file <
-          modules = [ ./home-manager ];
-        };
-        "joshsymonds@ultraviolet" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.x86_64-linux;
-          extraSpecialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
-          # > Our main home-manager configuration file <
-          modules = [ ./home-manager ];
-        };
-        "joshsymonds@cloudbank" = home-manager.lib.homeManagerConfiguration {
-          pkgs = nixpkgs.legacyPackages.aarch64-darwin;
-          extraSpecialArgs = { inherit inputs outputs; }; # Pass flake inputs to our config
-          # > Our main home-manager configuration file <
-          modules = [ ./home-manager ];
-        };
+        "joshsymonds@morningstar" = homeConfiguration "x86_64-linux" "joshsymonds@morningstar" [ ./home-manager ];
+        "joshsymonds@ultraviolet" = homeConfiguration "x86_64-linux" "joshsymonds@ultraviolet" [ ./home-manager ];
+        "joshsymonds@cloudbank" = homeConfiguration "aarch64-darwin" "joshsymonds@cloudbank" [ ./home-manager ];
       };
     };
 }

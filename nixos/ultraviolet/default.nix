@@ -16,7 +16,6 @@ in
 
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
-    ../../services/caddy
   ];
 
   # Hardware setup
@@ -298,6 +297,14 @@ in
               type: radarr
               url: http://localhost:7878
               key: {{HOMEPAGE_FILE_RADARR_API_KEY}}
+        - Deluge:
+            icon: deluge.png
+            href: https://deluge.home.husbuddies.gay
+            description: Movie management
+            widget:
+              type: radarr
+              url: http://localhost:8112
+              password: {{HOMEPAGE_FILE_DELUGE_PASSWORD}}
       - Media:
         - Jellyfin:
             icon: jellyfin.png
@@ -333,6 +340,7 @@ in
           HOMEPAGE_FILE_SONARR_API_KEY = "/app/keys/sonarr-api-key";
           HOMEPAGE_FILE_RADARR_API_KEY = "/app/keys/radarr-api-key";
           HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
+          HOMEPAGE_FILE_DELUGE_PASSWORD = "/app/keys/deluge-password";
         };
       };
     };
