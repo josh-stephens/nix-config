@@ -295,6 +295,7 @@ in
       cachix
       docker-compose
       tailscale
+      lsof
     ];
 
     loginShellInit = ''
