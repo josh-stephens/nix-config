@@ -5,6 +5,10 @@
 , caddy
 , testers
 , installShellFiles
+, flip
+, escapeShellArg
+, concatMapStrings
+, flatten
 }:
 let
   version = "2.7.4";
@@ -14,6 +18,12 @@ let
     rev = "v${version}";
     hash = "sha256-8wdSRAONIPYe6kC948xgAGHm9cePbXsOBp9gzeDI0AI=";
   };
+  plugins = [
+    {
+      name = "github.com/caddy-dns/cloudflare";
+      version = "bfe272c8525b6dd8248fcdddb460fd6accfc4e84";
+    }
+  ];
 in
 buildGoModule {
   pname = "caddy";
@@ -25,6 +35,8 @@ buildGoModule {
     rev = "master";
     hash = "sha256-Tke/eNoeRWXOB1AxagaxPFeyV9HLm9RXjQNQRtcZI0A=";
   };
+
+  passthru.plugins = plugins;
 
   vendorHash = "sha256-NKn+A9oTS7DUk1qaZPSxFh80MBM2nOrgtDjngGXVxk0=";
 
@@ -39,6 +51,8 @@ buildGoModule {
   nativeBuildInputs = [ installShellFiles ];
 
   postInstall = ''
+    cp go.mod go.sum $out/
+
     install -Dm644 ${dist}/init/caddy.service ${dist}/init/caddy-api.service -t $out/lib/systemd/system
 
     substituteInPlace $out/lib/systemd/system/caddy.service --replace "/usr/bin/caddy" "$out/bin/caddy"
@@ -52,6 +66,18 @@ buildGoModule {
       --fish <($out/bin/caddy completion fish) \
       --zsh <($out/bin/caddy completion zsh)
   '';
+
+  overrideModAttrs = _: {
+    preBuild = flip concatMapStrings plugins
+      ({ name
+       , version
+       ,
+       }: "go get ${escapeShellArg name}@${escapeShellArg version}\n");
+  };
+
+  postPatch = flip concatMapStrings plugins
+    ({ name, ... }: "sed -i '/plug in Caddy modules here/a \\\\t_ \"${name}\"' cmd/caddy/main.go\n");
+  postConfigure = "cp vendor/go.mod vendor/go.sum .";
 
   passthru.tests = {
     inherit (nixosTests) caddy;
