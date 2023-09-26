@@ -202,24 +202,20 @@ in
   services.jellyfin = {
     enable = true;
     package = pkgs.unstable.jellyfin;
-    openFirewall = true;
   };
 
   services.sonarr = {
     enable = true;
-    openFirewall = true;
     package = pkgs.unstable.sonarr;
   };
 
   services.radarr = {
     enable = true;
-    openFirewall = true;
     package = pkgs.unstable.radarr;
   };
 
   services.prowlarr = {
     enable = true;
-    openFirewall = true;
   };
 
   services.deluge = {
@@ -228,7 +224,6 @@ in
     package = pkgs.unstable.deluge;
     web = {
       enable = true;
-      openFirewall = true;
     };
   };
 
@@ -248,9 +243,29 @@ in
         reverse_proxy /* localhost:3000
       '';
     };
+    virtualHosts."deluge.home.husbuddies.gay" = {
+      extraConfig = ''
+        reverse_proxy /* localhost:8112
+      '';
+    };
     virtualHosts."jellyfin.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:8096
+      '';
+    };
+    virtualHosts."radarr.home.husbuddies.gay" = {
+      extraConfig = ''
+        reverse_proxy /* localhost:8989
+      '';
+    };
+    virtualHosts."sonarr.home.husbuddies.gay" = {
+      extraConfig = ''
+        reverse_proxy /* localhost:7878
+      '';
+    };
+    virtualHosts."prowlarr.home.husbuddies.gay" = {
+      extraConfig = ''
+        reverse_proxy /* localhost:9696
       '';
     };
   };
@@ -269,28 +284,28 @@ in
       - Media Management:
         - Sonarr:
             icon: sonarr.png
-            href: http://192.168.1.200:8989
+            href: https://sonarr.home.husbuddies.gay
             description: Series management
             widget:
               type: sonarr
-              url: http://192.168.1.200:8989
+              url: http://localhost:8989
               key: {{HOMEPAGE_FILE_SONARR_API_KEY}}
         - Radarr:
             icon: radarr.png
-            href: http://192.168.1.200:7878
+            href: https://radarr.home.husbuddies.gay
             description: Movie management
             widget:
               type: radarr
-              url: http://192.168.1.200:7878
+              url: http://localhost:7878
               key: {{HOMEPAGE_FILE_RADARR_API_KEY}}
       - Media:
         - Jellyfin:
             icon: jellyfin.png
-            href: http://192.168.1.200:8096
+            href: http://jellyfin.home.husbuddies.gay
             description: Movie management
             widget:
               type: jellyfin
-              url: http://192.168.1.200:8096
+              url: http://localhost:8096
               key: {{HOMEPAGE_FILE_JELLYFIN_API_KEY}}
     '';
   };
