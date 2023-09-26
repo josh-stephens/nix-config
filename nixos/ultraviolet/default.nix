@@ -241,10 +241,7 @@ in
       storage file_system {
         root /var/lib/caddy
       }
-      tls {
-        dns cloudflare {env.CF_API_TOKEN}
-        resolvers 1.1.1.1
-      }
+      acme_dns cloudflare {env.CF_API_TOKEN}
     '';
     virtualHosts."home.husbuddies.gay" = {
       extraConfig = ''
