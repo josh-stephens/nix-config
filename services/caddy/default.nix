@@ -288,8 +288,8 @@ in
       })
       acmeHosts;
 
-    services.caddy.extraConfig = concatMapStringsSep "\n" mkVHostConf virtualHosts;
-    services.caddy.globalConfig = ''
+    services.myCaddy.extraConfig = concatMapStringsSep "\n" mkVHostConf virtualHosts;
+    services.myCaddy.globalConfig = ''
       ${optionalString (cfg.email != null) "email ${cfg.email}"}
       ${optionalString (cfg.acmeCA != null) "acme_ca ${cfg.acmeCA}"}
       log {
