@@ -23,7 +23,7 @@ buildGoModule {
     owner = "Veraticus";
     repo = "caddy";
     rev = "master";
-    hash = "";
+    hash = "sha256-b3M/xO3HnDmTUm+cVrAkkdHXnJv3858G78v6JDaF+SA=";
   };
 
   vendorHash = "";
