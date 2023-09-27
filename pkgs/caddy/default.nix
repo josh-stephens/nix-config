@@ -12,7 +12,7 @@ let
     owner = "Veraticus";
     repo = "caddy-dist";
     rev = "v2.7.6";
-    hash = "";
+    hash = "sha256-5DRkWQmH2s5QkZL/YPqGfy343B6W5SRd8z1zMs675gs=";
   };
 in
 buildGoModule {
