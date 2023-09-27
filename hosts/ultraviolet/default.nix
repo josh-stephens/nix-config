@@ -240,12 +240,12 @@ in
     };
     virtualHosts."radarr.home.husbuddies.gay" = {
       extraConfig = ''
-        reverse_proxy /* localhost:8989
+        reverse_proxy /* localhost:7878
       '';
     };
     virtualHosts."sonarr.home.husbuddies.gay" = {
       extraConfig = ''
-        reverse_proxy /* localhost:7878
+        reverse_proxy /* localhost:8989
       '';
     };
     virtualHosts."prowlarr.home.husbuddies.gay" = {
@@ -312,6 +312,7 @@ in
         ports = [
           "8191:8191"
         ];
+        extraOptions = [ "--network=host" ];
       };
       homepage = {
         image = "ghcr.io/benphelps/homepage:v0.6.35";
@@ -328,6 +329,7 @@ in
           HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
           HOMEPAGE_FILE_DELUGE_PASSWORD = "/app/keys/deluge-password";
         };
+        extraOptions = [ "--network=host" ];
       };
     };
   };
