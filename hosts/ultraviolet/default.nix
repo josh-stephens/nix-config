@@ -9,7 +9,6 @@ in
     inputs.agenix.nixosModules.default
     # inputs.agenix-rekey.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
-    inputs.xremap-flake.nixosModules.default
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
@@ -110,7 +109,7 @@ in
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
-      efi.efiSysMountPoint = "/boot/efi";
+      efi.efiSysMountPoint = "/boot";
     };
   };
 
@@ -172,21 +171,6 @@ in
     };
   };
   programs.ssh.startAgent = true;
-
-  services.xremap = {
-    serviceMode = "user";
-    userName = "${user}";
-    config = {
-      modmap = [
-        {
-          name = "Global";
-          remap = {
-            CapsLock = "Esc";
-          };
-        }
-      ];
-    };
-  };
 
   services.tailscale = {
     enable = true;
