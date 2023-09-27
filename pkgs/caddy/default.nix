@@ -33,7 +33,7 @@ buildGoModule {
   ldflags = [
     "-s"
     "-w"
-    "-X github.com/caddyserver/caddy/v2.CustomVersion=${version}"
+    "-X github.com/caddyserver/caddy/v2.CustomVersion=v2.7.5"
   ];
 
   buildInputs = [ mullvad-vpn ];
