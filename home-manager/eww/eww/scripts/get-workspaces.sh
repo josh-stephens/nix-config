@@ -18,7 +18,6 @@ spaces (){
   WORKSPACE_JSON=$(seq 1 10 | jq --argjson icons "${WORKSPACE_ICONS}" --argjson windows "${WORKSPACE_WINDOWS}" --slurp -Mc 'map(tostring) | map({id: ., windows: ($windows[.]//0), icon: ($icons[.]//null)}) | map(select(.windows != 0))')
   FINAL_JSON=$(echo "${WORKSPACE_JSON}" | jq -Mc --argjson active "${ACTIVE_WORKSPACE_WINDOWS}" '. + [$active] | unique_by(.id) | sort_by(.id)')
 
-
   echo "${FINAL_JSON}"
 }
 

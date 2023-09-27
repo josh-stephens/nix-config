@@ -111,12 +111,35 @@
 (deflisten window_title :initial "..." "sh ~/.config/eww/scripts/get-window-title.sh")
 (defwidget window_title []
   (box
+    :class "workspace-title"
+
     (label :text "${window_title}"
     )
   )
 )
 
-(deflisten current_time :initial "..." "date '+%H:%M:%S'")
+(defpoll current_time :interval "1s" :initial "..." "date '+%H:%M:%S'")
 (defwidget current_time_widget []
-  (label :text "${current_time}")
+  (box :class "time"
+       :orientation "h"
+       :space-evenly "false"
+    (label :text "")
+    (label :text "${current_time}")
+  )
+)
+
+(defpoll volume :interval "1s" "sh ~/.config/eww/scripts/get-window-title.sh")
+(defwidget slider-vol []
+  (box :class "volume"
+       :orientation "h"
+       :space-evenly "false"
+       :tooltip volume
+    (button :onclick "pavucontrol" ""
+    )
+    (scale :min 0
+           :max 101
+           :value volume
+           :onchange "amixer -D pulse sset Master {}%"
+    )
+  )
 )
