@@ -96,10 +96,11 @@ in
     };
     defaultGateway = "192.168.1.1";
     nameservers = [ "192.168.1.1" ];
-    interfaces.eth0.ipv4.addresses = [{
+    interfaces.enp0s31f6.ipv4.addresses = [{
       address = "192.168.1.200";
       prefixLength = 24;
     }];
+    interfaces.enp0s20f0u12.useDHCP = false;
   };
 
   boot = {
