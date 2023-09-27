@@ -8,12 +8,11 @@
 , mullvad-vpn
 }:
 let
-  version = "2.7.5";
   dist = fetchFromGitHub {
     owner = "Veraticus";
-    repo = "dist";
-    rev = "v2.7.5";
-    hash = "sha256-/7EnQXGh9WhD7jQRWiHJFb7eMSq6Hiw7IGUdymr06pA=";
+    repo = "caddy-dist";
+    rev = "v2.7.6";
+    hash = "";
   };
 in
 buildGoModule {
