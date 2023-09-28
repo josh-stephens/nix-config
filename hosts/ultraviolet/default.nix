@@ -218,6 +218,7 @@ in
     settings = {
       download-dir = "/mnt/video/torrents";
       rpc-whitelist = "127.0.0.1,192.168.1.*";
+      rpc-host-whitelist = "transmission.home.husbuddies.gay";
       download-queue-size = 10;
     };
   };
