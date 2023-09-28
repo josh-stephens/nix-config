@@ -1,13 +1,12 @@
 { inputs, lib, config, pkgs, ... }: {
   programs.nixneovim.plugins = {
-    lsp = {
+    lspconfig = {
       enable = true;
       servers = {
         clangd.enable = true;
         bashls.enable = true;
         html.enable = true;
         jsonls.enable = true;
-        lua_ls.enable = true;
         rnix-lsp.enable = true;
         gopls.enable = true;
         rust-analyzer.enable = true;

@@ -13,10 +13,8 @@
     enable = true;
     xwayland = {
       enable = true;
-      hidpi = true;
     };
 
-    nvidiaPatches = true;
     extraConfig = ''
       exec-once=${pkgs.unstable.polkit-kde-agent}/libexec/polkit-kde-authentication-agent-1
       exec-once=systemctl --user restart xremap

@@ -13,7 +13,7 @@
     historySubstringSearch.enable = true;
 
     shellAliases = {
-      ll = "exa -a -F -l -B --git";
+      ll = "eza -a -F -l -B --git";
       ls = "ls --color=auto";
       vim = "nvim";
       vimdiff = "nvim -d";

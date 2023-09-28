@@ -23,7 +23,6 @@
         exec = "spotifywm";
         desktopName = "Spotify";
       })
-      csharp-ls
       google-chrome
       inputs.hyprland-contrib.packages.${pkgs.system}.grimblast
       polkit-kde-agent
@@ -68,7 +67,6 @@
   programs.zsh.shellAliases.update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
   programs.kitty.font.size = 10;
   programs.kitty.settings."kitty_mod" = "alt";
-  programs.nixneovim.plugins.lsp.servers.csharp_ls.enable = true;
 
   # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";

@@ -21,14 +21,13 @@
       bat
       jq
       killall
-      exa
+      eza
       xdg-utils
       fzf
       vivid
       manix
       talosctl
       wget
-      lua-language-server
       go-tools
       socat
       wireguard-tools

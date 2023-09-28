@@ -29,7 +29,7 @@
 
     # UI
     nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
-    hyprland.url = "github:hyprwm/Hyprland?ref=f7cdebd84a69432fd80fa3d3f69dd829e3941376";
+    hyprland.url = "github:hyprwm/Hyprland?ref=1b48642fd15c433c53876f1b933dcd46265caf8f";
     hyprland-contrib = {
       url = "github:hyprwm/contrib";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -42,7 +42,7 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
 
     # Neovim
-    nixneovim.url = "github:Veraticus/nixneovim";
+    nixneovim.url = "github:NixNeovim/NixNeovim";
 
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!
