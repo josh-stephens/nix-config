@@ -162,7 +162,6 @@ in
 
   # Directories
   systemd.tmpfiles.rules = [
-    "d /etc/overseerr/config 0744 root root -"
   ];
 
   # Services
@@ -261,11 +260,6 @@ in
         reverse_proxy /* localhost:9696
       '';
     };
-    virtualHosts."overseerr.home.husbuddies.gay" = {
-      extraConfig = ''
-        reverse_proxy /* localhost:5055
-      '';
-    };
   };
 
   environment.etc."homepage/config/settings.yaml" = {
@@ -309,14 +303,6 @@ in
     mode = "0644";
     text = ''
       - Media Management:
-        - Overseerr:
-            icon: overseerr.png
-            href: https://overseerr.home.husbuddies.gay
-            description: Request management
-            widget:
-              type: overseerr
-              url: http://127.0.0.1:5055
-              key: {{HOMEPAGE_FILE_OVERSEERR_API_KEY}}
         - Sonarr:
             icon: sonarr.png
             href: https://sonarr.home.husbuddies.gay
@@ -385,18 +371,7 @@ in
           HOMEPAGE_FILE_RADARR_API_KEY = "/app/keys/radarr-api-key";
           HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
           HOMEPAGE_FILE_NEXTDNS_API_KEY = "/app/keys/nextdns-api-key";
-          HOMEPAGE_FILE_OVERSEERR_API_KEY = "/app/keys/overseerr-api-key";
         };
-        extraOptions = [ "--network=host" ];
-      };
-      overseerr = {
-        image = "linuxserver/overseerr:1.33.2";
-        ports = [
-          "5055:5055"
-        ];
-        volumes = [
-          "/etc/overseerr/config:/config"
-        ];
         extraOptions = [ "--network=host" ];
       };
     };
