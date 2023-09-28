@@ -160,6 +160,11 @@ in
     ];
   };
 
+  # Directories
+  systemd.tmpfiles.rules = [
+    "d /etc/overseerr/config 0744 root root -"
+  ];
+
   # Services
   services.thermald.enable = true;
 
