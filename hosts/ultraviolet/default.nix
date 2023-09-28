@@ -285,10 +285,6 @@ in
           cpu: true
           memory: true
           disk: /
-      - unifi_console:
-          url: https://192.168.1.1:8443
-          username: metrics
-          password: {{HOMEPAGE_FILE_UNIFI_PASSWORD}}
       - datetime:
           format:
             dateStyle: long
@@ -334,15 +330,14 @@ in
               url: http://127.0.0.1:8096
               key: {{HOMEPAGE_FILE_JELLYFIN_API_KEY}}
       - Network:
-          - Unifi:
-              icon: unifi.png
-              href: https://unifi.ui.com/
-              descrpition: Unifi
-              widget:
-                type: unifi
-                url: https://192.168.1.1:8443
-                username: metrics
-                password: {{HOMEPAGE_FILE_UNIFI_PASSWORD}}
+        - NextDNS:
+            icon: nextdns.png
+            href: https://my.nextdns.io
+            description: DNS Resolution
+            widget:
+              type: nextdns
+              profile: 381116
+              key: {{HOMEPAGE_FILE_NEXTDNS_API_KEY}}
     '';
   };
 
@@ -371,6 +366,7 @@ in
           HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
           HOMEPAGE_FILE_DELUGE_PASSWORD = "/app/keys/deluge-password";
           HOMEPAGE_FILE_UNIFI_PASSWORD = "/app/keys/unifi-password";
+          HOMEPAGE_FILE_NEXTDNS_API_KEY = "/app/keys/nextdns-api-key";
         };
         extraOptions = [ "--network=host" ];
       };
