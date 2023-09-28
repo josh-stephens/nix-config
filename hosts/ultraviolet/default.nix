@@ -201,7 +201,6 @@ in
 
   services.prowlarr = {
     enable = true;
-    package = pkgs.unstable.prowlarr;
   };
 
   services.transmission = {
