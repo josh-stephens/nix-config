@@ -203,14 +203,6 @@ in
     enable = true;
   };
 
-  services.deluge = {
-    enable = true;
-    package = pkgs.unstable.deluge;
-    web = {
-      enable = true;
-    };
-  };
-
   services.transmission = {
     enable = true;
     openFirewall = true;
@@ -237,11 +229,6 @@ in
     virtualHosts."home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:3000
-      '';
-    };
-    virtualHosts."deluge.home.husbuddies.gay" = {
-      extraConfig = ''
-        reverse_proxy /* localhost:8112
       '';
     };
     virtualHosts."transmission.home.husbuddies.gay" = {
@@ -328,14 +315,13 @@ in
               type: radarr
               url: http://127.0.0.1:7878
               key: {{HOMEPAGE_FILE_RADARR_API_KEY}}
-        - Deluge:
-            icon: deluge.png
-            href: https://deluge.home.husbuddies.gay
+        - Transmission:
+            icon: transmission.png
+            href: https://transmission.home.husbuddies.gay
             description: Torrent management
             widget:
-              type: deluge
-              url: http://127.0.0.1:8112
-              password: {{HOMEPAGE_FILE_DELUGE_PASSWORD}}
+              type: transmission
+              url: http://127.0.0.1:9091
       - Media:
         - Jellyfin:
             icon: jellyfin.png
@@ -380,7 +366,6 @@ in
           HOMEPAGE_FILE_SONARR_API_KEY = "/app/keys/sonarr-api-key";
           HOMEPAGE_FILE_RADARR_API_KEY = "/app/keys/radarr-api-key";
           HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
-          HOMEPAGE_FILE_DELUGE_PASSWORD = "/app/keys/deluge-password";
           HOMEPAGE_FILE_UNIFI_PASSWORD = "/app/keys/unifi-password";
           HOMEPAGE_FILE_NEXTDNS_API_KEY = "/app/keys/nextdns-api-key";
         };
