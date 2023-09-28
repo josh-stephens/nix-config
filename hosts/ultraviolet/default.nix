@@ -205,8 +205,21 @@ in
 
   services.deluge = {
     enable = true;
-    openFirewall = true;
     package = pkgs.unstable.deluge;
+    web = {
+      enable = true;
+    };
+  };
+
+  services.transmission = {
+    enable = true;
+    openFirewall = true;
+    package = pkgs.unstable.transmission;
+    settings = {
+      download-dir = "/mnt/video/torrents";
+      rpc-whitelist = "127.0.0.1,192.168.1.*";
+      download-queue-size = 10;
+    };
     web = {
       enable = true;
     };
@@ -231,6 +244,11 @@ in
     virtualHosts."deluge.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:8112
+      '';
+    };
+    virtualHosts."transmission.home.husbuddies.gay" = {
+      extraConfig = ''
+        reverse_proxy /* localhost:9091
       '';
     };
     virtualHosts."jellyfin.home.husbuddies.gay" = {
