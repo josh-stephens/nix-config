@@ -286,9 +286,9 @@ in
         - Deluge:
             icon: deluge.png
             href: https://deluge.home.husbuddies.gay
-            description: Movie management
+            description: Torrent management
             widget:
-              type: radarr
+              type: deluge
               url: http://127.0.0.1:8112
               password: {{HOMEPAGE_FILE_DELUGE_PASSWORD}}
       - Media:
