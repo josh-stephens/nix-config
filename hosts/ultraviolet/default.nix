@@ -291,6 +291,7 @@ in
           password: {{HOMEPAGE_FILE_UNIFI_PASSWORD}}
       - datetime:
           format:
+            dateStyle: long
             timeStyle: short
             hourCycle: h23
     '';
