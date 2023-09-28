@@ -273,7 +273,7 @@ in
             description: Series management
             widget:
               type: sonarr
-              url: http://localhost:8989
+              url: http://127.0.0.1:8989
               key: {{HOMEPAGE_FILE_SONARR_API_KEY}}
         - Radarr:
             icon: radarr.png
@@ -281,7 +281,7 @@ in
             description: Movie management
             widget:
               type: radarr
-              url: http://localhost:7878
+              url: http://127.0.0.1:7878
               key: {{HOMEPAGE_FILE_RADARR_API_KEY}}
         - Deluge:
             icon: deluge.png
@@ -289,7 +289,7 @@ in
             description: Movie management
             widget:
               type: radarr
-              url: http://localhost:8112
+              url: http://127.0.0.1:8112
               password: {{HOMEPAGE_FILE_DELUGE_PASSWORD}}
       - Media:
         - Jellyfin:
@@ -298,11 +298,10 @@ in
             description: Movie management
             widget:
               type: jellyfin
-              url: http://localhost:8096
+              url: http://127.0.0.1:8096
               key: {{HOMEPAGE_FILE_JELLYFIN_API_KEY}}
     '';
   };
-
 
   virtualisation.oci-containers = {
     backend = "podman";
