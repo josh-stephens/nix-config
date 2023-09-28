@@ -203,6 +203,11 @@ in
     package = pkgs.unstable.radarr;
   };
 
+  services.readarr = {
+    enable = true;
+    package = pkgs.unstable.readarr;
+  };
+
   services.prowlarr = {
     enable = true;
   };
@@ -253,6 +258,11 @@ in
     virtualHosts."sonarr.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:8989
+      '';
+    };
+    virtualHosts."readarr.home.husbuddies.gay" = {
+      extraConfig = ''
+        reverse_proxy /* localhost:8787
       '';
     };
     virtualHosts."prowlarr.home.husbuddies.gay" = {
@@ -319,13 +329,14 @@ in
               type: radarr
               url: http://127.0.0.1:7878
               key: {{HOMEPAGE_FILE_RADARR_API_KEY}}
-        - Transmission:
-            icon: transmission.png
-            href: https://transmission.home.husbuddies.gay
-            description: Torrent management
+        - Readarr:
+            icon: readarr.png
+            href: https://readarr.home.husbuddies.gay
+            description: Book management
             widget:
-              type: transmission
-              url: http://127.0.0.1:9091
+              type: readarr
+              url: http://127.0.0.1:8787
+              key: {{HOMEPAGE_FILE_READARR_API_KEY}}
       - Media:
         - Jellyfin:
             icon: jellyfin.png
@@ -335,6 +346,13 @@ in
               type: jellyfin
               url: http://127.0.0.1:8096
               key: {{HOMEPAGE_FILE_JELLYFIN_API_KEY}}
+        - Transmission:
+            icon: transmission.png
+            href: https://transmission.home.husbuddies.gay
+            description: Torrent management
+            widget:
+              type: transmission
+              url: http://127.0.0.1:9091
       - Network:
         - NextDNS:
             icon: nextdns.png
@@ -369,6 +387,7 @@ in
         environment = {
           HOMEPAGE_FILE_SONARR_API_KEY = "/app/keys/sonarr-api-key";
           HOMEPAGE_FILE_RADARR_API_KEY = "/app/keys/radarr-api-key";
+          HOMEPAGE_FILE_READARR_API_KEY = "/app/keys/readarr-api-key";
           HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
           HOMEPAGE_FILE_NEXTDNS_API_KEY = "/app/keys/nextdns-api-key";
         };
