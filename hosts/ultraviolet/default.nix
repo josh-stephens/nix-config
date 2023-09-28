@@ -263,6 +263,38 @@ in
         weatherapi: weatherapiapikey
     '';
   };
+  environment.etc."homepage/config/bookmarks.yaml" = {
+    mode = "0644";
+    text = ''
+      - Social:
+          - lib.lgbt:
+              - icon: https://lib.lgbt/pictrs/image/cc8bb351-0cc5-4c89-8f7f-21649c286e98.webp
+                href: https://lib.lgbt
+    '';
+  };
+  environment.etc."homepage/config/widgets.yaml" = {
+    mode = "0644";
+    text = ''
+      - openmeteo:
+          label: "Santa Barbara, CA"
+          latitude: 34.4208
+          longitude: 119.6982
+          units: imperial
+          cache: 5 # Time in minutes to cache API responses, to stay within limits
+      - resources:
+          cpu: true
+          memory: true
+          disk: /
+      - unifi_console:
+          url: https://192.168.1.1:8443
+          username: metrics
+          password: {{HOMEPAGE_FILE_UNIFI_PASSWORD}}
+      - datetime:
+          format:
+            timeStyle: short
+            hourCycle: h23
+    '';
+  };
   environment.etc."homepage/config/services.yaml" = {
     mode = "0644";
     text = ''
@@ -294,12 +326,22 @@ in
       - Media:
         - Jellyfin:
             icon: jellyfin.png
-            href: http://jellyfin.home.husbuddies.gay
+            href: https://jellyfin.home.husbuddies.gay
             description: Movie management
             widget:
               type: jellyfin
               url: http://127.0.0.1:8096
               key: {{HOMEPAGE_FILE_JELLYFIN_API_KEY}}
+      - Network:
+          - Unifi:
+              icon: unifi.png
+              href: https://unifi.ui.com/
+              descrpition: Unifi
+              widget:
+                type: unifi
+                url: https://192.168.1.1:8443
+                username: metrics
+                password: {{HOMEPAGE_FILE_UNIFI_PASSWORD}}
     '';
   };
 
@@ -327,6 +369,7 @@ in
           HOMEPAGE_FILE_RADARR_API_KEY = "/app/keys/radarr-api-key";
           HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
           HOMEPAGE_FILE_DELUGE_PASSWORD = "/app/keys/deluge-password";
+          HOMEPAGE_FILE_UNIFI_PASSWORD = "/app/keys/unifi-password";
         };
         extraOptions = [ "--network=host" ];
       };
