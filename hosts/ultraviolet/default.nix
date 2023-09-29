@@ -349,6 +349,19 @@ in
     '';
   };
 
+  environment.etc."transmission/config/settings.json" = {
+    mode = "0644";
+    text = ''
+        {
+          "download-dir": "/mnt/video/torrents",
+          "rpc-whitelist": "127.0.0.1,192.168.1.*",
+          "rpc-host-whitelist": "transmission.home.husbuddies.gay",
+          "download-queue-size": 10
+      }
+    '';
+  };
+
+
   virtualisation.oci-containers = {
     backend = "podman";
     containers = {
@@ -391,12 +404,14 @@ in
         ports = [
           "9091:9091"
         ];
-        volumes = [ "/etc/transmission/config:/config" ];
+        volumes = [
+          "/etc/transmission/config:/config"
+          "/mnt/video:/mnt/video"
+        ];
         extraOptions = [ "--network=container:gluetun" ];
       };
     };
   };
-
 
   services.rpcbind.enable = true;
 
