@@ -162,7 +162,7 @@ in
   # Directories
   systemd.tmpfiles.rules = [
     "d /etc/gluetun 0644 root root - -"
-    "d /etc/transmission 0644 root root - -"
+    "d /etc/transmission/config 0644 root root - -"
   ];
 
   # Services
@@ -391,6 +391,7 @@ in
         ports = [
           "9091:9091"
         ];
+        volumes = [ "/etc/transmission/config:/config" ];
         extraOptions = [ "--network=container:gluetun" ];
       };
     };
