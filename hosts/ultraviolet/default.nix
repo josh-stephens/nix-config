@@ -161,8 +161,8 @@ in
 
   # Directories
   systemd.tmpfiles.rules = [
-    "d /etc/gluetun 0644 ${user} ${user} - -"
-    "d /etc/transmission 0644 ${user} ${user} - -"
+    "d /etc/gluetun 0644 root root - -"
+    "d /etc/transmission 0644 root root - -"
   ];
 
   # Services
