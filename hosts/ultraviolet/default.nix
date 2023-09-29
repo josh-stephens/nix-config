@@ -408,10 +408,10 @@ in
           "/etc/transmission/config:/config"
           "/mnt/video:/mnt/video"
         ];
-        environment = [
-          "PUID=0"
-          "PGID=0"
-        ];
+        environment = {
+          PUID = "0";
+          PGID = "0";
+        };
         extraOptions = [ "--network=container:gluetun" ];
       };
     };
