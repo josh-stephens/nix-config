@@ -5,7 +5,6 @@
 , caddy
 , testers
 , installShellFiles
-, mullvad-vpn
 }:
 let
   dist = fetchFromGitHub {
@@ -36,20 +35,13 @@ buildGoModule {
     "-X github.com/caddyserver/caddy/v2.CustomVersion=v2.7.5"
   ];
 
-  buildInputs = [ mullvad-vpn ];
-
   nativeBuildInputs = [ installShellFiles ];
 
   postInstall = ''
     install -Dm644 ${dist}/init/caddy.service ${dist}/init/caddy-api.service -t $out/lib/systemd/system
 
-    substituteInPlace $out/lib/systemd/system/caddy.service --replace "/usr/bin/caddy" "${mullvad-vpn}/bin/mullvad-exclude $out/bin/caddy"
-    substituteInPlace $out/lib/systemd/system/caddy.service --replace "After=network.target network-online.target" "After=network.target network-online.target mullvad-daemon.service"
-    substituteInPlace $out/lib/systemd/system/caddy.service --replace "Requires=network-online.target" "Requires=network-online.target mullvad-daemon.service"
-
-    substituteInPlace $out/lib/systemd/system/caddy-api.service --replace "/usr/bin/caddy" "${mullvad-vpn}/bin/mullvad-exclude $out/bin/caddy"
-    substituteInPlace $out/lib/systemd/system/caddy-api.service --replace "After=network.target network-online.target" "After=network.target network-online.target mullvad-daemon.service"
-    substituteInPlace $out/lib/systemd/system/caddy-api.service --replace "Requires=network-online.target" "Requires=network-online.target mullvad-daemon.service"
+    substituteInPlace $out/lib/systemd/system/caddy.service --replace "/usr/bin/caddy" "$out/bin/caddy"
+    substituteInPlace $out/lib/systemd/system/caddy-api.service --replace "/usr/bin/caddy" "$out/bin/caddy"
 
     $out/bin/caddy manpage --directory manpages
     installManPage manpages/*

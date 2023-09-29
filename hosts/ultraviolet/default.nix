@@ -15,7 +15,6 @@ in
 
     # Import your generated (nixos-generate-config) hardware configuration
     ./hardware-configuration.nix
-    ../../services/caddy/default.nix
   ];
 
   # Hardware setup
@@ -184,11 +183,6 @@ in
     useRoutingFeatures = "server";
   };
 
-  services.mullvad-vpn = {
-    enable = true;
-    package = pkgs.unstable.mullvad-vpn;
-  };
-
   programs.zsh.enable = true;
 
   services.jellyfin = {
@@ -215,11 +209,10 @@ in
     enable = true;
   };
 
-  services.myCaddy = {
+  services.caddy = {
     acmeCA = null;
     enable = true;
     package = pkgs.myCaddy;
-    mullvadVpnPackage = pkgs.unstable.mullvad-vpn;
     globalConfig = ''
       storage file_system {
         root /var/lib/caddy
