@@ -391,7 +391,7 @@ in
       };
       transmission = {
         image = "linuxserver/transmission:4.0.4";
-        dependsOn = "gluetun";
+        dependsOn = [ "gluetun" ];
         ports = [
           "9091:9091"
         ];
