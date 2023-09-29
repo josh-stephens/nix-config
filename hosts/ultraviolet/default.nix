@@ -179,6 +179,7 @@ in
   services.tailscale = {
     enable = true;
     package = pkgs.unstable.tailscale;
+    useRoutingFeatures = "server";
   };
 
   services.mullvad-vpn = {
