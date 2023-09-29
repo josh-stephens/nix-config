@@ -387,7 +387,7 @@ in
       gluetun = {
         image = "qmcgaw/gluetun:latest";
         extraOptions = [ "--cap-add=net_admin" ];
-        environmentFile = "/etc/gluetun/config.env";
+        environmentFiles = [ "/etc/gluetun/config.env" ];
       };
       transmission = {
         image = "linuxserver/transmission:4.0.4";
