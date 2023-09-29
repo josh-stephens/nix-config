@@ -379,7 +379,10 @@ in
       };
       gluetun = {
         image = "qmcgaw/gluetun:latest";
-        extraOptions = [ "--cap-add=net_admin" ];
+        extraOptions = [
+          "--cap-add=net_admin"
+          "--device=/dev/net/tun:/dev/net/tun"
+        ];
         environmentFiles = [ "/etc/gluetun/config.env" ];
       };
       transmission = {
