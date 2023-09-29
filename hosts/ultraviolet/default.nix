@@ -162,6 +162,8 @@ in
 
   # Directories
   systemd.tmpfiles.rules = [
+    "d /etc/gluetun 0644 ${user} ${user} - -"
+    "d /etc/transmission 0644 ${user} ${user} - -"
   ];
 
   # Services
@@ -211,18 +213,6 @@ in
 
   services.prowlarr = {
     enable = true;
-  };
-
-  services.transmission = {
-    enable = true;
-    openFirewall = true;
-    package = pkgs.unstable.transmission;
-    settings = {
-      download-dir = "/mnt/video/torrents";
-      rpc-whitelist = "127.0.0.1,192.168.1.*";
-      rpc-host-whitelist = "transmission.home.husbuddies.gay";
-      download-queue-size = 10;
-    };
   };
 
   services.myCaddy = {
@@ -393,6 +383,19 @@ in
           HOMEPAGE_FILE_NEXTDNS_API_KEY = "/app/keys/nextdns-api-key";
         };
         extraOptions = [ "--network=host" ];
+      };
+      gluetun = {
+        image = "qmcgaw/gluetun:latest";
+        extraOptions = [ "--cap-add=net_admin" ];
+        environmentFile = "/etc/gluetun/config.env";
+      };
+      transmission = {
+        image = "linuxserver/transmission:4.0.4";
+        dependsOn = "gluetun";
+        ports = [
+          "9091:9091"
+        ];
+        extraOptions = [ "--network=container:gluetun" ];
       };
     };
   };
