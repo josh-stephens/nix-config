@@ -214,6 +214,8 @@ in
       storage file_system {
         root /var/lib/caddy
       }
+    '';
+    extraConfig = ''
       (cloudflare) {
         tls {
           dns cloudflare {env.CF_API_TOKEN}
