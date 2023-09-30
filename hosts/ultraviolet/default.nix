@@ -376,7 +376,7 @@ in
         ];
         extraOptions = [ "--network=host" ];
         volumes = [
-          "/etc/jellyseerr/config:/config"
+          "/etc/jellyseerr/config:/app/config"
         ];
       };
       homepage = {
