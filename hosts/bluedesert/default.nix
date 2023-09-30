@@ -90,7 +90,7 @@ in
       checkReversePath = "loose";
       trustedInterfaces = [ ];
       allowedUDPPorts = [ 51820 ];
-      allowedTCPPorts = [ 22 80 443 9091 ];
+      allowedTCPPorts = [ 22 80 443 ];
     };
     defaultGateway = "192.168.1.1";
     nameservers = [ "192.168.1.1" ];
@@ -180,11 +180,13 @@ in
 
   services.transmission = {
     enable = true;
-    openFirewall = true;
+    openPeerPorts = true;
+    openRPCPort = true;
     package = pkgs.unstable.transmission;
     settings = {
-      bind-address-ipv4 = "192.168.1.201";
+      bind-address-ipv4 = "0.0.0.0";
       download-dir = "/mnt/video/torrents";
+      rpc-bind-address = "0.0.0.0";
       rpc-whitelist = "127.0.0.1,192.168.1.*";
       rpc-host-whitelist = "transmission.home.husbuddies.gay";
       download-queue-size = 10;
