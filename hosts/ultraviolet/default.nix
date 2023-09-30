@@ -89,8 +89,8 @@ in
       enable = true;
       checkReversePath = "loose";
       trustedInterfaces = [ "tailscale0" ];
-      allowedUDPPorts = [ 51820 config.services.tailscale.port 51413 ];
-      allowedTCPPorts = [ 22 80 443 51413 ];
+      allowedUDPPorts = [ 51820 config.services.tailscale.port ];
+      allowedTCPPorts = [ 22 80 443 ];
     };
     defaultGateway = "192.168.1.1";
     nameservers = [ "192.168.1.1" ];
@@ -116,9 +116,6 @@ in
   time.timeZone = "America/Los_Angeles";
   i18n.defaultLocale = "en_US.UTF-8";
 
-  # Default programs everyone wants
-  virtualisation.docker.enable = true;
-
   # Users and their homes
   users.defaultUserShell = pkgs.zsh;
   users.users.${user} = {
@@ -129,8 +126,9 @@ in
     openssh.authorizedKeys.keys = [
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAQ4hwNjF4SMCeYcqm3tzUxZWadcv7ZLJbCa/mLHzsvw josh+cloudbank@joshsymonds.com"
       "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAINTWmaNJwRqzDMdfVOXbX6FNjcJ94VRK+aKLI2NqrcWV josh+morningstar@joshsymonds.com"
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAID0OvTKlW2Vk5WA11YOQ6SNDS4KsT9I1ffVGomswscZA josh+ultraviolet@joshsymonds.com"
     ];
-    extraGroups = [ "wheel" config.users.groups.keys.name "docker" ];
+    extraGroups = [ "wheel" config.users.groups.keys.name ];
   };
 
   home-manager = {
@@ -158,12 +156,6 @@ in
       }
     ];
   };
-
-  # Directories
-  systemd.tmpfiles.rules = [
-    "d /etc/gluetun 0644 root root - -"
-    "d /etc/transmission/config 0644 root root - -"
-  ];
 
   # Services
   services.thermald.enable = true;
@@ -226,7 +218,7 @@ in
     };
     virtualHosts."transmission.home.husbuddies.gay" = {
       extraConfig = ''
-        reverse_proxy /* localhost:9091
+        reverse_proxy /* 192.168.1.201:9091
       '';
     };
     virtualHosts."jellyfin.home.husbuddies.gay" = {
@@ -377,32 +369,6 @@ in
         };
         extraOptions = [ "--network=host" ];
       };
-      gluetun = {
-        image = "qmcgaw/gluetun:latest";
-        ports = [
-          "9091:9091"
-          "51413:51413/udp"
-          "51413:51413/tcp"
-        ];
-        extraOptions = [
-          "--cap-add=net_admin"
-          "--device=/dev/net/tun:/dev/net/tun"
-        ];
-        environmentFiles = [ "/etc/gluetun/config.env" ];
-      };
-      transmission = {
-        image = "linuxserver/transmission:4.0.4";
-        dependsOn = [ "gluetun" ];
-        volumes = [
-          "/etc/transmission/config:/config"
-          "/mnt/video:/mnt/video"
-        ];
-        environment = {
-          PUID = "0";
-          PGID = "0";
-        };
-        extraOptions = [ "--network=container:gluetun" ];
-      };
     };
   };
 
@@ -433,7 +399,6 @@ in
       pciutils
       hwdata
       cachix
-      docker-compose
       tailscale
     ];
 
