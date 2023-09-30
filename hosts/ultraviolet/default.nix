@@ -89,8 +89,8 @@ in
       enable = true;
       checkReversePath = "loose";
       trustedInterfaces = [ "tailscale0" ];
-      allowedUDPPorts = [ 51820 config.services.tailscale.port ];
-      allowedTCPPorts = [ 22 80 443 ];
+      allowedUDPPorts = [ 51820 config.services.tailscale.port 51413 ];
+      allowedTCPPorts = [ 22 80 443 51413 ];
     };
     defaultGateway = "192.168.1.1";
     nameservers = [ "192.168.1.1" ];
