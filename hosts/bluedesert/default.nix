@@ -94,7 +94,7 @@ in
     };
     defaultGateway = "192.168.1.1";
     nameservers = [ "192.168.1.1" ];
-    interfaces.eth0.ipv4.addresses = [{
+    interfaces.enp2s0.ipv4.addresses = [{
       address = "192.168.1.201";
       prefixLength = 24;
     }];
