@@ -214,50 +214,59 @@ in
       storage file_system {
         root /var/lib/caddy
       }
-      acme_dns cloudflare {env.CF_API_TOKEN}
+      (cloudflare) {
+        tls {
+          dns cloudflare {env.CF_API_TOKEN}
+          resolvers 1.1.1.1
+        }
+      }
     '';
     virtualHosts."home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:3000
+        import cloudflare
       '';
     };
     virtualHosts."transmission.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* 192.168.1.201:9091
+        import cloudflare
       '';
     };
     virtualHosts."jellyseerr.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:5055
-        tls {
-          dns cloudflare {env.CF_API_TOKEN}
-          resolvers 1.1.1.1
-        }
+        import cloudflare
       '';
     };
     virtualHosts."jellyfin.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:8096
+        import cloudflare
       '';
     };
     virtualHosts."radarr.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:7878
+        import cloudflare
       '';
     };
     virtualHosts."sonarr.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:8989
+        import cloudflare
       '';
     };
     virtualHosts."readarr.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:8787
+        import cloudflare
       '';
     };
     virtualHosts."prowlarr.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:9696
+        import cloudflare
       '';
     };
   };
