@@ -183,6 +183,7 @@ in
     openFirewall = true;
     package = pkgs.unstable.transmission;
     settings = {
+      bind-address-ipv4 = "192.168.1.201";
       download-dir = "/mnt/video/torrents";
       rpc-whitelist = "127.0.0.1,192.168.1.*";
       rpc-host-whitelist = "transmission.home.husbuddies.gay";
