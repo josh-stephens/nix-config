@@ -380,6 +380,9 @@ in
       };
       gluetun = {
         image = "qmcgaw/gluetun:latest";
+        ports = [
+          "8112:8112"
+        ];
         extraOptions = [
           "--cap-add=net_admin"
           "--device=/dev/net/tun:/dev/net/tun"
@@ -389,9 +392,6 @@ in
       deluge = {
         image = "linuxserver/deluge:2.1.1";
         dependsOn = [ "gluetun" ];
-        ports = [
-          "8112:8112"
-        ];
         volumes = [
           "/etc/deluge/config:/config"
           "/mnt/video:/mnt/video"
