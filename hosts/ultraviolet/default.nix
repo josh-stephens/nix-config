@@ -162,7 +162,7 @@ in
   # Directories
   systemd.tmpfiles.rules = [
     "d /etc/gluetun 0644 root root - -"
-    "d /etc/deluge/config 0644 root root - -"
+    "d /etc/transmission/config 0644 root root - -"
   ];
 
   # Services
@@ -224,9 +224,9 @@ in
         reverse_proxy /* localhost:3000
       '';
     };
-    virtualHosts."deluge.home.husbuddies.gay" = {
+    virtualHosts."transmission.home.husbuddies.gay" = {
       extraConfig = ''
-        reverse_proxy /* localhost:8112
+        reverse_proxy /* localhost:9091
       '';
     };
     virtualHosts."jellyfin.home.husbuddies.gay" = {
@@ -330,14 +330,13 @@ in
               type: jellyfin
               url: http://127.0.0.1:8096
               key: {{HOMEPAGE_FILE_JELLYFIN_API_KEY}}
-        - Deluge:
-            icon: deluge.png
-            href: https://deluge.home.husbuddies.gay
+        - Transmission:
+            icon: transmission.png
+            href: https://transmission.home.husbuddies.gay
             description: Torrent management
             widget:
-              type: deluge
-              url: http://127.0.0.1:8112
-              password: {{HOMEPAGE_FILE_DELUGE_PASSWORD}}
+              type: transmission
+              url: http://127.0.0.1:9091
       - Network:
         - NextDNS:
             icon: nextdns.png
@@ -350,7 +349,6 @@ in
     '';
   };
 
-
   virtualisation.oci-containers = {
     backend = "podman";
     containers = {
@@ -362,7 +360,7 @@ in
         extraOptions = [ "--network=host" ];
       };
       homepage = {
-        image = "ghcr.io/benphelps/homepage:v0.7.0";
+        image = "ghcr.io/benphelps/homepage:v0.6.35";
         ports = [
           "3000:3000"
         ];
@@ -376,26 +374,23 @@ in
           HOMEPAGE_FILE_READARR_API_KEY = "/app/keys/readarr-api-key";
           HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
           HOMEPAGE_FILE_NEXTDNS_API_KEY = "/app/keys/nextdns-api-key";
-          HOMEPAGE_FILE_DELUGE_PASSWORD = "/app/keys/deluge-password";
         };
         extraOptions = [ "--network=host" ];
       };
       gluetun = {
         image = "qmcgaw/gluetun:latest";
-        ports = [
-          "8112:8112"
-        ];
+        ports = [ "9091:9091" ];
         extraOptions = [
           "--cap-add=net_admin"
           "--device=/dev/net/tun:/dev/net/tun"
         ];
         environmentFiles = [ "/etc/gluetun/config.env" ];
       };
-      deluge = {
-        image = "linuxserver/deluge:2.1.1";
+      transmission = {
+        image = "linuxserver/transmission:4.0.4";
         dependsOn = [ "gluetun" ];
         volumes = [
-          "/etc/deluge/config:/config"
+          "/etc/transmission/config:/config"
           "/mnt/video:/mnt/video"
         ];
         environment = {
