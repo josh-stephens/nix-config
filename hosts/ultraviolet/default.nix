@@ -360,7 +360,7 @@ in
         extraOptions = [ "--network=host" ];
       };
       homepage = {
-        image = "ghcr.io/benphelps/homepage:v0.6.35";
+        image = "ghcr.io/benphelps/homepage:v0.7.0";
         ports = [
           "3000:3000"
         ];
