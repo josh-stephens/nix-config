@@ -391,7 +391,7 @@ in
         dependsOn = [ "gluetun" ];
         volumes = [
           "/etc/transmission/config:/config"
-          "/mnt/video:/mnt/video"
+          "/mnt/video/torrents:/downloads"
         ];
         environment = {
           PUID = "0";
