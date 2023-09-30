@@ -409,6 +409,7 @@ in
           HOMEPAGE_FILE_READARR_API_KEY = "/app/keys/readarr-api-key";
           HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
           HOMEPAGE_FILE_NEXTDNS_API_KEY = "/app/keys/nextdns-api-key";
+          HOMEPAGE_FILE_JELLYSEER_API_KEY = "/app/keys/jellyseerr-api-key";
         };
         extraOptions = [ "--network=host" ];
       };
