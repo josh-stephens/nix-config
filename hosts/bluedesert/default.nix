@@ -90,7 +90,7 @@ in
       checkReversePath = "loose";
       trustedInterfaces = [ ];
       allowedUDPPorts = [ 51820 ];
-      allowedTCPPorts = [ 22 80 443 ];
+      allowedTCPPorts = [ 22 80 443 9091 ];
     };
     defaultGateway = "192.168.1.1";
     nameservers = [ "192.168.1.1" ];
