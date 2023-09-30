@@ -379,7 +379,10 @@ in
       };
       gluetun = {
         image = "qmcgaw/gluetun:latest";
-        ports = [ "9091:9091" ];
+        ports = [
+          "9091:9091"
+          "51413:51413"
+        ];
         extraOptions = [
           "--cap-add=net_admin"
           "--device=/dev/net/tun:/dev/net/tun"
@@ -391,7 +394,7 @@ in
         dependsOn = [ "gluetun" ];
         volumes = [
           "/etc/transmission/config:/config"
-          "/mnt/video/torrents:/downloads"
+          "/mnt/video:/mnt/video"
         ];
         environment = {
           PUID = "0";
