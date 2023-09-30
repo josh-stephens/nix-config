@@ -97,7 +97,6 @@ in
     interfaces.enp2s0.ipv4.addresses = [{
       address = "192.168.1.201";
       prefixLength = 24;
-      useDHCP = false;
     }];
     interfaces.enp1s0.useDHCP = false;
   };
