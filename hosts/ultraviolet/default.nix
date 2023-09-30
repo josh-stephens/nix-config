@@ -382,6 +382,7 @@ in
         ports = [
           "9091:9091"
           "51413:51413/udp"
+          "51413:51413/tcp"
         ];
         extraOptions = [
           "--cap-add=net_admin"
