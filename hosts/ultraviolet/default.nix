@@ -337,6 +337,7 @@ in
             widget:
               type: deluge
               url: http://127.0.0.1:8112
+              password: {{HOMEPAGE_FILE_DELUGE_PASSWORD}}
       - Network:
         - NextDNS:
             icon: nextdns.png
@@ -361,7 +362,7 @@ in
         extraOptions = [ "--network=host" ];
       };
       homepage = {
-        image = "ghcr.io/benphelps/homepage:v0.6.35";
+        image = "ghcr.io/benphelps/homepage:v0.7.0";
         ports = [
           "3000:3000"
         ];
@@ -375,6 +376,7 @@ in
           HOMEPAGE_FILE_READARR_API_KEY = "/app/keys/readarr-api-key";
           HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
           HOMEPAGE_FILE_NEXTDNS_API_KEY = "/app/keys/nextdns-api-key";
+          HOMEPAGE_FILE_DELUGE_PASSWORD = "/app/keys/deluge-password";
         };
         extraOptions = [ "--network=host" ];
       };
