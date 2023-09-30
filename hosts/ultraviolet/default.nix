@@ -328,7 +328,7 @@ in
             description: Torrent management
             widget:
               type: transmission
-              url: http://127.0.0.1:9091
+              url: http://192.168.1.201:9091
       - Network:
         - NextDNS:
             icon: nextdns.png
