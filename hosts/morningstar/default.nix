@@ -163,6 +163,17 @@ in
   security = {
     rtkit.enable = true;
     polkit.enable = true;
+    sudo.extraRules = [
+      {
+        users = [ "${user}" ];
+        commands = [
+          {
+            command = "ALL";
+            options = [ "SETENV" "NOPASSWD" ];
+          }
+        ];
+      }
+    ];
     pam = {
       services = {
         swaylock = {

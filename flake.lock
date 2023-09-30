@@ -757,15 +757,15 @@
         "nmt": "nmt"
       },
       "locked": {
-        "lastModified": 1695910918,
-        "narHash": "sha256-DVaBR+teX7WgZHLAGZBjkzrnA7oEDBq9nZQcFEelFrE=",
-        "owner": "NixNeovim",
+        "lastModified": 1695919678,
+        "narHash": "sha256-JAOqj2KYyphwNg6jd+WyVYKAp9Z+KTojgMxzSIZo8Cg=",
+        "owner": "Veraticus",
         "repo": "NixNeovim",
-        "rev": "91724194f84bd627c5b1f622ea952aa8f56bf20b",
+        "rev": "0b87461f95a1744906782801fd1b269f02337da9",
         "type": "github"
       },
       "original": {
-        "owner": "NixNeovim",
+        "owner": "Veraticus",
         "repo": "NixNeovim",
         "type": "github"
       }

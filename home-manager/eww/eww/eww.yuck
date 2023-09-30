@@ -71,10 +71,14 @@
 )
 
 (defwidget nixos_logo []
-  (label
-    :class "nixos-logo"
-    :text ""
+  (eventbox
+    :onclick "swaync-client -t -sw"
+    :onrightclick "swaync-client -d -sw"
 
+    (label
+      :class "nixos-logo"
+      :text ""
+    )
   )
 )
 
