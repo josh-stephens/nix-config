@@ -381,6 +381,7 @@ in
         image = "qmcgaw/gluetun:latest";
         ports = [
           "9091:9091"
+          "51413:51413/udp"
         ];
         extraOptions = [
           "--cap-add=net_admin"
