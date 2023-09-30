@@ -157,6 +157,11 @@ in
     ];
   };
 
+  # Directories
+  systemd.tmpfiles.rules = [
+    "d /etc/jellyseerr/config 0644 root root -"
+  ];
+
   # Services
   services.thermald.enable = true;
 
@@ -219,6 +224,11 @@ in
     virtualHosts."transmission.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* 192.168.1.201:9091
+      '';
+    };
+    virtualHosts."jellyseerr.home.husbuddies.gay" = {
+      extraConfig = ''
+        reverse_proxy /* localhost:5055
       '';
     };
     virtualHosts."jellyfin.home.husbuddies.gay" = {
@@ -289,6 +299,14 @@ in
     mode = "0644";
     text = ''
       - Media Management:
+        - Jellyseerr:
+            icon: sonarr.png
+            href: https://jellyseerr.home.husbuddies.gay
+            description: Series management
+            widget:
+              type: jellyseerr
+              url: http://127.0.0.1:5055
+              key: {{HOMEPAGE_FILE_JELLYSEERR_API_KEY}}
         - Sonarr:
             icon: sonarr.png
             href: https://sonarr.home.husbuddies.gay
@@ -350,6 +368,16 @@ in
           "8191:8191"
         ];
         extraOptions = [ "--network=host" ];
+      };
+      jellyseerr = {
+        image = "fallenbagel/jellyseerr:1.7.0";
+        ports = [
+          "5055:5055"
+        ];
+        extraOptions = [ "--network=host" ];
+        volumes = [
+          "/etc/jellyseerr/config:/config"
+        ];
       };
       homepage = {
         image = "ghcr.io/benphelps/homepage:v0.7.0";
