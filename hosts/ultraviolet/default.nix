@@ -315,9 +315,9 @@ in
     text = ''
       - Media Management:
         - Jellyseerr:
-            icon: sonarr.png
+            icon: jellyseerr.png
             href: https://jellyseerr.home.husbuddies.gay
-            description: Series management
+            description: Media discovery
             widget:
               type: jellyseerr
               url: http://127.0.0.1:5055
@@ -409,7 +409,7 @@ in
           HOMEPAGE_FILE_READARR_API_KEY = "/app/keys/readarr-api-key";
           HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
           HOMEPAGE_FILE_NEXTDNS_API_KEY = "/app/keys/nextdns-api-key";
-          HOMEPAGE_FILE_JELLYSEER_API_KEY = "/app/keys/jellyseerr-api-key";
+          HOMEPAGE_FILE_JELLYSEERR_API_KEY = "/app/keys/jellyseerr-api-key";
         };
         extraOptions = [ "--network=host" ];
       };
