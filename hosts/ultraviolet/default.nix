@@ -162,7 +162,7 @@ in
   # Directories
   systemd.tmpfiles.rules = [
     "d /etc/gluetun 0644 root root - -"
-    "d /etc/transmission/config 0644 root root - -"
+    "d /etc/deluge/config 0644 root root - -"
   ];
 
   # Services
@@ -224,9 +224,9 @@ in
         reverse_proxy /* localhost:3000
       '';
     };
-    virtualHosts."transmission.home.husbuddies.gay" = {
+    virtualHosts."deluge.home.husbuddies.gay" = {
       extraConfig = ''
-        reverse_proxy /* localhost:9091
+        reverse_proxy /* localhost:8112
       '';
     };
     virtualHosts."jellyfin.home.husbuddies.gay" = {
@@ -330,13 +330,13 @@ in
               type: jellyfin
               url: http://127.0.0.1:8096
               key: {{HOMEPAGE_FILE_JELLYFIN_API_KEY}}
-        - Transmission:
-            icon: transmission.png
-            href: https://transmission.home.husbuddies.gay
+        - Deluge:
+            icon: deluge.png
+            href: https://deluge.home.husbuddies.gay
             description: Torrent management
             widget:
-              type: transmission
-              url: http://127.0.0.1:9091
+              type: deluge
+              url: http://127.0.0.1:8112
       - Network:
         - NextDNS:
             icon: nextdns.png
@@ -346,18 +346,6 @@ in
               type: nextdns
               profile: 381116
               key: {{HOMEPAGE_FILE_NEXTDNS_API_KEY}}
-    '';
-  };
-
-  environment.etc."transmission/config/settings.json" = {
-    mode = "0644";
-    text = ''
-        {
-          "download-dir": "/mnt/video/torrents",
-          "rpc-whitelist": "127.0.0.1,192.168.1.*",
-          "rpc-host-whitelist": "transmission.home.husbuddies.gay",
-          "download-queue-size": 10
-      }
     '';
   };
 
@@ -398,14 +386,14 @@ in
         ];
         environmentFiles = [ "/etc/gluetun/config.env" ];
       };
-      transmission = {
-        image = "linuxserver/transmission:4.0.4";
+      deluge = {
+        image = "linuxserver/deluge:2.1.1";
         dependsOn = [ "gluetun" ];
         ports = [
-          "9091:9091"
+          "8112:8112"
         ];
         volumes = [
-          "/etc/transmission/config:/config"
+          "/etc/deluge/config:/config"
           "/mnt/video:/mnt/video"
         ];
         environment = {
