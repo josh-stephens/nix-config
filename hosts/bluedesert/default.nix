@@ -97,7 +97,9 @@ in
     interfaces.enp2s0.ipv4.addresses = [{
       address = "192.168.1.201";
       prefixLength = 24;
+      useDHCP = false;
     }];
+    interfaces.enp1s0.useDHCP = false;
   };
 
   boot = {
@@ -107,7 +109,7 @@ in
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
-      efi.efiSysMountPoint = "/boot/efi";
+      efi.efiSysMountPoint = "/boot";
     };
   };
 
