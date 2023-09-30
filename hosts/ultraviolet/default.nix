@@ -229,6 +229,10 @@ in
     virtualHosts."jellyseerr.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:5055
+        tls {
+          dns cloudflare {env.CF_API_TOKEN}
+          resolvers 1.1.1.1
+        }
       '';
     };
     virtualHosts."jellyfin.home.husbuddies.gay" = {
