@@ -190,8 +190,7 @@ in
       rpc-whitelist = "127.0.0.1,192.168.1.*";
       rpc-host-whitelist = "transmission.home.husbuddies.gay";
       download-queue-size = 10;
-      incomplete-dir-enabled = true;
-      incomplete-dir = "/mnt/video/torrents/incomplete";
+      incomplete-dir-enabled = false;
     };
   };
 
