@@ -444,6 +444,7 @@ in
       hwdata
       cachix
       tailscale
+      unar
     ];
 
     loginShellInit = ''

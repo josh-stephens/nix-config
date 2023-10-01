@@ -317,6 +317,7 @@ in
       sox
       catppuccin-gtk
       catppuccin-plymouth
+      unar
     ];
 
     etc."greetd/environments".text = ''
