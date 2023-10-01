@@ -30,6 +30,7 @@
       steam
       unzip
       cliphist
+      wl-clip-persist
       pavucontrol
       (pkgs.writeShellApplication {
         name = "discord";
