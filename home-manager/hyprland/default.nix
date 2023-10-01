@@ -20,12 +20,14 @@
       exec-once=systemctl --user restart xremap
       exec-once=eww daemon && eww open-many main-bar main-bar-background
       exec-once=swww init && swww img ~/Backgrounds/Paisley.jpg
-      exec-once=${pkgs.unstable.cliphist}/bin/wl-paste --type text --watch cliphist store
-      exec-once=${pkgs.unstable.cliphist}/bin/wl-paste --type image --watch cliphist store
-      exec-once=${pkgs.unstable.cliphist}/bin/wl-paste --type text -w sh -c 'xclip -selection clipboard -o > /dev/null 2> /dev/null || xclip -selection clipboard'
+      exec-once=${inputs.nixpkgs-wayland.packages.${pkgs.system}.wl-clipboard}/bin/wl-paste --type text --watch cliphist store
+      exec-once=${inputs.nixpkgs-wayland.packages.${pkgs.system}.wl-clipboard}/bin/wl-paste --type image --watch cliphist store
+      exec-once=${inputs.nixpkgs-wayland.packages.${pkgs.system}.wl-clipboard}/bin/wl-paste --type text -w sh -c 'xclip -selection clipboard -o > /dev/null 2> /dev/null || xclip -selection clipboard'
       exec-once=${pkgs.unstable.wl-clip-persist}/bin/wl-clip-persist --clipboard both
       exec-once=rm "$HOME/.cache/cliphist/db"
-      exec-once="${pkgs.libratbag}/bin/ratbagctl thundering-gerbil dpi set 1000"
+      exec-once="${pkgs.libratbag}/bin/ratbagctl thundering-gerbil dpi set 750"
+      exec-once="${pkgs.libratbag}/bin/ratbagctl warbling-mara dpi set 750"
+      exec-once="${pkgs.libratbag}/bin/ratbagctl hollering-marmot dpi set 750"
       exec-once=dbus-update-activation-environment --systemd DISPLAY WAYLAND_DISPLAY
       exec-once=''${HOME}/.config/hypr/scripts/lock.sh
 
