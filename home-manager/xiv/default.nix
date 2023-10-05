@@ -1,6 +1,6 @@
 { inputs, lib, config, pkgs, ... }: {
   home.packages = [
-    pkgs.unstable.xivlauncher
+    pkgs.xivlauncherRb
     pkgs.TotallyNotCef
   ];
 

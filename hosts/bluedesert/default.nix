@@ -9,6 +9,7 @@ in
     inputs.agenix.nixosModules.default
     # inputs.agenix-rekey.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
+    ../common.nix
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
@@ -191,22 +192,6 @@ in
       rpc-host-whitelist = "transmission.home.husbuddies.gay";
       download-queue-size = 10;
       incomplete-dir-enabled = false;
-    };
-  };
-
-  # Mount filesystems
-  fileSystems = {
-    "/mnt/video" = {
-      device = "192.168.1.100:/volume1/video";
-      fsType = "nfs";
-    };
-    "/mnt/music" = {
-      device = "192.168.1.100:/volume1/music";
-      fsType = "nfs";
-    };
-    "/mnt/books" = {
-      device = "192.168.1.100:/volume1/books";
-      fsType = "nfs";
     };
   };
 

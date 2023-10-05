@@ -1,6 +1,6 @@
 { lib
 , buildDotnetModule
-, fetchFromGitHub
+, fetchFromGitLab
 , dotnetCorePackages
 , makeWrapper
 , copyDesktopItems
@@ -11,21 +11,21 @@
 }:
 
 let
-  rev = "2c013457531439e1907299b34e5d5cac5c79302a";
+  rev = "6d9d6a3834d90300418ba0de5ab0ce8586548672";
 in
 buildDotnetModule rec {
   pname = "TotallyNotCef";
-  version = "1.0.0";
+  version = "1.0.0.10";
   dotnet-sdk = dotnetCorePackages.sdk_7_0;
   dotnet-runtime = dotnetCorePackages.runtime_7_0;
   runtimeId = "linux-x64";
 
-  src = fetchFromGitHub {
-    owner = "Veraticus";
+  src = fetchFromGitLab {
+    owner = "joshua.software.dev";
     repo = "TotallyNotCef";
     rev = rev;
     fetchSubmodules = true;
-    hash = "sha256-1K2EMJ1/wOHQWPnoks7Vk7uQms0Ypdm2aoGaR/Sr2nQ=";
+    hash = "sha256-tICIZ9OL9jEzg+mOKbCcaZ4YpMdnhlTUdDi34axgxYY=";
   };
 
   nugetDeps = ./deps.nix;
@@ -60,7 +60,7 @@ buildDotnetModule rec {
 
   meta = {
     description = "TotallyNotCef";
-    homepage = "https://github.com/Veraticus/TotallyNotCef";
+    homepage = "https://gitlab.com/joshua.software.dev/TotallyNotCef/-/releases";
     platforms = [ "x86_64-linux" ];
     mainProgram = "TotallyNotCef";
   };

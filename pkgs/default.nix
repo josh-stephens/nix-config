@@ -4,4 +4,5 @@
 { pkgs ? (import ../nixpkgs.nix) { } }: {
   TotallyNotCef = pkgs.callPackage ./TotallyNotCef { };
   myCaddy = pkgs.callPackage ./caddy { };
+  xivlauncherRb = pkgs.callPackage ./xivlauncher { };
 }

@@ -14,6 +14,7 @@ in
     inputs.home-manager.nixosModules.home-manager
     inputs.xremap-flake.nixosModules.default
     inputs.nur.nixosModules.nur
+    ../common.nix
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
@@ -110,6 +111,10 @@ in
   };
 
   fileSystems."/mnt/windows" = {
+    device = "/dev/sdb2";
+    fsType = "ntfs3";
+  };
+  fileSystems."/mnt/storage" = {
     device = "/dev/sda2";
     fsType = "ntfs3";
   };
@@ -318,6 +323,7 @@ in
       catppuccin-gtk
       catppuccin-plymouth
       unar
+      xxd
     ];
 
     etc."greetd/environments".text = ''
