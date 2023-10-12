@@ -86,6 +86,7 @@
       gitsigns.enable = true;
       luasnip.enable = true;
       fugitive.enable = true;
+      indent-blankline.enable = true;
     };
 
     extraPlugins = with pkgs.vimExtraPlugins; [
@@ -100,7 +101,6 @@
       cmp-path
       cmp-rg
       Comment-nvim
-      indent-blankline-nvim
       telescope-manix
       trim-nvim
     ];

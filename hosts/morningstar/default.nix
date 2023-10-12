@@ -124,7 +124,13 @@ in
   i18n.defaultLocale = "en_US.UTF-8";
 
   # Default programs everyone wants
-  virtualisation.docker.enable = true;
+  virtualisation = {
+    docker = {
+      enable = true;
+      enableNvidia = true;
+    };
+  };
+
   programs._1password-gui = {
     enable = true;
     package = pkgs.unstable._1password-gui.override

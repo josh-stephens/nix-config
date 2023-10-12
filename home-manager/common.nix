@@ -37,7 +37,7 @@
   # Programs
   programs.go = {
     enable = true;
-    package = pkgs.unstable.go_1_20;
+    package = pkgs.unstable.go_1_21;
   };
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
