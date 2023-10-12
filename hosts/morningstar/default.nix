@@ -316,6 +316,7 @@ in
     };
 
     systemPackages = with pkgs.unstable; [
+      docker-compose
       glib
       gsettings-desktop-schemas
       polkit
