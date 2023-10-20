@@ -418,8 +418,7 @@ in
         extraOptions = [ "--network=host" ];
         volumes = [
           "/etc/bazarr/config:/config"
-          "/mnt/video/movies:/movies"
-          "/mnt/video/tv:/tv"
+          "/mnt/video/:/mnt/video"
         ];
         environment = {
           PUID = "0";
