@@ -421,6 +421,10 @@ in
           "/mnt/video/movies:/movies"
           "/mnt/video/tv:/tv"
         ];
+        environment = {
+          PUID = "0";
+          PGID = "0";
+        };
       };
       homepage = {
         image = "ghcr.io/benphelps/homepage:v0.7.0";
