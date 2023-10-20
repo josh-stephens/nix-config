@@ -160,6 +160,7 @@ in
   # Directories
   systemd.tmpfiles.rules = [
     "d /etc/jellyseerr/config 0644 root root -"
+    "d /etc/bazarr/config 0644 root root -"
   ];
 
   # Services
@@ -271,6 +272,12 @@ in
         import cloudflare
       '';
     };
+    virtualHosts."bazarr.home.husbuddies.gay" = {
+      extraConfig = ''
+        reverse_proxy /* localhost:6767
+        import cloudflare
+      '';
+    };
   };
 
   environment.etc."homepage/config/settings.yaml" = {
@@ -346,6 +353,14 @@ in
               type: readarr
               url: http://127.0.0.1:8787
               key: {{HOMEPAGE_FILE_READARR_API_KEY}}
+        - Bazarr:
+            icon: bazarr.png
+            href: https://bazarr.home.husbuddies.gay
+            description: Subtitle Management
+            widget:
+              type: bazarr
+              url: http://127.0.0.1:6767
+              key: {{HOMEPAGE_FILE_BAZARR_API_KEY}}
       - Media:
         - Jellyfin:
             icon: jellyfin.png
@@ -392,6 +407,18 @@ in
         extraOptions = [ "--network=host" ];
         volumes = [
           "/etc/jellyseerr/config:/app/config"
+        ];
+      };
+      bazarr = {
+        image = "linuxserver/bazarr:1.3.1";
+        ports = [
+          "6767:6767"
+        ];
+        extraOptions = [ "--network=host" ];
+        volumes = [
+          "/etc/bazarr/config:/config"
+          "/mnt/video/movies:/movies"
+          "/mnt/video/tv:/tv"
         ];
       };
       homepage = {
