@@ -40,7 +40,7 @@ yabai -m config                              \
     window_animation_duration   0.10         \
     window_opacity_duration     0.10         \
     active_window_opacity       1.00         \
-    normal_window_opacity       0.80         \
+    normal_window_opacity       1.00         \
     active_window_border_color  0xff9399b2   \
     normal_window_border_color  0xff313244   \
     window_opacity              on           \
