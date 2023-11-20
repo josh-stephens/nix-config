@@ -1,152 +1,299 @@
-#                          ﱦ 齃     ﮂ  ﵁ 爵        ﭵ     ﱦ  ﰊ 異 ﴱ אַ  'Y⃣'
+#!/bin/sh
 
-############## BAR ##############
-sketchybar --bar height=35 \
-                 y_offset=5 \
-                 blur_radius=0 \
-                 position=top \
-                 padding_left=4 \
-                 padding_right=2 \
-                 margin=10 \
-                 corner_radius=12 \
-                 color=0xff1e1e2e \
-                 shadow=on
+#                      _ _
+#                     (_) |
+#  _ __ _____   ___ __ _| |_ ____           github:     https://github.com/mvritz
+# | '_ ` _ \ \ / / '__| | __|_  /           twitter:    https://twitter.com/meshtonight
+# | | | | | \ V /| |  | | |_ / /            instagram:  https://instagram.com/mo.drs
+# |_| |_| |_|\_/ |_|  |_|\__/___|
+#
 
-############## GLOBAL DEFAULTS ##############
-sketchybar --default updates=when_shown \
-                     icon.font="CartographF Nerd Font:Condensed Bold:14.0" \
-                     icon.color=0xff11111b \
-                     icon.highlight_color=0xffE48FA8 \
-                     label.font="CartographF Nerd Font:Condensed Bold:14.0" \
-                     label.color=0xffcdd6f4 \
-                     background.corner_radius=5 \
-                     background.height=30
+source "$HOME/.config/sketchybar/colors.sh"
+source "$HOME/.config/sketchybar/icons.sh"
 
-sketchybar --add item logo left \
-           --set logo icon= \
-                 icon.color=0xff11111b \
-                 icon.padding_left=16 \
-                 icon.padding_right=16 \
-                 background.color=0xff89dceb \
-                 background.padding_right=8 \
-                 background.padding_left=4 \
-                 click_script="sketchybar --update"
+PLUGIN_DIR="$HOME/.config/sketchybar/plugins"
+SPOTIFY_EVENT="com.spotify.client.PlaybackStateChanged"
+POPUP_CLICK_SCRIPT="sketchybar --set \$NAME popup.drawing=toggle"
+ACTIVE_SPACE=$(yabai -m query --spaces --space | jq '.index')
+SPACE_ICONS=("$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST")
 
-SPACE_ICONS=("1" "2" "3" "4" "5" "6" "7" "8" "9" "10")
-SPACES=()
+bar=(
+  height=30
+  margin=5
+  corner_radius=10
+  position=top
+  color=$TRANSPARENT
+  border_color=$PURPLE
+  y_offset=4
+  sticky=off
+)
 
-for i in "${!SPACE_ICONS[@]}"
-do
-  sid=$(($i+1))
-  SPACES+=(space.$sid)
-  sketchybar --add space space.$sid left \
-             --set space.$sid associated_space=$sid \
-                              icon=${SPACE_ICONS[i]} \
-                              icon.padding_left=20 \
-                              icon.padding_right=20 \
-                              icon.highlight_color=0xfff5e0dc \
-                              background.padding_left=-4 \
-                              background.padding_right=-4 \
-                              background.color=0xff45475a \
-                              background.drawing=on \
-                              label.drawing=off \
-                              click_script="yabai -m space --focus $sid"
-done
+sketchybar --bar "${bar[@]}"
 
-sketchybar --add item space_separator left \
-           --set space_separator icon= \
-                                 background.padding_left=23 \
-                                 background.padding_right=23 \
-                                 label.drawing=off \
-                                 icon.color=0xffb4befe
+defaults=(
+  updates=when_shown
+  icon.drawing=on
+  icon.font="SF Pro:Regular:12.0"
+  icon.color=$WHITE
+  label.font="SF Pro:Regular:12.0"
+  label.drawing=on
+  label.color=$WHITE
+  popup.background.color=$BLUE
+  popup.background.corner_radius=10
+  popup.background.border_width=3
+  popup.background.border_color=$PURPLE
+  popup.blur_radius=100
+)
 
-sketchybar --add item window_title left \
-           --set window_title    script="~/.config/sketchybar/plugins/window_title.sh" \
-                                 icon.drawing=off \
-                                 label.color=0xffb4befe \
-                                 label.padding_right=20 \
-           --subscribe window_title front_app_switched
+sketchybar --default "${defaults[@]}"
 
-############## ITEM DEFAULTS ###############
-sketchybar --default label.padding_left=6 \
-                     label.padding_right=6 \
-                     icon.padding_left=6 \
-                     icon.padding_right=6 \
-                     icon.font="CartographF Nerd Font:Condensed Bold:16.0" \
-                     background.height=30 \
-                     background.padding_right=4 \
-                     background.padding_left=4 \
-                     background.corner_radius=5
+time=(
+  update_freq=1
+  script="$PLUGIN_DIR/time.sh"
+  click_script="$POPUP_CLICK_SCRIPT"
+  label.font="SF Pro:Bold:12.0"
+  label.padding_left=20
+  label.padding_right=15
+  background.corner_radius=10
+  background.color=$TEMPUS
+  background.height=19
+  background.padding_left=-10
+  background.padding_right=3
+  background.border_color=$PURPLE
+)
 
-sketchybar --add item spot_logo center \
-           --set spot_logo icon= \
-                           label.drawing=off \
-                           icon.color=0xff11111b \
-                           background.color=0xffEDC4E5
-
-
-sketchybar --add item spot center \
-           --set spot update_freq=1 \
-                      icon.drawing=off \
-                      updates=on \
-                      script="~/.config/sketchybar/plugins/spotifyIndicator.sh" \
-                      background.color=0xff45475a \
-                      background.padding_left=0
-
-############## RIGHT ITEMS ##############
 sketchybar --add item time right \
-           --set time update_freq=1 \
-                      icon.drawing=off \
-                      script="~/.config/sketchybar/plugins/time.sh" \
-                      background.color=0xff45475a \
-                      background.padding_left=0
+  --set time "${time[@]}" \
+  --subscribe time system_woke
 
-sketchybar --add item time_logo right\
-           --set time_logo icon= \
-                           label.drawing=off \
-                           icon.color=0xff11111b \
-                           label.drawing=off \
-                           background.color=0xfff9e2af
+date=(
+  update_freq=30
+  script="$PLUGIN_DIR/date.sh"
+  click_script="$POPUP_CLICK_SCRIPT"
+  label.padding_left=15
+  background.color=$TEMPUS
+  background.height=19
+  background.corner_radius=10
+)
 
 sketchybar --add item date right \
-           --set date update_freq=1000 \
-                      icon.drawing=off \
-                      script="~/.config/sketchybar/plugins/date.sh" \
-                      background.color=0xff45475a \
-                      background.padding_left=0
+  --set date "${date[@]}" \
+  --subscribe date system_woke
 
-sketchybar --add item clock_logo right\
-           --set clock_logo icon= \
-                            icon.color=0xff11111b\
-                            label.drawing=off \
-                            background.color=0xff74c7ec
+wifi=(
+  script="$PLUGIN_DIR/wifi.sh"
+  click_script="$POPUP_CLICK_SCRIPT"
+  label.padding_right=15
+  update_freq=60
+)
+
+rm -f /tmp/sketchybar_speed
+rm -f /tmp/sketchybar_wifi
+sketchybar --add item wifi right \
+  --set wifi "${wifi[@]}" \
+  --subscribe wifi system_woke
+
+battery=(
+  script="$PLUGIN_DIR/battery.sh"
+  update_freq=120
+  updates=on
+  click_script="$POPUP_CLICK_SCRIPT"
+  label.padding_left=15
+)
 
 sketchybar --add item battery right \
-           --set battery update_freq=3 \
-                         icon.drawing=off \
-                         script="~/.config/sketchybar/plugins/power.sh" \
-                         background.color=0xff45475a \
-                         background.padding_left=0
+  --set battery "${battery[@]}" \
+  --subscribe battery power_source_change system_woke
 
-sketchybar --add item power_logo right \
-           --set power_logo icon= \
-                 icon.color=0xff11111b \
-                 label.drawing=off \
-                 background.color=0xffa6e3a1
+volume=(
+  script="$PLUGIN_DIR/volume.sh"
+  updates=on
+  label.drawing=off
+  icon.drawing=off
+  slider.highlight_color=$PURPLE
+  slider.background.height=5
+  slider.background.corner_radius=3
+  slider.background.color=$GREY
+  slider.knob=$DOT
+  slider.knob.drawing=off
+  slider.padding_left=15
+  slider.padding_right=15
+  label.padding_right=10
+  label.padding_left=10
+  background.color=$STATUS
+  background.height=10
+  background.corner_radius=10
+  background.border_width=2
+  background.border_color=$PURPLE
+  background.padding_right=7
+)
 
-sketchybar --add item net right \
-           --set net script="~/.config/sketchybar/plugins/net.sh" \
-                     icon.drawing=off \
-                     background.color=0xff45475a \
-                     background.padding_left=0
+sketchybar --add slider volume right \
+  --set volume "${volume[@]}" \
+  --subscribe volume volume_change mouse.clicked mouse.entered mouse.exited
 
-sketchybar --add item net_logo right \
-           --set net_logo icon=\
-                     icon.color=0xff11111b\
-                     label.drawing=off \
-                     background.color=0xfffab387
+volume_icon=(
+  script="$PLUGIN_DIR/volume_icon.sh"
+  click_script="$PLUGIN_DIR/volume_click.sh"
+  label.padding_right=8
+  label.padding_left=20
+)
 
-############## FINALIZING THE SETUP ##############
+sketchybar --add item volume_icon right \
+  --set volume_icon "${volume_icon[@]}"
+
+spotify=(
+  click_script="$POPUP_CLICK_SCRIPT"
+  popup.horizontal=on
+  popup.align=center
+  popup.height=100
+  icon=$SPOTIFY
+  icon.padding_right=15
+  icon.padding_left=15
+  background.color=$TEMPUS
+  background.height=19
+  background.corner_radius=10
+  background.padding_left=3
+  background.padding_right=3
+  script="$PLUGIN_DIR/spotify.sh"
+  update_freq=5
+)
+
+sketchybar --add event spotify_change $SPOTIFY_EVENT \
+  --add item spotify e \
+  --set spotify "${spotify[@]}" \
+  --subscribe spotify mouse.entered mouse.exited \
+  mouse.exited.global
+
+spotify_label=(
+  label="Spotify"
+  label.padding_left=10
+  label.padding_right=15
+  label.font="SF Pro:Bold:9.0"
+  script="$PLUGIN_DIR/spotify.sh"
+  update_freq=5
+)
+
+sketchybar --add item spotify_label e \
+  --set spotify_label "${spotify_label[@]}"
+
+ram=(
+  icon=$RAM
+  icon.padding_left=15
+  script="$PLUGIN_DIR/ram.sh"
+  label.padding_right=15
+  label.padding_left=10
+  update_freq=60
+  background.corner_radius=10
+  background.color=$TEMPUS
+  background.height=19
+  background.padding_left=-6
+  background.padding_right=3
+  background.border_color=$PURPLE
+)
+
+sketchybar --add item ram q \
+  --set ram "${ram[@]}"
+
+cpu=(
+  icon=$CPU
+  icon.padding_left=15
+  script="$PLUGIN_DIR/cpu.sh"
+  label.padding_left=10
+  label.padding_right=15
+  update_freq=60
+)
+
+sketchybar --add item cpu q \
+  --set cpu "${cpu[@]}"
+
+apple=(
+  script="$PLUGIN_DIR/apple.sh"
+  click_script="$POPUP_CLICK_SCRIPT"
+  label=$APPLE
+  label.padding_right=15
+  label.padding_left=15
+  background.color=$TEMPUS
+  background.height=19
+  background.corner_radius=10
+  background.padding_left=3
+  background.padding_right=3
+)
+
+sketchybar --add item apple left \
+  --set apple "${apple[@]}"
+
+space=(
+  script="$PLUGIN_DIR/spaces.sh"
+  label.drawing=off
+  icon.padding_left=15
+  icon.padding_right=15
+  update_freq=1
+)
+
+space_bg=(
+  background.color=$SPACEBG
+  background.height=19
+  background.corner_radius=50
+)
+
+declare -a spacesArray=()
+for i in "${!SPACE_ICONS[@]}"; do
+  sid=$(($i + 1))
+
+  if [[ $sid -eq $ACTIVE_SPACE ]]; then
+    CURRENT_ICON=$PACMAN
+  else
+    CURRENT_ICON=${SPACE_ICONS["$i"]}
+  fi
+
+  spacesArray+=("space.$sid")
+
+  sketchybar --add space space.$sid left \
+    --set space.$sid associated_space=$sid \
+    icon="$CURRENT_ICON" \
+    click_script="yabai -m space --focus $sid" \
+    "${space[@]}"
+
+  if [[ $sid -eq $ACTIVE_SPACE ]]; then
+    sketchybar --set space.$sid "${space_bg[@]}"
+  fi
+
+done
+
+current_space=(
+  icon.padding_left=15
+  icon.padding_right=15
+  background.color=$MIDNIGHT
+  background.height=25
+  background.corner_radius=10
+  background.border_color=$PURPLE
+  background.border_width=3
+  background.padding_left=10
+  click_script="$POPUP_CLICK_SCRIPT"
+)
+
+sketchybar --add item current_space left \
+  --set current_space "${current_space[@]}"
+
+brackets=(
+  background.color=$STATUS
+  background.height=25
+  background.corner_radius=10
+  background.border_color=$PURPLE
+  background.border_width=3
+)
+
+sketchybar --add bracket status time date wifi battery volume_icon right \
+  --set status "${brackets[@]}"
+
+sketchybar --add bracket music spotify spotify_label e \
+  --set music "${brackets[@]}"
+
+sketchybar --add bracket control apple "${spacesArray[@]}" center \
+  --set control "${brackets[@]}"
+
+sketchybar --add bracket utilis ram cpu q \
+  --set utilis "${brackets[@]}"
+
 sketchybar --update
-
-echo "sketchybar configuration loaded..."
