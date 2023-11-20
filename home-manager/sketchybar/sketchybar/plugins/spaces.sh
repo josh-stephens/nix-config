@@ -16,7 +16,7 @@ space_bg=(
 
 space_popup=(
   icon.padding_left=10
-  label.font="SF Pro:Bold:12.0"
+  label.font="Cartograph CF:Bold:13.0"
   label.padding_left=10
   label.padding_right=10
   blur_radius=100
