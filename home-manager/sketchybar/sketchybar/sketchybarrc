@@ -19,7 +19,7 @@ SPACE_ICONS=("$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GHOST" "$GH
 
 bar=(
   height=30
-  margin=5
+  margin=0
   corner_radius=10
   position=top
   color=$TRANSPARENT
