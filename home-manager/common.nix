@@ -23,6 +23,7 @@
       killall
       eza
       xdg-utils
+      ncdu
       fzf
       vivid
       manix

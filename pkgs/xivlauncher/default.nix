@@ -25,8 +25,8 @@ buildDotnetModule rec {
   src = fetchFromGitHub {
     owner = "rankynbass";
     repo = "XIVLauncher.Core";
-    rev = "5849a7fa2945ce3d0df61c5ed0c804f2888490f3";
-    hash = "sha256-Q7+R85DUT+9OwG40vLjNTHyb1jFb9k7lXbuIByEhWfQ=";
+    rev = "ce90227dbd2a4b2aca8991b7a9ce7336400021d1";
+    hash = "sha256-JjhTUVvVtZnBgTXmuRW3DSIfN92uMes0ICXaNXHF7sQ=";
     fetchSubmodules = true;
   };
 
@@ -87,10 +87,10 @@ buildDotnetModule rec {
   ];
 
   meta = with lib; {
-    description = "Custom launcher for FFXIV";
-    homepage = "https://github.com/goatcorp/FFXIVQuickLauncher";
+    description = "Custom launcher fork for FFXIV";
+    homepage = "https://github.com/rankynbass/FFXIVQuickLauncher";
     license = licenses.gpl3;
-    maintainers = with maintainers; [ sersorrel witchof0x20 ];
+    maintainers = with maintainers; [ Veraticus ];
     platforms = [ "x86_64-linux" ];
     mainProgram = "XIVLauncher.Core";
   };
