@@ -29,7 +29,7 @@
 
     # UI
     nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
-    hyprland.url = "github:hyprwm/Hyprland?ref=a2a29a60e5301df2cadf58c1bb18495d02710547";
+    hyprland.url = "github:hyprwm/Hyprland";
     hyprland-contrib = {
       url = "github:hyprwm/contrib";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
