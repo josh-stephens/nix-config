@@ -420,7 +420,7 @@ in
         };
       };
       homepage = {
-        image = "ghcr.io/benphelps/homepage:v0.8.2";
+        image = "ghcr.io/gethomepage/homepage:v0.8.2";
         ports = [
           "3000:3000"
         ];
