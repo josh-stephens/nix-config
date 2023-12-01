@@ -25,10 +25,6 @@ in
     };
     opengl = {
       enable = true;
-      extraPackages = with pkgs; [
-        intel-media-driver
-        vaapiIntel
-      ];
       driSupport = true;
       driSupport32Bit = true;
     };
