@@ -38,14 +38,6 @@ buildDotnetModule rec {
     "-p:ImportByWildcardBeforeSolution=false"
   ];
 
-  dotnetBuildFlags = [
-    "-r linux-x64"
-  ];
-
-  dotnetInstallFlags = [
-    "-r linux-x64"
-  ];
-
   executables = [ "TotallyNotCef" ];
 
   runtimeDeps = [ speechd chromium icu openssl ];

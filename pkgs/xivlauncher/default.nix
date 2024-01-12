@@ -16,7 +16,7 @@
 }:
 
 let
-  rev = "1.0.6";
+  rev = "1.0.6.9";
 in
 buildDotnetModule rec {
   pname = "XIVLauncher";
@@ -25,8 +25,8 @@ buildDotnetModule rec {
   src = fetchFromGitHub {
     owner = "rankynbass";
     repo = "XIVLauncher.Core";
-    rev = "ce90227dbd2a4b2aca8991b7a9ce7336400021d1";
-    hash = "sha256-JjhTUVvVtZnBgTXmuRW3DSIfN92uMes0ICXaNXHF7sQ=";
+    rev = "a3a7809b7a6bdd54b350e6cde831037c63679f9a";
+    hash = "sha256-GKaqsokIKR9LlLsQ7oZQkGNGyiDMv3wMp8oLmFAJ0v0=";
     fetchSubmodules = true;
   };
 
