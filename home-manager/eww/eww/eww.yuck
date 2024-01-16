@@ -127,8 +127,8 @@
   (box :class "time"
        :orientation "h"
        :space-evenly "false"
-    (label :text "")
-    (label :text "${current_time}")
+    (label :class "icon" :text "")
+    (label :class "text" :text "${current_time}")
   )
 )
 
