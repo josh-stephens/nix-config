@@ -65,6 +65,20 @@
     };
   };
 
+  gtk = {
+    enable = true;
+    font.name = "Cartograph CF Regular";
+    theme = {
+      name = "Catppuccin-Mocha-Compact-Lavender-Dark";
+      package = pkgs.catppuccin-gtk.override {
+        accents = [ "lavender" ];
+        size = "compact";
+        tweaks = [ "rimless" ];
+        variant = "mocha";
+      };
+    };
+  };
+
   programs.zsh.shellAliases.update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
   programs.kitty.font.size = 10;
   programs.kitty.settings."kitty_mod" = "alt";

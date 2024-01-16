@@ -93,15 +93,18 @@ in
   networking.firewall.checkReversePath = "loose";
 
   boot = {
-    kernelPackages = pkgs.linuxPackages_xanmod;
     consoleLogLevel = 0;
     initrd.verbose = false;
     kernelModules = [ "coretemp" "kvm-intel" "nct6775" ];
     supportedFilesystems = [ "ntfs" ];
     kernelParams = [ "quiet" "splash" "rd.systemd.show_status=false" "rd.udev.log_level=3" "udev.log_priority=3" "boot.shell_on_fail" ];
-    # plymouth = {
-    #   enable = true;
-    # };
+    plymouth = {
+      themePackages = [
+        (pkgs.unstable.catppuccin-plymouth.override { variant = "mocha"; })
+      ];
+      enable = true;
+      theme = "catppuccin-mocha";
+    };
     loader = {
       timeout = 2;
       systemd-boot.enable = true;
@@ -312,8 +315,6 @@ in
       WLR_NO_HARDWARE_CURSORS = "1";
       MOZ_ENABLE_WAYLAND = "1";
       NIXOS_OZONE_WL = "1";
-
-      GTK_THEME = "Catppuccin-Mocha-Compact-Lavender-Dark";
     };
 
     systemPackages = with pkgs.unstable; [
@@ -328,8 +329,6 @@ in
       cachix
       speechd
       sox
-      catppuccin-gtk
-      catppuccin-plymouth
       unar
       xxd
     ];
