@@ -34,7 +34,7 @@
       pavucontrol
       (pkgs.writeShellApplication {
         name = "discord";
-        text = "${pkgs.unstable.discord}/bin/discord --use-gl=desktop";
+        text = "${pkgs.unstable.discord}/bin/discord --use-gl=desktop --enable-features=UseOzonePlatform --ozone-platform=wayland";
       })
       (pkgs.makeDesktopItem {
         name = "discord";

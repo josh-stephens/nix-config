@@ -57,6 +57,9 @@ buildDotnetModule rec {
       let
         steam-run = (steam.override {
           extraPkgs = pkgs: [ pkgs.libunwind ];
+          extraProfile = ''
+            unset TZ
+          '';
         }).run;
       in
       ''

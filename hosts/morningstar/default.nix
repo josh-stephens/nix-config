@@ -99,9 +99,9 @@ in
     kernelModules = [ "coretemp" "kvm-intel" "nct6775" ];
     supportedFilesystems = [ "ntfs" ];
     kernelParams = [ "quiet" "splash" "rd.systemd.show_status=false" "rd.udev.log_level=3" "udev.log_priority=3" "boot.shell_on_fail" ];
-    plymouth = {
-      enable = true;
-    };
+    # plymouth = {
+    #   enable = true;
+    # };
     loader = {
       timeout = 2;
       systemd-boot.enable = true;
@@ -245,10 +245,11 @@ in
   };
 
   services.pipewire = {
+    package = pkgs.unstable.pipewire;
     enable = true;
     alsa.enable = true;
-    alsa.support32Bit = true;
     pulse.enable = true;
+    audio.enable = true;
   };
 
   services.xremap = {
@@ -333,19 +334,57 @@ in
       xxd
     ];
 
-    etc."greetd/environments".text = ''
-      Hyprland
-    '';
-    etc."sysconfig/lm_sensors".text = ''
-      # This file is sourced by /etc/init.d/lm_sensors and defines the modules to
-      # be loaded/unloaded.
-      #
-      # The format of this file is a shell script that simply defines variables:
-      # HWMON_MODULES for hardware monitoring driver modules, and optionally
-      # BUS_MODULES for any required bus driver module (for example for I2C or SPI).
+    etc = {
+      "greetd/environments".text = ''
+        Hyprland
+      '';
+      "sysconfig/lm_sensors".text = ''
+        # This file is sourced by /etc/init.d/lm_sensors and defines the modules to
+        # be loaded/unloaded.
+        #
+        # The format of this file is a shell script that simply defines variables:
+        # HWMON_MODULES for hardware monitoring driver modules, and optionally
+        # BUS_MODULES for any required bus driver module (for example for I2C or SPI).
 
-      HWMON_MODULES="nct6775"
-    '';
+        HWMON_MODULES="nct6775"
+      '';
+      "pipewire/pipewire.conf.d/92-rnnoise-source.conf".text = ''
+        context.modules = [
+            { name = libpipewire-module-filter-chain
+                args = {
+                    node.description = "RNNoise Noise Canceling Source"
+                    media.name       = "RNNoise Noise Canceling Source"
+                    filter.graph = {
+                        nodes = [
+                            {
+                                type   = ladspa
+                                name   = "RNNoise Mono"
+                                plugin = ${pkgs.unstable.rnnoise-plugin}/lib/ladspa/librnnoise_ladspa.so
+                                label  = noise_suppressor_mono
+                                control = {
+                                    "VAD Threshold (%)" 50.0
+                                    "VAD Grace Period (ms)" 200
+                                    "Retroactive VAD Grace (ms)" 0
+                                }
+                            }
+                        ]
+                    }
+                    capture.props = {
+                       node.name =  "capture.rnnoise_source"
+                       node.passive = true
+                       audio.rate = 48000
+                    }
+                    playback.props = {
+                        media.class = Audio/Source
+                        node.name =  "rnnoise_source"
+                        audio.rate = 48000
+                    }
+                }
+            }
+        ]
+      '';
+
+    };
     loginShellInit = ''
       eval $(ssh-agent)
     '';

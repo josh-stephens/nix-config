@@ -151,6 +151,7 @@
       windowrulev2 = workspace 6, title:^(FINAL FANTASY XIV)$
       windowrulev2 = workspace 6, class:^(.gamescope-wrapped)$
 
+      bind = ALT, C, pass, ^(discord)$
       bind = CTRL ALT, L, exec, swaylock
       bind = SUPER, Space, exec, wofi --show drun -n
       bind = SUPER, Return, exec, kitty
