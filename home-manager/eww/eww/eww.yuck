@@ -44,6 +44,7 @@
       :valign "center"
       :space-evenly false
 
+      (current_date_widget)
       (current_time_widget)
     )
   )
@@ -119,6 +120,16 @@
 
     (label :text "${window_title}"
     )
+  )
+)
+
+(defpoll current_date :interval "10m" :initial "..." "date '+%a %b %d %Y'")
+(defwidget current_date_widget []
+  (box :class "date"
+       :orientation "h"
+       :space-evenly "false"
+    (label :class "icon" :text "")
+    (label :class "text" :text "${current_date}")
   )
 )
 

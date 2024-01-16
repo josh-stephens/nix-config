@@ -105,17 +105,17 @@ $rosewater: #f5e0dc;
   border-radius: 9px;
   margin-right: 3px;
   font-size: 17px;
+  background: $surface0;
 }
 
-.time {
-  background-image: linear-gradient(45deg, $sky 0%, $mauve 90%);
+.modules-right {
+  background-image: linear-gradient(45deg, $sky 0%, $mauve 45%, $pink 90%);
   font-size: 20px;
   color: $base;
   border-radius: 18px;
   margin-right: 6px; padding: 3px 6px 3px 3px; border-radius: 9px;
 }
 
-.time .icon {
-  background: $surface0;
-  color: $sky;
-}
+.date .text {padding-right: 6px;}
+.date .icon {color: $sky;}
+.time .icon {color: $pink;}
