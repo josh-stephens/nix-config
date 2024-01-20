@@ -156,12 +156,12 @@
       bind = SUPER, Space, exec, wofi --show drun -n
       bind = SUPER, Return, exec, kitty
       bind = SUPER, P, exec, 1password
-      bind = SUPER, M, exec, spotifywm
       bind = SUPER, Escape, exec, wlogout --protocol layer-shell -b 4 -T 400 -B 400hyp
       bind = SUPER SHIFT, V, exec, cliphist list | wofi --show dmenu | cliphist decode | wl-copy
       bind = , PRINT, exec, grimblast --freeze copysave area ~/Downloads/$(date +%s).png
       bind = SUPER, up, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+
       bind = SUPER, down, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-
+      bind = SUPER, M, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle
 
       ################################## Window Management ###########################################
       bind = SUPER, Q, killactive,
