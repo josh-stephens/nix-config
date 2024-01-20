@@ -20,7 +20,7 @@
   (fetchNuGet { pname = "Microsoft.NETCore.App.Runtime.linux-x64"; version = "7.0.7"; sha256 = "0v0ja6j6r529jm4bx1781zm3rnkm45b3hi2l00b9y2zbbw49ln35"; })
   (fetchNuGet { pname = "Microsoft.NETCore.Platforms"; version = "3.1.0"; sha256 = "1gc1x8f95wk8yhgznkwsg80adk1lc65v9n5rx4yaa4bc5dva0z3j"; })
   (fetchNuGet { pname = "Microsoft.Win32.SystemEvents"; version = "4.7.0"; sha256 = "0pjll2a62hc576hd4wgyasva0lp733yllmk54n37svz5ac7nfz0q"; })
-  (fetchNuGet { pname = "Microsoft.WindowsDesktop.App.Ref"; version = "7.0.13"; sha256 = "sha256-9wjA8jDuS3EN9h3LtUl5T7fSKIfm7yKkx1VbDegCAIQ="; })
+  (fetchNuGet { pname = "Microsoft.WindowsDesktop.App.Ref"; version = "7.0.15"; sha256 = "sha256-OtE7dIPPY4QCuM04g4c3WqpvpqrRawiVSciNZXF35MM="; })
   (fetchNuGet { pname = "NetCoreServer"; version = "7.0.0"; sha256 = "0rhc03cm9rq5d0dl5m3m2ia68b4q5bf4vycv5f475dh1as7sh37w"; })
   (fetchNuGet { pname = "Newtonsoft.Json"; version = "13.0.1"; sha256 = "0fijg0w6iwap8gvzyjnndds0q4b8anwxxvik7y8vgq97dram4srb"; })
   (fetchNuGet { pname = "PuppeteerSharp"; version = "10.1.1"; sha256 = "19b8ndmlm2dn14dkf29d2v57r0qxnydq6kd3847j8922szz6f6km"; })
