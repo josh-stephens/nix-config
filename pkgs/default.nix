@@ -5,4 +5,5 @@
   TotallyNotCef = pkgs.callPackage ./TotallyNotCef { };
   myCaddy = pkgs.callPackage ./caddy { };
   xivlauncherRb = pkgs.callPackage ./xivlauncher { };
+  fflogs = pkgs.callPackage ./fflogs { };
 }

@@ -2,6 +2,7 @@
   home.packages = [
     pkgs.xivlauncherRb
     pkgs.TotallyNotCef
+    pkgs.fflogs
   ];
 
   xdg.configFile."xiv" = {
@@ -30,4 +31,7 @@
       WantedBy = [ "" ];
     };
   };
+
+
+
 }
