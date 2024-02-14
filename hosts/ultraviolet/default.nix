@@ -290,10 +290,6 @@ in
   environment.etc."homepage/config/bookmarks.yaml" = {
     mode = "0644";
     text = ''
-      - Social:
-          - lib.lgbt:
-              - icon: https://lib.lgbt/pictrs/image/cc8bb351-0cc5-4c89-8f7f-21649c286e98.webp
-                href: https://lib.lgbt
     '';
   };
   environment.etc."homepage/config/widgets.yaml" = {
