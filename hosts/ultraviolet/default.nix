@@ -392,7 +392,7 @@ in
     backend = "podman";
     containers = {
       flaresolverr = {
-        image = "flaresolverr/flaresolverr:v3.3.10";
+        image = "flaresolverr/flaresolverr:v3.3.13";
         ports = [
           "8191:8191"
         ];
@@ -409,7 +409,7 @@ in
         ];
       };
       bazarr = {
-        image = "linuxserver/bazarr:1.4.0";
+        image = "linuxserver/bazarr:1.4.1";
         ports = [
           "6767:6767"
         ];
@@ -424,7 +424,7 @@ in
         };
       };
       homepage = {
-        image = "ghcr.io/gethomepage/homepage:v0.8.2";
+        image = "ghcr.io/gethomepage/homepage:v0.8.8";
         ports = [
           "3000:3000"
         ];
