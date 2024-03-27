@@ -97,7 +97,7 @@ local lsp_on_attach = function(bufnr)
   })
 end
 
-local servers = { 'bashls', 'html', 'jsonls', 'rnix', 'gopls', 'rust_analyzer' }
+local servers = { 'bashls', 'html', 'jsonls', 'gopls', 'rust_analyzer' }
 for _, lsp in ipairs(servers) do
   lspconfig[lsp].setup {
     on_attach = function(client, bufnr)

@@ -1,6 +1,6 @@
 { inputs, lib, config, pkgs, ... }: {
-  xdg.configFile."sketchybar" = {
-    source = ./sketchybar;
+  xdg.configFile."aerospace" = {
+    source = ./aerospace;
     recursive = true;
   };
 }

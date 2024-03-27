@@ -7,6 +7,7 @@
     theme = "Catppuccin-Mocha";
 
     keybindings = {
+      "kitty_mod"   = "ctrl+shift";
       "kitty_mod+c" = "copy_to_clipboard";
       "kitty_mod+v" = "paste_from_clipboard";
       "kitty_mod+k" = "scroll_line_up";

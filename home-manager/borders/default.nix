@@ -1,6 +1,6 @@
 { inputs, lib, config, pkgs, ... }: {
-  xdg.configFile."yabai" = {
-    source = ./yabai;
+  xdg.configFile."borders" = {
+    source = ./borders;
     recursive = true;
   };
 }

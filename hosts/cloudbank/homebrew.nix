@@ -7,6 +7,7 @@ in
     enable = true;
     casks = [
       "sf-symbols"
+      "nikitabobko/tap/aerospace"
     ];
     taps = [
       "FelixKratz/formulae"
@@ -19,8 +20,8 @@ in
         start_service = true;
         args = [ "HEAD" ];
       }
+      "borders"
       "colima"
-      "yabai"
       "skhd"
     ];
     masApps = {

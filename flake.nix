@@ -8,10 +8,10 @@
     nur.url = "github:nix-community/NUR";
 
     # Darwin
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-23.11-darwin";
+    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-unstable";
     darwin.url = "github:lnl7/nix-darwin/master";
     darwin.inputs.nixpkgs.follows = "nixpkgs-unstable";
-    darwin-nix.url = "github:yorickvP/nix/boost-regex";
+    darwin-nix.url = "github:LnL7/nix-darwin";
 
     # Secrets
     agenix.url = "github:ryantm/agenix";

@@ -2,9 +2,9 @@
   imports = [
     ./common.nix
 
-    ./yabai
     ./skhd
-    ./sketchybar
+    ./borders
+    ./aerospace
   ];
 
   home = {
@@ -18,5 +18,4 @@
 
   programs.zsh.shellAliases.update = "darwin-rebuild switch --flake \".#$(hostname -s)\"";
   programs.kitty.font.size = 13;
-  programs.kitty.settings."kitty_mod" = "alt";
 }

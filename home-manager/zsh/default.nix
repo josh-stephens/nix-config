@@ -67,6 +67,7 @@
       then
         FPATH="$(brew --prefix)/share/zsh/site-functions:''${FPATH}"
         [[ -r "$(brew --prefix)/etc/bash_completion.d/ckutil" ]] && . "$(brew --prefix)/etc/bash_completion.d/ckutil"
+        source $(which _it_wrap)
       fi
 
     '';

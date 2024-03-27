@@ -25,7 +25,7 @@ in
   };
 
   nix = {
-    package = inputs.darwin-nix.packages.${system}.nix;
+    package = pkgs.unstable.nix;
     useDaemon = true;
 
     gc = {

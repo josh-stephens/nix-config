@@ -7,7 +7,6 @@
         bashls.enable = true;
         html.enable = true;
         jsonls.enable = true;
-        rnix-lsp.enable = true;
         gopls.enable = true;
         rust-analyzer.enable = true;
         terraform-ls.enable = true;
