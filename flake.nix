@@ -42,7 +42,7 @@
     rust-overlay.url = "github:oxalica/rust-overlay";
 
     # Neovim
-    nixneovim.url = "github:Veraticus/NixNeovim?ref=ee6c4f0f595a749a7fe1902f1a4db4510d7461b0";
+    nixneovim.url = "github:Veraticus/NixNeovim?ref=87241fe110100eb992973d61632f0273c63eaa9a";
 
     # Shameless plug: looking for a way to nixify your themes and make
     # everything match nicely? Try nix-colors!

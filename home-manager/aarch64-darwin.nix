@@ -3,7 +3,6 @@
     ./common.nix
 
     ./skhd
-    ./borders
     ./aerospace
   ];
 
