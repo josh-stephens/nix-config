@@ -405,7 +405,7 @@ in
         ];
       };
       bazarr = {
-        image = "linuxserver/bazarr:1.4.1";
+        image = "linuxserver/bazarr:1.4.2";
         ports = [
           "6767:6767"
         ];
@@ -420,7 +420,7 @@ in
         };
       };
       homepage = {
-        image = "ghcr.io/gethomepage/homepage:v0.8.8";
+        image = "ghcr.io/gethomepage/homepage:v0.8.10";
         ports = [
           "3000:3000"
         ];
