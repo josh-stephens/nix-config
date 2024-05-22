@@ -67,9 +67,12 @@
       then
         FPATH="$(brew --prefix)/share/zsh/site-functions:''${FPATH}"
         [[ -r "$(brew --prefix)/etc/bash_completion.d/ckutil" ]] && . "$(brew --prefix)/etc/bash_completion.d/ckutil"
-        source $(which _it_wrap)
       fi
-
+      if type _it_cli &>/dev/null
+      then
+        source $(which _it_wrap)
+        it completion zsh > $(brew --prefix)/share/zsh/site-functions/_it
+      fi
     '';
     initExtra = ''
       if [ -n "''${commands[fzf-share]}" ]; then
@@ -80,7 +83,6 @@
           }
       fi
 
-      source ${pkgs.unstable.zsh-vi-mode}/share/zsh-vi-mode/zsh-vi-mode.plugin.zsh
       source "$(fzf-share)/key-bindings.zsh"
       source "$(fzf-share)/completion.zsh"
 

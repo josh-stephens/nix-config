@@ -20,6 +20,7 @@ in
         start_service = true;
         args = [ "HEAD" ];
       }
+      "pyenv"
       "borders"
       "colima"
       "skhd"
