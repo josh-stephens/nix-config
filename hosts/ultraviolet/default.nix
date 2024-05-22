@@ -235,6 +235,12 @@ in
         import cloudflare
       '';
     };
+    virtualHosts."sabnzbd.home.husbuddies.gay" = {
+      extraConfig = ''
+        reverse_proxy /* 192.168.1.201:8080
+        import cloudflare
+      '';
+    };
     virtualHosts."jellyseerr.home.husbuddies.gay" = {
       extraConfig = ''
         reverse_proxy /* localhost:5055
