@@ -89,7 +89,7 @@ in
       checkReversePath = "loose";
       trustedInterfaces = [ ];
       allowedUDPPorts = [ 51820 ];
-      allowedTCPPorts = [ 22 80 443 ];
+      allowedTCPPorts = [ 22 80 443 8080 ];
     };
     defaultGateway = "192.168.1.1";
     nameservers = [ "192.168.1.1" ];
@@ -195,7 +195,6 @@ in
 
   services.sabnzbd = {
     enable = true;
-    openFirewall = true;
     package = pkgs.unstable.sabnzbd;
   };
 
