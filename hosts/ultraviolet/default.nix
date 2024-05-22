@@ -388,14 +388,14 @@ in
     backend = "podman";
     containers = {
       flaresolverr = {
-        image = "flaresolverr/flaresolverr:v3.3.13";
+        image = "flaresolverr/flaresolverr:v3.3.18";
         ports = [
           "8191:8191"
         ];
         extraOptions = [ "--network=host" ];
       };
       jellyseerr = {
-        image = "fallenbagel/jellyseerr:1.7.0";
+        image = "fallenbagel/jellyseerr:1.8.1";
         ports = [
           "5055:5055"
         ];
@@ -420,7 +420,7 @@ in
         };
       };
       homepage = {
-        image = "ghcr.io/gethomepage/homepage:v0.8.10";
+        image = "ghcr.io/gethomepage/homepage:v0.8.12";
         ports = [
           "3000:3000"
         ];
