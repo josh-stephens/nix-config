@@ -193,6 +193,12 @@ in
     };
   };
 
+  services.sabnzbd = {
+    enable = true;
+    openFirewall = true;
+    package = pkgs.unstable.sabnzbd;
+  };
+
   # Environment
   environment = {
     pathsToLink = [ "/share/zsh" ];
