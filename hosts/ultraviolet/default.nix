@@ -378,6 +378,14 @@ in
             widget:
               type: transmission
               url: http://192.168.1.201:9091
+        - SABnzbd:
+            icon: sabnzbd.png
+            href: https://sabnzbd.home.husbuddies.gay
+            description: Usenet client
+            widget:
+              type: sabnzbd
+              url: http://192.168.1.201:8080
+              key: {{HOMEPAGE_FILE_SABNZBD_API_KEY}}
       - Network:
         - NextDNS:
             icon: nextdns.png
@@ -442,6 +450,7 @@ in
           HOMEPAGE_FILE_JELLYFIN_API_KEY = "/app/keys/jellyfin-api-key";
           HOMEPAGE_FILE_NEXTDNS_API_KEY = "/app/keys/nextdns-api-key";
           HOMEPAGE_FILE_JELLYSEERR_API_KEY = "/app/keys/jellyseerr-api-key";
+          HOMEPAGE_FILE_SABNZBD_API_KEY = "/app/keys/sabnzbd-api-key";
         };
         extraOptions = [ "--network=host" ];
       };
