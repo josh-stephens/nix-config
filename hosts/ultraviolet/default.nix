@@ -409,7 +409,7 @@ in
         extraOptions = [ "--network=host" ];
       };
       jellyseerr = {
-        image = "fallenbagel/jellyseerr:1.8.1";
+        image = "fallenbagel/jellyseerr:1.9.0";
         ports = [
           "5055:5055"
         ];
