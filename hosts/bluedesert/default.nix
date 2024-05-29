@@ -91,10 +91,10 @@ in
       allowedUDPPorts = [ 51820 ];
       allowedTCPPorts = [ 22 80 443 8080 ];
     };
-    defaultGateway = "192.168.1.1";
-    nameservers = [ "192.168.1.1" ];
+    defaultGateway = "172.31.0.1";
+    nameservers = [ "172.31.0.1" ];
     interfaces.enp2s0.ipv4.addresses = [{
-      address = "192.168.1.201";
+      address = "172.31.0.201";
       prefixLength = 24;
     }];
     interfaces.enp1s0.useDHCP = false;
@@ -186,7 +186,7 @@ in
       bind-address-ipv4 = "0.0.0.0";
       download-dir = "/mnt/video/torrents";
       rpc-bind-address = "0.0.0.0";
-      rpc-whitelist = "127.0.0.1,192.168.1.*";
+      rpc-whitelist = "127.0.0.1,172.31.0.*";
       rpc-host-whitelist = "transmission.home.husbuddies.gay";
       download-queue-size = 10;
       incomplete-dir-enabled = false;

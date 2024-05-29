@@ -91,10 +91,10 @@ in
       allowedUDPPorts = [ 51820 config.services.tailscale.port ];
       allowedTCPPorts = [ 22 80 443 ];
     };
-    defaultGateway = "192.168.1.1";
-    nameservers = [ "192.168.1.1" ];
+    defaultGateway = "172.31.0.1";
+    nameservers = [ "172.31.0.1" ];
     interfaces.enp0s31f6.ipv4.addresses = [{
-      address = "192.168.1.200";
+      address = "172.31.0.200";
       prefixLength = 24;
     }];
     interfaces.enp0s20f0u12.useDHCP = false;
@@ -231,13 +231,13 @@ in
     };
     virtualHosts."transmission.home.husbuddies.gay" = {
       extraConfig = ''
-        reverse_proxy /* 192.168.1.201:9091
+        reverse_proxy /* 172.31.0.201:9091
         import cloudflare
       '';
     };
     virtualHosts."sabnzbd.home.husbuddies.gay" = {
       extraConfig = ''
-        reverse_proxy /* 192.168.1.201:8080
+        reverse_proxy /* 172.31.0.201:8080
         import cloudflare
       '';
     };
@@ -377,14 +377,14 @@ in
             description: Torrent management
             widget:
               type: transmission
-              url: http://192.168.1.201:9091
+              url: http://172.31.0.201:9091
         - SABnzbd:
             icon: sabnzbd.png
             href: https://sabnzbd.home.husbuddies.gay
             description: Usenet client
             widget:
               type: sabnzbd
-              url: http://192.168.1.201:8080
+              url: http://172.31.0.201:8080
               key: {{HOMEPAGE_FILE_SABNZBD_API_KEY}}
       - Network:
         - NextDNS:
