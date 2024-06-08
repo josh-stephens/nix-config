@@ -98,6 +98,7 @@
         morningstar = nixosConfiguration "x86_64-linux" "morningstar" [ ./hosts/morningstar ];
         ultraviolet = nixosConfiguration "x86_64-linux" "ultraviolet" [ ./hosts/ultraviolet ];
         bluedesert = nixosConfiguration "x86_64-linux" "bluedesert" [ ./hosts/bluedesert ];
+        echelon = nixosConfiguration "x86_64-linux" "bluedesert" [ ./hosts/echelon ];
       };
 
       darwinConfigurations = {
@@ -108,6 +109,7 @@
         "joshsymonds@morningstar" = homeConfiguration "x86_64-linux" [ ./home-manager ];
         "joshsymonds@ultraviolet" = homeConfiguration "x86_64-linux" [ ./home-manager ];
         "joshsymonds@bluedesert" = homeConfiguration "x86_64-linux" [ ./home-manager ];
+        "joshsymonds@echelon" = homeConfiguration "x86_64-linux" [ ./home-manager ];
         "joshsymonds@cloudbank" = homeConfiguration "aarch64-darwin" [ ./home-manager ];
       };
     };
