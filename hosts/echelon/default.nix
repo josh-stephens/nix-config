@@ -82,22 +82,27 @@ in
     };
   };
 
+  boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
+
   networking = {
-    hostName = "bluedesert";
+    hostName = "echelon";
     firewall = {
       enable = true;
       checkReversePath = "loose";
-      trustedInterfaces = [ ];
-      allowedUDPPorts = [ 51820 ];
-      allowedTCPPorts = [ 22 80 443 8080 ];
+      trustedInterfaces = [ "tailscale0" ];
     };
     defaultGateway = "172.31.0.1";
     nameservers = [ "172.31.0.1" ];
     interfaces.enp2s0.ipv4.addresses = [{
-      address = "172.31.0.201";
+      address = "172.31.0.202";
       prefixLength = 24;
     }];
     interfaces.enp1s0.useDHCP = false;
+    nat = {
+      enable = true;
+      internalInterfaces = [ "tailscale0" ];  # Tailscale interface
+      externalInterface = "eth0";             # External interface connected to the router
+    };
   };
 
   boot = {
@@ -171,32 +176,6 @@ in
   programs.zsh.enable = true;
 
   services.rpcbind.enable = true;
-
-  services.mullvad-vpn = {
-    enable = true;
-    package = pkgs.unstable.mullvad-vpn;
-  };
-
-  services.transmission = {
-    enable = true;
-    openPeerPorts = true;
-    openRPCPort = true;
-    package = pkgs.unstable.transmission;
-    settings = {
-      bind-address-ipv4 = "0.0.0.0";
-      download-dir = "/mnt/video/torrents";
-      rpc-bind-address = "0.0.0.0";
-      rpc-whitelist = "127.0.0.1,172.31.0.*";
-      rpc-host-whitelist = "transmission.home.husbuddies.gay";
-      download-queue-size = 10;
-      incomplete-dir-enabled = false;
-    };
-  };
-
-  services.sabnzbd = {
-    enable = true;
-    package = pkgs.unstable.sabnzbd;
-  };
 
   # Environment
   environment = {
