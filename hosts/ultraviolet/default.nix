@@ -83,6 +83,7 @@ in
   };
 
   networking = {
+    useDHCP = false;
     hostName = "ultraviolet";
     firewall = {
       enable = true;

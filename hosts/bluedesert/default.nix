@@ -83,6 +83,7 @@ in
   };
 
   networking = {
+    useDHCP = false;
     hostName = "bluedesert";
     firewall = {
       enable = true;
