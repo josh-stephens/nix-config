@@ -81,25 +81,31 @@ in
     };
   };
 
-  boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
+  boot.kernel.sysctl = {
+    "net.ipv4.ip_forward" = 1;  # Enable IPv4 forwarding
+    "net.ipv6.conf.all.forwarding" = 1;  # Enable IPv6 forwarding if needed
+  };
 
   networking = {
     useDHCP = false;
+    nftables.enable = true;
     hostName = "echelon";
     firewall = {
       enable = true;
+      allowPing = true;
       checkReversePath = "loose";
       trustedInterfaces = [ "tailscale0" ];
     };
-    defaultGateway = "172.31.0.1";
-    nameservers = [ "172.31.0.1" ];
+    defaultGateway = "192.168.1.1";
+    nameservers = [ "8.8.8.8" "1.1.1.1" ];
     interfaces.enp2s0.ipv4.addresses = [{
-      address = "172.31.0.202";
+      address = "192.168.1.200";
       prefixLength = 24;
     }];
     interfaces.enp1s0.useDHCP = false;
     nat = {
       enable = true;
+      internalIPs = [ "192.168.1.0/24" ];
       internalInterfaces = [ "tailscale0" ];  # Tailscale interface
       externalInterface = "eth0";             # External interface connected to the router
     };
@@ -180,7 +186,7 @@ in
   services.tailscale = {
     enable = true;
     package = pkgs.unstable.tailscale;
-    useRoutingFeatures = "server";
+    useRoutingFeatures = "both";
   };
 
   # Environment
