@@ -177,6 +177,12 @@ in
 
   services.rpcbind.enable = true;
 
+  services.tailscale = {
+    enable = true;
+    package = pkgs.unstable.tailscale;
+    useRoutingFeatures = "server";
+  };
+
   # Environment
   environment = {
     pathsToLink = [ "/share/zsh" ];
