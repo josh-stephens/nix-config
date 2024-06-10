@@ -88,13 +88,14 @@ in
 
   networking = {
     useDHCP = false;
-    nftables.enable = true;
     hostName = "echelon";
     firewall = {
       enable = true;
       allowPing = true;
       checkReversePath = "loose";
       trustedInterfaces = [ "tailscale0" ];
+      allowedUDPPorts = [ 51820 config.services.tailscale.port ];
+      allowedTCPPorts = [ 22 80 443 ];
     };
     defaultGateway = "192.168.1.1";
     nameservers = [ "8.8.8.8" "1.1.1.1" ];
@@ -198,7 +199,7 @@ in
     useRoutingFeatures = "both";
   };
 
-  # Environment
+   # Environment
   environment = {
     pathsToLink = [ "/share/zsh" ];
 
@@ -208,6 +209,7 @@ in
       hwdata
       cachix
       unar
+      traceroute
     ];
 
     loginShellInit = ''
