@@ -139,6 +139,16 @@ in
     ];
     extraGroups = [ "wheel" config.users.groups.keys.name ];
   };
+  users.users.raymond = {
+    shell = pkgs.unstable.zsh;
+    home = "/home/raymond";
+    initialPassword = "correcthorsebatterystaple";
+    isNormalUser = true;
+    openssh.authorizedKeys.keys = [
+      "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAQQju/2kUgDvh7sfYzNE0seFBF0kO5jiyP5eLtklsjH"
+    ];
+    extraGroups = [ "wheel" config.users.groups.keys.name ];
+  };
 
   home-manager = {
     extraSpecialArgs = { inherit inputs; };
