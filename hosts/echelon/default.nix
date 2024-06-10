@@ -105,9 +105,8 @@ in
     interfaces.enp1s0.useDHCP = false;
     nat = {
       enable = true;
-      internalIPs = [ "192.168.1.0/24" ];
-      internalInterfaces = [ "tailscale0" ];  # Tailscale interface
-      externalInterface = "eth0";             # External interface connected to the router
+      internalInterfaces = [ "eth0" ];
+      externalInterface = "tailscale0";             # External interface connected to the router
     };
   };
 
