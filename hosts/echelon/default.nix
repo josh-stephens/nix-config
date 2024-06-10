@@ -102,11 +102,11 @@ in
       address = "192.168.1.200";
       prefixLength = 24;
     }];
-    interfaces.enp1s0.useDHCP = false;
+    interfaces.enp2s0.useDHCP = false;
     nat = {
       enable = true;
-      internalInterfaces = [ "eth0" ];
-      externalInterface = "tailscale0";             # External interface connected to the router
+      internalInterfaces = [ "enp2s0" ];
+      externalInterface = "tailscale0";
     };
   };
 
