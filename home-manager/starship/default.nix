@@ -9,7 +9,7 @@
 
       format = "[](fg:lavender)$directory$character";
 
-      right_format = "[](fg:rosewater)$cmd_duration[](fg:sky bg:rosewater)$hostname[](fg:peach bg:sky)$git_branch$git_status[](bg:peach fg:teal)$kubernetes[](fg:teal)";
+      right_format = "[](fg:mauve)$hostname[](fg:rosewater bg:mauve)$hostname[](fg:sky bg:rosewater)$git_branch$git_status[](fg:peach bg:sky)$aws[](bg:peach fg:teal)$kubernetes[](fg:teal)";
 
       add_newline = false;
 
@@ -17,9 +17,14 @@
         disabled = true;
       };
 
+      fill = {
+        disabled = true;
+      };
+
       directory = {
         style = "bg:lavender fg:base";
         format = "[ $path ]($style)";
+
         truncation_length = 2;
         truncation_symbol = "…/";
         fish_style_pwd_dir_length = 2;
@@ -35,23 +40,28 @@
       };
 
       "cmd_duration" = {
-        style = "bg:rosewater fg:base";
+        style = "bg:mauve fg:base";
         format = "[ $duration ]($style)";
       };
 
+      aws = {
+        style = "bg:peach fg:base";
+        format = "[ $symbol$profile ]($style)";
+        force_display = true;
+      };
+
       hostname = {
-        style = "bg:sky fg:base";
+        style = "bg:rosewater fg:base";
         format = "[ $hostname ]($style)";
       };
 
       "git_branch" = {
-        symbol = "";
-        style = "bg:peach fg:base";
-        format = "[ $symbol $branch ]($style)";
+        style = "bg:sky fg:base";
+        format = "[ $symbol$branch ]($style)";
       };
 
       "git_status" = {
-        style = "bg:peach fg:base";
+        style = "bg:sky fg:base";
         format = "[$all_status$ahead_behind ]($style)";
       };
 
