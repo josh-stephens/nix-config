@@ -67,7 +67,7 @@
 
   gtk = {
     enable = true;
-    font.name = "Cartograph CF Regular";
+    font.name = "Maple Mono NF CN";
     theme = {
       name = "Catppuccin-Mocha-Compact-Lavender-Dark";
       package = pkgs.catppuccin-gtk.override {

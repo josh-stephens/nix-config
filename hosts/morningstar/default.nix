@@ -291,7 +291,7 @@ in
       };
       subpixel.rgba = "rgb";
       defaultFonts = {
-        monospace = [ "Cartograph CF Regular" "Symbols Nerd Font Mono" ];
+        monospace = [ "Maple Mono NF CN Regular" ];
       };
     };
   };
