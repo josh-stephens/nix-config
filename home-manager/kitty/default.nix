@@ -12,7 +12,7 @@
       "kitty_mod+v" = "paste_from_clipboard";
       "kitty_mod+k" = "scroll_line_up";
       "kitty_mod+j" = "scroll_line_down";
-      "kitty_mod+s" = "show_scrollback";
+      "kitty_mod+s" = "kitty_scrollback_nvim";
       "kitty_mod+l" = "clear_terminal scrollback active";
       "kitty_mod+t" = "new_tab";
       "kitty_mod+1" = "goto_tab 1";
@@ -25,6 +25,9 @@
       "kitty_mod+shift+[" = "previous_tab";
       "cmd+enter" = "no_op";
       "cmd+shift+enter" = "no_op";
+      "kitty_mod+h" = "kitty_scrollback_nvim";
+      "kitty_mod+g" = "kitty_scrollback_nvim --config ksb_builtin_last_cmd_output";
+      "ctrl+shift+right" = "mouse_select_command_output>kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output";
     };
 
     settings = {
@@ -49,8 +52,11 @@
       "tab_bar_margin_width" = "0.0";
       "tab_bar_style" = "powerline";
       "tab_separator" = " ┇";
-      "allow_remote_control" = false;
+      "allow_remote_control" = true;
+      "listen_on" = "unix:/tmp/kitty";
+      "shell_integration" = "enabled";
       "clipboard_control" = "write-clipboard write-primary";
+      "action_alias" = "kitty_scrollback_nvim kitten ${pkgs.vimExtraPlugins.kitty-scrollback-nvim}/python/kitty_scrollback_nvim.py";
       "term" = "xterm-kitty";
       "background_opacity" = "0.9";
       "hide_window_decorations" = true;

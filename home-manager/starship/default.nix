@@ -46,7 +46,7 @@
 
       aws = {
         style = "bg:peach fg:base";
-        format = "[ $symbol$profile ]($style)";
+        format = "[ $profile ]($style)";
         force_display = true;
       };
 

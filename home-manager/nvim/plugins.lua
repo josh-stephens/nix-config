@@ -140,3 +140,6 @@ require("nvim-tree").setup {
     },
   },
 }
+
+-- Kitty
+require('kitty-scrollback').setup()

@@ -23,7 +23,9 @@ in
       "pyenv"
       "borders"
       "colima"
-      "skhd"
+      "chruby"
+      "ruby-install"
+      "xz"
     ];
     masApps = {
       "Boop" = 1518425043;

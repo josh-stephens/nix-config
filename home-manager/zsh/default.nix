@@ -60,6 +60,8 @@
       then
         FPATH="$(brew --prefix)/share/zsh/site-functions:''${FPATH}"
         [[ -r "$(brew --prefix)/etc/bash_completion.d/ckutil" ]] && . "$(brew --prefix)/etc/bash_completion.d/ckutil"
+        source $(brew --prefix)/opt/chruby/share/chruby/chruby.sh
+        source $(brew --prefix)/opt/chruby/share/chruby/auto.sh
       fi
       if type _it_cli &>/dev/null
       then
@@ -78,6 +80,13 @@
 
       source "$(fzf-share)/key-bindings.zsh"
       source "$(fzf-share)/completion.zsh"
+
+      if type brew &>/dev/null
+      then
+        source $(brew --prefix)/opt/chruby/share/chruby/chruby.sh
+        source $(brew --prefix)/opt/chruby/share/chruby/auto.sh
+        chruby 3.1.3
+      fi
 
       export PATH=''${PATH}:''${HOME}/go/bin
 

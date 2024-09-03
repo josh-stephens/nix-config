@@ -1,9 +1,4 @@
 { inputs, lib, config, pkgs, ... }: {
-  xdg.configFile."nvim" = {
-    source = ./nvim;
-    recursive = true;
-  };
-
   home.packages = [
     pkgs.unstable.nodejs_20
   ];
@@ -103,6 +98,7 @@
       Comment-nvim
       telescope-manix
       trim-nvim
+      kitty-scrollback-nvim
     ];
 
     mappings = {
