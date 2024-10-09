@@ -410,7 +410,7 @@ in
         extraOptions = [ "--network=host" ];
       };
       jellyseerr = {
-        image = "fallenbagel/jellyseerr:1.9.0";
+        image = "fallenbagel/jellyseerr:1.9.2";
         ports = [
           "5055:5055"
         ];
@@ -420,7 +420,7 @@ in
         ];
       };
       bazarr = {
-        image = "linuxserver/bazarr:1.4.2";
+        image = "linuxserver/bazarr:1.4.5";
         ports = [
           "6767:6767"
         ];
@@ -435,7 +435,7 @@ in
         };
       };
       homepage = {
-        image = "ghcr.io/gethomepage/homepage:v0.9.2";
+        image = "ghcr.io/gethomepage/homepage:v0.9.10";
         ports = [
           "3000:3000"
         ];

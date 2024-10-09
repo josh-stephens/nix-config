@@ -35,9 +35,6 @@
       "cursor_stop_blinking_after" = 0;
       "confirm_os_window_close" = 0;
       "scrollback_lines" = 10000;
-      "scrollback_pager" = ''
-        nvim --noplugin -u ${config.xdg.configHome}/nvim/extras/pager.lua -c "silent write! /tmp/kitty_scrollback_buffer | te cat /tmp/kitty_scrollback_buffer -"
-      '';
       "enable_audio_bell" = false;
       "visual_bell_duration" = "0.1";
       "window_alert_on_bell" = true;
