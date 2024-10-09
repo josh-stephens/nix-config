@@ -48,7 +48,6 @@
       swaylock-effects
       swayidle
       swww
-      psensor
       piper
       catppuccin-cursors.mochaLavender
       signal-desktop-beta
