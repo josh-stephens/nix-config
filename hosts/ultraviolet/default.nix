@@ -399,6 +399,12 @@ in
     '';
   };
 
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+    defaultNetwork.settings.dns_enabled = true;
+  };
+
   virtualisation.oci-containers = {
     backend = "podman";
     containers = {
@@ -471,6 +477,7 @@ in
       cachix
       tailscale
       unar
+      podman-tui
     ];
 
     loginShellInit = ''
