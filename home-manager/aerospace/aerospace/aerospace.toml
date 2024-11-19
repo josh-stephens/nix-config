@@ -236,3 +236,7 @@ run = 'move-node-to-workspace D' # mnemonics D - Discord
 [[on-window-detected]]
 if.app-id = 'com.tinyspeck.slackmacgap'
 run = 'move-node-to-workspace S' # mnemonics S - Discord
+
+[[on-window-detected]]
+if.app-name-regex-substring = 'Cursor'
+run = 'move-node-to-workspace E' # mnemonics E - Editor

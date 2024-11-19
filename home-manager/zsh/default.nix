@@ -63,11 +63,6 @@
         source $(brew --prefix)/opt/chruby/share/chruby/chruby.sh
         source $(brew --prefix)/opt/chruby/share/chruby/auto.sh
       fi
-      if type _it_cli &>/dev/null
-      then
-        source $(which _it_wrap)
-        it completion zsh > $(brew --prefix)/share/zsh/site-functions/_it
-      fi
     '';
     initExtra = ''
       if [ -n "''${commands[fzf-share]}" ]; then
@@ -81,11 +76,10 @@
       source "$(fzf-share)/key-bindings.zsh"
       source "$(fzf-share)/completion.zsh"
 
-      if type brew &>/dev/null
+      if type it &>/dev/null
       then
-        source $(brew --prefix)/opt/chruby/share/chruby/chruby.sh
-        source $(brew --prefix)/opt/chruby/share/chruby/auto.sh
-        chruby 3.1.3
+      source $(brew --prefix)/share/zsh/site-functions/_it
+        eval "$(it wrapper)"
       fi
 
       export PATH=''${PATH}:''${HOME}/go/bin
