@@ -3,10 +3,7 @@ local function map(mode, lhs, rhs, opts)
   if opts then options = vim.tbl_extend('force', options, opts) end
   vim.keymap.set(mode, lhs, rhs, options)
 end
-
--- Terminal mode mappings
-map('t', '<Esc>', [[<C-\><C-n>]])
-
+--
 -- Window navigation
 map('n', '<C-h>', '<C-w>h')
 map('n', '<C-j>', '<C-w>j')

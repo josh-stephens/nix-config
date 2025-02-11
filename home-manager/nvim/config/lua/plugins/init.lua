@@ -139,6 +139,9 @@ return {
       "hrsh7th/cmp-cmdline",
       "hrsh7th/cmp-nvim-lua",
 
+      -- Copilot source for cmp
+      "zbirenbaum/copilot-cmp",
+
       -- Nice icons in completion menu
       "onsails/lspkind.nvim",
     },
@@ -164,6 +167,15 @@ return {
         completion = {
           completeopt = "menu,menuone,noinsert",
         },
+        enabled = function()
+          -- Disable completion in Aider terminal buffer
+          local buftype = vim.api.nvim_buf_get_option(0, 'buftype')
+          local filetype = vim.api.nvim_buf_get_option(0, 'filetype')
+          if buftype == 'terminal' and filetype == 'snacks_terminal' then
+            return false
+          end
+          return true
+        end,
         mapping = cmp.mapping.preset.insert({
           ["<C-n>"] = cmp.mapping.select_next_item(),
           ["<C-p>"] = cmp.mapping.select_prev_item(),
@@ -327,10 +339,18 @@ return {
     event = "InsertEnter",
     config = function()
       require("copilot").setup({
-        suggestion = { enabled = true },
+        suggestion = { enabled = false },
         panel = { enabled = false },
       })
     end,
+    dependencies = {
+      {
+        "zbirenbaum/copilot-cmp",
+        config = function()
+          require("copilot_cmp").setup()
+        end,
+      },
+    },
   },
 
   -- Mini.ai for better text objects
@@ -378,6 +398,92 @@ return {
     end,
   },
 
+  -- Which-key for better keybinding discovery
+  {
+    "folke/which-key.nvim",
+    event = "VeryLazy",
+    config = function()
+      require("which-key").setup({
+        window = {
+          border = "single",
+        },
+      })
+    end,
+  },
+
+  -- Better surround operations
+  {
+    "echasnovski/mini.surround",
+    version = false,
+    config = function()
+      require("mini.surround").setup()
+    end,
+  },
+
+  -- Auto-pairing brackets and quotes
+  {
+    "echasnovski/mini.pairs",
+    version = false,
+    config = function()
+      require("mini.pairs").setup()
+    end,
+  },
+
+  -- Better error/warning management
+  {
+    "folke/trouble.nvim",
+    dependencies = { "nvim-tree/nvim-web-devicons" },
+    config = function()
+      require("trouble").setup()
+      vim.keymap.set("n", "<leader>xx", "<cmd>TroubleToggle<cr>")
+      vim.keymap.set("n", "<leader>xw", "<cmd>TroubleToggle workspace_diagnostics<cr>")
+      vim.keymap.set("n", "<leader>xd", "<cmd>TroubleToggle document_diagnostics<cr>")
+      vim.keymap.set("n", "<leader>xq", "<cmd>TroubleToggle quickfix<cr>")
+      vim.keymap.set("n", "<leader>xl", "<cmd>TroubleToggle loclist<cr>")
+    end,
+  },
+
+  -- Better TODO comments
+  {
+    "folke/todo-comments.nvim",
+    dependencies = { "nvim-lua/plenary.nvim" },
+    config = function()
+      require("todo-comments").setup()
+      vim.keymap.set("n", "<leader>xt", "<cmd>TodoTrouble<cr>")
+      vim.keymap.set("n", "]t", function() require("todo-comments").jump_next() end)
+      vim.keymap.set("n", "[t", function() require("todo-comments").jump_prev() end)
+    end,
+  },
+
+  -- Better terminal integration
+  {
+    "akinsho/toggleterm.nvim",
+    version = "*",
+    config = function()
+      require("toggleterm").setup({
+        size = 20,
+        open_mapping = [[<c-\>]],
+        hide_numbers = true,
+        shade_terminals = true,
+        shading_factor = 2,
+        start_in_insert = false,
+        insert_mappings = false,
+        persist_size = true,
+        direction = "float",
+        close_on_exit = true,
+        shell = vim.o.shell,
+        float_opts = {
+          border = "curved",
+          winblend = 0,
+          highlights = {
+            border = "Normal",
+            background = "Normal",
+          },
+        },
+      })
+    end,
+  },
+
   -- Aider
   {
     "GeorgesAlkhouri/nvim-aider",
@@ -410,11 +516,6 @@ return {
           "--pretty",
           "--stream",
         },
-        -- snacks.picker.layout.Config configuration
-        picker_cfg = {
-          preset = "vscode",
-        },
-        -- Other snacks.terminal.Opts options
         config = {
           os = { editPreset = "nvim-remote" },
           gui = { nerdFontsVersion = "3" },
@@ -422,8 +523,28 @@ return {
         win = {
           wo = { winbar = "Aider" },
           style = "nvim_aider",
-          position = "bottom",
+          position = "right",
+          keys = {
+            term_normal = {
+              "<esc>",
+              [[<C-\><C-n>]],
+              mode = "t",
+              expr = true,
+              desc = "Escape only once to local mode",
+            },
+            hide_window = {
+              "<esc>",
+              function()
+                require("nvim_aider.terminal").toggle()
+              end,
+              mode = "n",
+              expr = true,
+              desc = "Hide window with escape",
+            },
+          },
         },
+        auto_insert = false,
+        start_insert = false,
       })
     end,
   },
