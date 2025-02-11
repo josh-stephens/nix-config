@@ -8,7 +8,6 @@
     ./hyprland
     ./wlogout
     ./swaync
-    ./xiv
     ./firefox
   ];
 

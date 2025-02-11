@@ -1,4 +1,6 @@
 { inputs, lib, config, pkgs, ... }: {
+  xdg.configFile."kitty/macos-launch-services-cmdline".source = ./macos-launch-services-cmdline;
+
   programs.kitty = {
     enable = true;
     package = pkgs.unstable.kitty;
@@ -23,8 +25,8 @@
       "kitty_mod+shift+[" = "previous_tab";
       "cmd+enter" = "no_op";
       "cmd+shift+enter" = "no_op";
-      "kitty_mod+h" = "launch --type=overlay --cwd=current cursor -";
-      "kitty_mod+g" = "show_scrollback";
+      "kitty_mod+h" = "kitty_scrollback_nvim";
+      "kitty_mod+g" = "kitty_scrollback_nvim --config ksb_builtin_last_cmd_output";
     };
 
     settings = {
@@ -53,6 +55,9 @@
       "term" = "xterm-kitty";
       "background_opacity" = "0.9";
       "hide_window_decorations" = true;
+      "mouse_map ctrl+shift+right" = "press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output";
+      "action_alias" = "kitty_scrollback_nvim kitten ${config.home.homeDirectory}/.local/share/nvim/lazy/kitty-scrollback.nvim/python/kitty_scrollback_nvim.py";
+      "exe_search_path" = "/run/current-system/sw/bin:/etc/profiles/per-user/${config.home.username}/bin:/run/current-system/sw/bin:/opt/homebrew/bin";
     };
   };
 }

@@ -22,9 +22,6 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-
-    # Neovim
-    nixneovim.url = "github:Veraticus/NixNeovim?ref=87241fe110100eb992973d61632f0273c63eaa9a";
   };
 
   outputs = { nixpkgs, nixpkgs-unstable, darwin, home-manager, self, ... }@inputs:

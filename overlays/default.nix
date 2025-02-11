@@ -20,7 +20,6 @@
       system = final.system;
       config.allowUnfree = true;
       overlays = [
-        inputs.nixneovim.overlays.default
 
         (self: super: {
           waybar = super.waybar.overrideAttrs (oldAttrs: {

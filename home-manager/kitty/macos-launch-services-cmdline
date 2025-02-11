@@ -1,0 +1,1 @@
+--override env=PATH="/run/current-system/sw/bin:/etc/profiles/per-user/${USER}/bin:/run/current-system/sw/bin:/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin"

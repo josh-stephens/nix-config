@@ -43,7 +43,6 @@ in
   nixpkgs = {
     # You can add overlays here
     overlays = [
-      inputs.nixneovim.overlays.default
       inputs.rust-overlay.overlays.default
       inputs.nur.overlay
       outputs.overlays.additions

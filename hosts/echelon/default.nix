@@ -37,7 +37,6 @@ in
   nixpkgs = {
     # You can add overlays here
     overlays = [
-      inputs.nixneovim.overlays.default
       outputs.overlays.additions
       outputs.overlays.modifications
       outputs.overlays.unstable-packages
