@@ -66,7 +66,7 @@ in
       # Enable flakes and new 'nix' command
       experimental-features = "nix-command flakes";
       # Deduplicate and optimize nix store
-      auto-optimise-store = true;
+      optimise.automatic = true;
 
       # Caches
       substituters = [
@@ -486,5 +486,5 @@ in
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  system.stateVersion = "24.05";
+  system.stateVersion = "25.05";
 }

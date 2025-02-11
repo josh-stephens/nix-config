@@ -2,6 +2,7 @@
   # You can import other home-manager modules here
   imports = [
     # You can also split up your configuration and import pieces of it here:
+    ./atuin
     ./kitty
     ./nvim
     ./git
@@ -32,6 +33,8 @@
       go-tools
       socat
       wireguard-tools
+      k9s
+      aider-chat
     ];
   };
 
@@ -55,5 +58,5 @@
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  home.stateVersion = "24.05";
+  home.stateVersion = "25.05";
 }

@@ -6,11 +6,13 @@
 
   programs.zsh = {
     enable = true;
-    enableAutosuggestions = true;
     enableCompletion = true;
-    enableSyntaxHighlighting = true;
 
     historySubstringSearch.enable = true;
+
+    syntaxHighlighting.enable = true;
+
+    autosuggestion.enable = true;
 
     shellAliases = {
       ll = "eza -a -F -l -B --git";

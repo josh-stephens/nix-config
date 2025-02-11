@@ -4,7 +4,7 @@
     package = pkgs.unstable.kitty;
 
     font.name = "Maple Mono NF CN";
-    theme = "Catppuccin-Mocha";
+    themeFile = "Catppuccin-Mocha";
 
     keybindings = {
       "kitty_mod"   = "ctrl+shift";

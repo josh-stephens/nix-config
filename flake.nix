@@ -3,15 +3,15 @@
 
   inputs = {
     # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.05";
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nur.url = "github:nix-community/NUR";
 
     # Darwin
-    nixpkgs-darwin.url = "github:nixos/nixpkgs/nixpkgs-unstable";
-    darwin.url = "github:lnl7/nix-darwin/master";
-    darwin.inputs.nixpkgs.follows = "nixpkgs-unstable";
-    darwin-nix.url = "github:LnL7/nix-darwin";
+    darwin = {
+      url = "github:LnL7/nix-darwin";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     # Secrets
     agenix.url = "github:ryantm/agenix";
@@ -23,36 +23,11 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
-    # Hardware
-    hardware.url = "github:nixos/nixos-hardware";
-    xremap-flake.url = "github:xremap/nix-flake";
-
-    # UI
-    nixpkgs-wayland.url = "github:nix-community/nixpkgs-wayland";
-    hyprland.url = "github:hyprwm/Hyprland";
-    hyprland-contrib = {
-      url = "github:hyprwm/contrib";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-    xdg-portal-hyprland.url = "github:hyprwm/xdg-desktop-portal-hyprland";
-    eww-exclusiver = {
-      url = "github:matt1432/eww-exclusiver";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-    rust-overlay.url = "github:oxalica/rust-overlay";
-
     # Neovim
     nixneovim.url = "github:Veraticus/NixNeovim?ref=87241fe110100eb992973d61632f0273c63eaa9a";
-
-    # Shameless plug: looking for a way to nixify your themes and make
-    # everything match nicely? Try nix-colors!
-    nix-colors.url = "github:misterio77/nix-colors";
-
-    # nix-gaming
-    nix-gaming.url = "github:fufexan/nix-gaming";
   };
 
-  outputs = { nixpkgs, darwin, home-manager, self, ... }@inputs:
+  outputs = { nixpkgs, nixpkgs-unstable, darwin, home-manager, self, ... }@inputs:
     let
       inherit (self) outputs;
 
@@ -73,16 +48,26 @@
       };
 
       nixosConfiguration = system: hostName: modules: nixpkgs.lib.nixosSystem (
-        commonConfig system { inherit inputs outputs; } modules
+        commonConfig system {
+          inherit inputs outputs;
+          nixpkgs = nixpkgs-unstable;
+        } modules
       );
 
       darwinConfiguration = system: hostName: modules: darwin.lib.darwinSystem (
-        commonConfig system { inherit inputs outputs; } modules
+        commonConfig system {
+          inherit inputs outputs;
+          nixpkgs = nixpkgs-unstable;
+        } modules
       );
+
       homeConfiguration = system: modules: home-manager.lib.homeManagerConfiguration {
         inherit system;
-        pkgs = nixpkgs.legacyPackages.${system};
-        extraSpecialArgs = { inherit inputs outputs; };
+        pkgs = nixpkgs-unstable.legacyPackages.${system};
+        extraSpecialArgs = {
+          inherit inputs outputs;
+          nixpkgs = nixpkgs-unstable;
+        };
         modules = modules;
       };
     in

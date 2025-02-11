@@ -34,19 +34,22 @@ in
       options = "--delete-older-than 30d";
     };
 
-    # This will add each flake input as a registry
-    # To make nix3 commands consistent with your flake
-    registry = lib.mapAttrs (_: value: { flake = value; }) inputs;
+    # Configure the nix registry
+    registry = {
+      nixpkgs.flake = inputs.nixpkgs-unstable;
+    };
 
-    # This will additionally add your inputs to the system's legacy channels
-    # Making legacy nix commands consistent as well, awesome!
-    nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
+    # Configure the nixPath
+    nixPath = [
+      "nixpkgs=${inputs.nixpkgs-unstable}"
+    ];
+
+    optimise.automatic = true;
 
     settings = {
       # Enable flakes and new 'nix' command
       experimental-features = "nix-command flakes";
       # Deduplicate and optimize nix store
-      auto-optimise-store = true;
 
       # Caches
       substituters = [
@@ -112,7 +115,6 @@ in
 
   # Environment
   environment = {
-    loginShell = pkgs.unstable.zsh;
     pathsToLink = [
       "/bin"
       "/share/locale"
@@ -125,6 +127,5 @@ in
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  system.stateVersion = 4;
-
+  system.stateVersion = 5;
 }
