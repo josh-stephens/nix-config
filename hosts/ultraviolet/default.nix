@@ -144,6 +144,8 @@ in
       # Import your home-manager configuration
       ${user} = import ../../home-manager/headless-${system}.nix;
     };
+    # Disable version mismatch check
+    config.home.enableNixpkgsReleaseCheck = false;
   };
 
   # Security
@@ -227,7 +229,11 @@ in
   services.caddy = {
     acmeCA = null;
     enable = true;
-    package = pkgs.myCaddy;
+    package = pkgs.myCaddy.overrideAttrs (old: {
+      meta = old.meta // {
+        mainProgram = "caddy";
+      };
+    });
     globalConfig = ''
       storage file_system {
         root /var/lib/caddy
