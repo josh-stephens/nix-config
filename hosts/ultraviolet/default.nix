@@ -233,6 +233,18 @@ in
     JELLYFIN_FFmpeg__EnableQsv = "true";
     JELLYFIN_FFmpeg__VaapiDevice = "/dev/dri/renderD128";
     JELLYFIN_FFmpeg__HardwareDecodingCodecs = "h264,hevc,mpeg2,vc1";
+    # Debug logging
+    JELLYFIN_FFmpeg__Debug = "true";
+    JELLYFIN_Ffmpeg__LogLevel = "debug";
+    JELLYFIN_Logging__LogLevel = "Debug";
+    # HLS Optimizations
+    JELLYFIN_FFmpeg__EnableFastSeek = "true";
+    JELLYFIN_Streaming__EnableHls = "true";
+    JELLYFIN_HlsStream__SegmentLength = "3";
+    JELLYFIN_HlsStream__MinSegments = "2";
+    JELLYFIN_HlsStream__SegmentType = "fmp4";
+    JELLYFIN_FFmpeg__threads = "auto";
+    JELLYFIN_FFmpeg__MaxMuxingQueueSize = "4096";
   };
 
   services.sonarr = {
