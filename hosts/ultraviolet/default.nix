@@ -33,6 +33,17 @@ in
       driSupport = true;
       driSupport32Bit = true;
     };
+    graphics = {
+      enable = true;
+      extraPackages = with pkgs; [
+        intel-media-driver
+        intel-vaapi-driver
+        vaapiVdpau
+        intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
+        vpl-gpu-rt # QSV on 11th gen or newer
+        intel-media-sdk # QSV up to 11th gen
+      ];
+    };
     enableAllFirmware = true;
   };
 
@@ -422,12 +433,6 @@ in
     # Enable cgroup v2 for better container resource management
     enableNvidia = false; # Set to true if you have NVIDIA GPU
     extraPackages = [ pkgs.podman-compose pkgs.podman-tui ];
-    # Configure container resource limits
-    containerSecurityOptions = [
-      "--pids-limit=1000"
-      "--memory=4g"
-      "--cpu-shares=1024"
-    ];
   };
 
   virtualisation.oci-containers = {
