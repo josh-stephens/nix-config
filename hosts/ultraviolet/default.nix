@@ -110,6 +110,7 @@ in
       "i915.enable_fbc=1"
       "i915.enable_psr=2"
     ];
+    kernelPackages = pkgs.unstable.linuxPackages_latest;
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
