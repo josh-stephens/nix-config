@@ -200,51 +200,9 @@ in
     user = "jellyfin";
   };
 
-  systemd.services.jellyfin = {
-    serviceConfig = {
-      # Increase process priority
-      Nice = -10;
-      # Allow hardware acceleration
-      SupplementaryGroups = [ "video" "render" ];
-      # Increase memory limits
-      LimitAS = "infinity";
-      LimitRSS = "infinity";
-      LimitNPROC = "infinity";
-      # Increase file handle limits
-      LimitNOFILE = "100000";
-    };
-  };
-
   # Enable NFS client for better NAS performance
   services.nfs.server.enable = true;
   services.rpcbind.enable = true;
-
-  # Enable hardware acceleration for transcoding
-  environment.variables = {
-    LIBVA_DRIVER_NAME = "iHD";
-    VDPAU_DRIVER = "va_gl";
-    JELLYFIN_FFmpeg__EnableHardwareEncoding = "true";
-    JELLYFIN_FFmpeg__EnableEncoderFallback = "true";
-    JELLYFIN_FFmpeg__EnableDecodingColorDepth10 = "true";
-    JELLYFIN_FFmpeg__EnableIntelQuickSync = "true";
-    JELLYFIN_FFmpeg__EnableVaapiCopy = "true";
-    JELLYFIN_FFmpeg__EnableVaapiEncoding = "true";
-    JELLYFIN_FFmpeg__EnableQsvEncoding = "true";
-    JELLYFIN_FFmpeg__EnableVaapiDecoding = "true";
-    JELLYFIN_FFmpeg__EnableQsvDecoding = "true";
-    JELLYFIN_FFmpeg__EnableVaapi = "true";
-    JELLYFIN_FFmpeg__EnableQsv = "true";
-    JELLYFIN_FFmpeg__VaapiDevice = "/dev/dri/renderD128";
-    JELLYFIN_FFmpeg__HardwareDecodingCodecs = "h264,hevc,mpeg2,vc1";
-    # HLS Optimizations
-    JELLYFIN_FFmpeg__EnableFastSeek = "true";
-    JELLYFIN_Streaming__EnableHls = "true";
-    JELLYFIN_HlsStream__SegmentLength = "3";
-    JELLYFIN_HlsStream__MinSegments = "2";
-    JELLYFIN_HlsStream__SegmentType = "fmp4";
-    JELLYFIN_FFmpeg__threads = "auto";
-    JELLYFIN_FFmpeg__MaxMuxingQueueSize = "4096";
-  };
 
   services.sonarr = {
     enable = true;
@@ -562,7 +520,6 @@ in
       tailscale
       unar
       podman-tui
-      jellyfin-ffmpeg
     ];
 
     loginShellInit = ''

@@ -30,7 +30,7 @@
     };
   };
 
-  outputs = { nixpkgs, nixpkgs-unstable, darwin, home-manager, self, ... }@inputs:
+  outputs = { nixpkgs, nixpkgs-unstable, darwin, home-manager, jellyfin-flake, self, ... }@inputs:
     let
       inherit (self) outputs;
 
@@ -53,8 +53,10 @@
       nixosConfiguration = system: hostName: modules: nixpkgs.lib.nixosSystem (
         commonConfig system {
           inherit inputs outputs;
-          nixpkgs = nixpkgs-unstable;
-        } modules
+           nixpkgs = nixpkgs-unstable;
+         } (modules ++ [
+           jellyfin-flake.nixosModules.default
+         ])
       );
 
       darwinConfiguration = system: hostName: modules: darwin.lib.darwinSystem (
