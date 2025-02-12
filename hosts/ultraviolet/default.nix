@@ -471,7 +471,6 @@ in
         autoStart = true;
         extraOptions = [
           "--network=host"
-          "--restart=on-failure:3"
         ];
       };
       homepage = {
