@@ -192,25 +192,6 @@ in
     package = pkgs.unstable.jellyfin;
     group = "users";
     openFirewall = true;
-    # Performance optimizations
-    user = "jellyfin";
-    settings = {
-      ffmpeg = {
-        # Enable hardware acceleration
-        EnableHardwareEncoding = true;
-        EnableVaapiEncoding = true;
-        EnableIntelQuickSync = true;
-        # Transcoding optimizations
-        EnableThrottling = false;
-        EncoderThreadCount = 4;
-        HardwareDecodingCodecs = [ "h264" "hevc" "mpeg2video" "vc1" "vp8" "vp9" ];
-      };
-      streaming = {
-        EnableRemoteMedia = true;
-        EnableDirectPlay = true;
-        EnableDirectStream = true;
-      };
-    };
   };
 
   # Enable NFS client for better NAS performance
@@ -542,6 +523,7 @@ in
       tailscale
       unar
       podman-tui
+      jellyfin-ffmpeg
     ];
 
     loginShellInit = ''
