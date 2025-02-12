@@ -24,6 +24,7 @@ in
   ];
 
   home = {
+    enableNixpkgsReleaseCheck = false;
     username = "joshsymonds";
 
     packages = with u; [
