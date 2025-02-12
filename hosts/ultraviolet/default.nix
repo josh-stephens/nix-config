@@ -105,7 +105,7 @@ in
   boot = {
     kernelModules = [ "coretemp" "kvm-intel" "i915" ];
     supportedFilesystems = [ "ntfs" "nfs" "nfs4" ];
-    kernelParams = [ 
+    kernelParams = [
       "intel_pstate=active"
       "i915.enable_fbc=1"
       "i915.enable_psr=2"
@@ -519,8 +519,6 @@ in
       };
     };
   };
-
-  services.rpcbind.enable = true;
 
   # Remote mounts check service
   systemd.services.remote-mounts = {
