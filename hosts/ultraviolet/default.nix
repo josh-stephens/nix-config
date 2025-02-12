@@ -144,8 +144,6 @@ in
       # Import your home-manager configuration
       ${user} = import ../../home-manager/headless-${system}.nix;
     };
-    # Disable version mismatch check
-    config.home.enableNixpkgsReleaseCheck = false;
   };
 
   # Security
