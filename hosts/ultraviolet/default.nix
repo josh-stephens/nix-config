@@ -22,17 +22,6 @@ in
     cpu = {
       intel.updateMicrocode = true;
     };
-    opengl = {
-      enable = true;
-      extraPackages = with pkgs; [
-        intel-media-driver
-        libvdpau-va-gl
-        intel-compute-runtime # OpenCL support
-        intel-media-sdk # Quick Sync support
-      ];
-      driSupport = true;
-      driSupport32Bit = true;
-    };
     graphics = {
       enable = true;
       extraPackages = with pkgs; [
@@ -73,11 +62,12 @@ in
     # Making legacy nix commands consistent as well, awesome!
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
+    optimise.automatic = true;
+
     settings = {
       # Enable flakes and new 'nix' command
       experimental-features = "nix-command flakes";
       # Deduplicate and optimize nix store
-      optimise.automatic = true;
 
       # Caches
       substituters = [
