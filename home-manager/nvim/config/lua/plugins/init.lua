@@ -292,6 +292,21 @@ return {
       require("nvim-tree").setup({
         hijack_netrw = true,
         update_cwd = true,
+        git = {
+          ignore = false,
+        },
+        renderer = {
+          highlight_git = true,
+          icons = {
+            git_placement = "before",
+            show = {
+              file = true,
+              folder = true,
+              folder_arrow = true,
+              git = true,
+            },
+          },
+        },
       })
       vim.keymap.set("n", "<leader>t", "<cmd>NvimTreeToggle<cr>", { silent = true })
     end,
@@ -404,8 +419,21 @@ return {
     event = "VeryLazy",
     config = function()
       require("which-key").setup({
-        window = {
+        win = {
           border = "single",
+        },
+        ignore_missing = true,  -- Ignore missing mappings
+        triggers_nowait = {     -- Keys that should trigger immediately
+          -- marks
+          "`",
+          "'",
+          "g`",
+          "g'",
+          -- registers
+          '"',
+          "<c-r>",
+          -- spelling
+          "z=",
         },
       })
     end,
@@ -484,6 +512,20 @@ return {
     end,
   },
 
+  -- Code minimap
+  {
+    "wfxr/minimap.vim",
+    build = "cargo install --locked code-minimap",
+    config = function()
+      vim.g.minimap_width = 10
+      vim.g.minimap_auto_start = 1
+      vim.g.minimap_auto_start_win_enter = 1
+      vim.g.minimap_highlight_range = 1
+      vim.g.minimap_highlight_search = 1
+      vim.g.minimap_git_colors = 1
+    end,
+  },
+
   -- Aider
   {
     "GeorgesAlkhouri/nvim-aider",
@@ -515,6 +557,20 @@ return {
           "--no-auto-commits",
           "--pretty",
           "--stream",
+          "--no-show-model-warnings",
+          "--code-theme",
+          "monokai"
+        },
+        theme = {
+          user_input_color = "#a6da95",
+          tool_output_color = "#8aadf4",
+          tool_error_color = "#ed8796",
+          tool_warning_color = "#eed49f",
+          assistant_output_color = "#c6a0f6",
+          completion_menu_color = "#cad3f5",
+          completion_menu_bg_color = "#24273a",
+          completion_menu_current_color = "#181926",
+          completion_menu_current_bg_color = "#f4dbd6",
         },
         config = {
           os = { editPreset = "nvim-remote" },

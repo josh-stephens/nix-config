@@ -28,6 +28,8 @@ in
       extraPackages = with pkgs; [
         intel-media-driver
         libvdpau-va-gl
+        intel-compute-runtime # OpenCL support
+        intel-media-sdk # Quick Sync support
       ];
       driSupport = true;
       driSupport32Bit = true;
@@ -101,9 +103,13 @@ in
   };
 
   boot = {
-    kernelModules = [ "coretemp" "kvm-intel" ];
-    supportedFilesystems = [ "ntfs" ];
-    kernelParams = [ ];
+    kernelModules = [ "coretemp" "kvm-intel" "i915" ];
+    supportedFilesystems = [ "ntfs" "nfs" "nfs4" ];
+    kernelParams = [ 
+      "intel_pstate=active"
+      "i915.enable_fbc=1"
+      "i915.enable_psr=2"
+    ];
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -185,6 +191,37 @@ in
   services.jellyfin = {
     enable = true;
     package = pkgs.unstable.jellyfin;
+    group = "users";
+    openFirewall = true;
+    # Performance optimizations
+    user = "jellyfin";
+    settings = {
+      ffmpeg = {
+        # Enable hardware acceleration
+        EnableHardwareEncoding = true;
+        EnableVaapiEncoding = true;
+        EnableIntelQuickSync = true;
+        # Transcoding optimizations
+        EnableThrottling = false;
+        EncoderThreadCount = 4;
+        HardwareDecodingCodecs = [ "h264" "hevc" "mpeg2video" "vc1" "vp8" "vp9" ];
+      };
+      streaming = {
+        EnableRemoteMedia = true;
+        EnableDirectPlay = true;
+        EnableDirectStream = true;
+      };
+    };
+  };
+
+  # Enable NFS client for better NAS performance
+  services.nfs.server.enable = true;
+  services.rpcbind.enable = true;
+
+  # Enable hardware acceleration for transcoding
+  environment.variables = {
+    LIBVA_DRIVER_NAME = "iHD";
+    VDPAU_DRIVER = "va_gl";
   };
 
   services.sonarr = {
@@ -402,6 +439,15 @@ in
     enable = true;
     dockerCompat = true;
     defaultNetwork.settings.dns_enabled = true;
+    # Enable cgroup v2 for better container resource management
+    enableNvidia = false; # Set to true if you have NVIDIA GPU
+    extraPackages = [ pkgs.podman-compose pkgs.podman-tui ];
+    # Configure container resource limits
+    containerSecurityOptions = [
+      "--pids-limit=1000"
+      "--memory=4g"
+      "--cpu-shares=1024"
+    ];
   };
 
   virtualisation.oci-containers = {
@@ -419,7 +465,12 @@ in
         ports = [
           "5055:5055"
         ];
-        extraOptions = [ "--network=host" ];
+        extraOptions = [
+          "--network=host"
+          "--cpu-shares=512"
+          "--memory=2g"
+          "--security-opt=no-new-privileges"
+        ];
         volumes = [
           "/etc/jellyseerr/config:/app/config"
         ];

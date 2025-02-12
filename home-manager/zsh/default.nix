@@ -28,7 +28,7 @@
       export ZVM_CURSOR_STYLE_ENABLED=false
       export XL_SECRET_PROVIDER=FILE
       export WINEDLLOVERRIDES="d3dcompiler_47=n;d3d11=n,b"
-      export AIDER_MODEL="openrouter/anthropic/claude-3.5-sonnet"
+      export AIDER_MODEL="bedrock/anthropic.claude-3-5-sonnet-20241022-v2:0"
       source ~/.secrets
     '';
 

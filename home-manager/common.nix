@@ -1,4 +1,16 @@
-{ inputs, lib, config, pkgs, ... }: {
+{ inputs, lib, config, pkgs, ... }:
+let
+  # Short alias for pkgs.unstable
+  u = pkgs.unstable;
+
+  # Overridden aider derivation
+  aiderWithBoto3 = u.aider-chat.overridePythonAttrs (oldAttrs: {
+    dependencies = oldAttrs.dependencies ++ [
+      u.python3.pkgs.boto3
+    ];
+  });
+in
+{
   # You can import other home-manager modules here
   imports = [
     # You can also split up your configuration and import pieces of it here:
@@ -14,7 +26,7 @@
   home = {
     username = "joshsymonds";
 
-    packages = with pkgs.unstable; [
+    packages = with u; [
       coreutils-full
       curl
       ripgrep
@@ -34,7 +46,7 @@
       socat
       wireguard-tools
       k9s
-      aider-chat
+      aiderWithBoto3
     ];
   };
 

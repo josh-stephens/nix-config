@@ -3,6 +3,8 @@
     nodejs_20
     ripgrep
     fd
+    rustc
+    cargo
   ];
 
   programs.neovim = {
