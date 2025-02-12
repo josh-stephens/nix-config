@@ -31,6 +31,7 @@ in
         intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
         vpl-gpu-rt # QSV on 11th gen or newer
         intel-media-sdk # QSV up to 11th gen
+        onevpl-intel-gpu
       ];
     };
     enableAllFirmware = true;
@@ -233,10 +234,6 @@ in
     JELLYFIN_FFmpeg__EnableQsv = "true";
     JELLYFIN_FFmpeg__VaapiDevice = "/dev/dri/renderD128";
     JELLYFIN_FFmpeg__HardwareDecodingCodecs = "h264,hevc,mpeg2,vc1";
-    # Debug logging
-    JELLYFIN_FFmpeg__Debug = "true";
-    JELLYFIN_Ffmpeg__LogLevel = "debug";
-    JELLYFIN_Logging__LogLevel = "Debug";
     # HLS Optimizations
     JELLYFIN_FFmpeg__EnableFastSeek = "true";
     JELLYFIN_Streaming__EnableHls = "true";
