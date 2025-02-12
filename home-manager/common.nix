@@ -21,6 +21,7 @@ in
     ./k9s
     ./zsh
     ./starship
+    ./lazygit
   ];
 
   home = {

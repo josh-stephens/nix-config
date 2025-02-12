@@ -25,7 +25,6 @@ in
 
   nix = {
     package = pkgs.unstable.nix;
-    useDaemon = true;
 
     gc = {
       automatic = true;
@@ -86,7 +85,6 @@ in
   security.pam.enableSudoTouchIdAuth = true;
 
   # Services
-  services.nix-daemon.enable = true;
   programs.zsh.enable = true; # This is necessary to set zsh paths properly
 
   # System setup
@@ -126,5 +124,5 @@ in
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
-  system.stateVersion = 5;
+  system.stateVersion = 4;
 }
