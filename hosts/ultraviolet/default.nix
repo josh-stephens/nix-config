@@ -463,7 +463,6 @@ in
           PUID = "0";
           PGID = "0";
         };
-        dependsOn = [ "remote-mounts" ];
         autoStart = true;
         extraOptions = [
           "--network=host"
@@ -498,7 +497,8 @@ in
   systemd.services.remote-mounts = {
     description = "Check if remote mounts are available";
     after = [ "network.target" "remote-fs.target" ];
-    wantedBy = [ "multi-user.target" ];
+    before = [ "podman-bazarr.service" ];
+    wantedBy = [ "multi-user.target" "podman-bazarr.service" ];
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
