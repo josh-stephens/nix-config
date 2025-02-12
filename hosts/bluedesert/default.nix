@@ -5,7 +5,6 @@ in
 { inputs, outputs, lib, config, pkgs, ... }: {
   # You can import other NixOS modules here
   imports = [
-    inputs.hardware.nixosModules.common-cpu-intel
     inputs.agenix.nixosModules.default
     # inputs.agenix-rekey.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
@@ -23,14 +22,16 @@ in
     cpu = {
       intel.updateMicrocode = true;
     };
-    opengl = {
+    graphics = {
       enable = true;
       extraPackages = with pkgs; [
         intel-media-driver
-        libvdpau-va-gl
+        intel-vaapi-driver
+        vaapiVdpau
+        intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
+        vpl-gpu-rt # QSV on 11th gen or newer
+        intel-media-sdk # QSV up to 11th gen
       ];
-      driSupport = true;
-      driSupport32Bit = true;
     };
     enableAllFirmware = true;
   };
