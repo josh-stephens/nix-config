@@ -489,6 +489,12 @@ in
           PUID = "0";
           PGID = "0";
         };
+        dependsOn = [ "remote-mounts" ];
+        autoStart = true;
+        extraOptions = [
+          "--network=host"
+          "--restart=on-failure:3"
+        ];
       };
       homepage = {
         image = "ghcr.io/gethomepage/homepage:v0.9.10";
@@ -515,6 +521,18 @@ in
   };
 
   services.rpcbind.enable = true;
+
+  # Remote mounts check service
+  systemd.services.remote-mounts = {
+    description = "Check if remote mounts are available";
+    after = [ "network.target" "remote-fs.target" ];
+    wantedBy = [ "multi-user.target" ];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.coreutils}/bin/test -d /mnt/video'"
+    };
+  };
 
   # Environment
   environment = {
