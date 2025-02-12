@@ -480,7 +480,6 @@ in
         ports = [
           "6767:6767"
         ];
-        extraOptions = [ "--network=host" ];
         volumes = [
           "/etc/bazarr/config:/config"
           "/mnt/video/:/mnt/video"
