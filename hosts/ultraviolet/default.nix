@@ -6,8 +6,9 @@ in
   # You can import other NixOS modules here
   imports = [
     inputs.agenix.nixosModules.default
-    # inputs.agenix-rekey.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
+    inputs.jellyfin-flake.nixosModules.default
+
     ../common.nix
 
     # You can also split up your configuration and import pieces of it here:
@@ -31,7 +32,6 @@ in
         intel-compute-runtime # OpenCL filter support (hardware tonemapping and subtitle burn-in)
         vpl-gpu-rt # QSV on 11th gen or newer
         intel-media-sdk # QSV up to 11th gen
-        onevpl-intel-gpu
       ];
     };
     enableAllFirmware = true;
@@ -192,7 +192,9 @@ in
 
   services.jellyfin = {
     enable = true;
-    package = inputs.jellyfin-flake.packages.${pkgs.system}
+    package = inputs.jellyfin-flake.packages.${pkgs.system}.jellyfin;
+    webPackage = inputs.jellyfin-flake.packages.${pkgs.system}.jellyfin-web;
+    ffmpegPackage = inputs.jellyfin-flake.packages.${pkgs.system}.jellyfin-ffmpeg;
     group = "users";
     openFirewall = true;
     user = "jellyfin";
