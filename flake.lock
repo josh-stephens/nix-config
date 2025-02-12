@@ -214,16 +214,36 @@
         ]
       },
       "locked": {
-        "lastModified": 1739314552,
-        "narHash": "sha256-ggVf2BclyIW3jexc/uvgsgJH4e2cuG6Nyg54NeXgbFI=",
+        "lastModified": 1739381933,
+        "narHash": "sha256-4gvobxITgcrNGfwsVG5a46QzQCX89btIYw23p0ilbcc=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "83bd3a26ac0526ae04fa74df46738bb44b89dcdd",
+        "rev": "15b59d4191b993ebdfcb1f61b834fced217882ba",
         "type": "github"
       },
       "original": {
         "owner": "nix-community",
         "repo": "home-manager",
+        "type": "github"
+      }
+    },
+    "jellyfin-flake": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1739140382,
+        "narHash": "sha256-AP+Thp4ofLzACyu4mXC3aCX+B4XpE9CmQN7zXdXQ9Fc=",
+        "owner": "Veraticus",
+        "repo": "nixos-jellyfin",
+        "rev": "42092d54585cef272cac955cb0a07e3f76d46de4",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Veraticus",
+        "repo": "nixos-jellyfin",
         "type": "github"
       }
     },
@@ -356,6 +376,7 @@
         "agenix-rekey": "agenix-rekey",
         "darwin": "darwin_2",
         "home-manager": "home-manager_2",
+        "jellyfin-flake": "jellyfin-flake",
         "nixpkgs": "nixpkgs_3",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur": "nur"

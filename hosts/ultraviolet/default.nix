@@ -192,7 +192,7 @@ in
 
   services.jellyfin = {
     enable = true;
-    package = pkgs.unstable.jellyfin;
+    package = inputs.jellyfin-flake.packages.${pkgs.system}
     group = "users";
     openFirewall = true;
     user = "jellyfin";
