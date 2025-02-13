@@ -517,9 +517,7 @@ in
       tailscale
       unar
       podman-tui
-      services.jellyfin.finalPackage
-      services.jellyfin.webPackage
-      services.jellyfin.ffmpegPackage
+      jellyfin-ffmpeg
     ];
 
     loginShellInit = ''
