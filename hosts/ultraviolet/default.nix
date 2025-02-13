@@ -7,7 +7,6 @@ in
   imports = [
     inputs.agenix.nixosModules.default
     inputs.home-manager.nixosModules.home-manager
-    inputs.jellyfin-flake.nixosModules.default
 
     ../common.nix
 
@@ -192,9 +191,7 @@ in
 
   services.jellyfin = {
     enable = true;
-    package = inputs.jellyfin-flake.packages.${pkgs.system}.jellyfin;
-    webPackage = inputs.jellyfin-flake.packages.${pkgs.system}.jellyfin-web;
-    ffmpegPackage = inputs.jellyfin-flake.packages.${pkgs.system}.jellyfin-ffmpeg;
+    package = pkgs.jellyfin;
     group = "users";
     openFirewall = true;
     user = "jellyfin";
@@ -520,6 +517,9 @@ in
       tailscale
       unar
       podman-tui
+      services.jellyfin.finalPackage
+      services.jellyfin.webPackage
+      services.jellyfin.ffmpegPackage
     ];
 
     loginShellInit = ''

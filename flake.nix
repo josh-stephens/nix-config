@@ -22,15 +22,9 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-
-    # Jellyfin
-    jellyfin-flake = {
-      url = "github:Veraticus/nixos-jellyfin";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
   };
 
-  outputs = { nixpkgs, nixpkgs-unstable, darwin, home-manager, jellyfin-flake, self, ... }@inputs:
+  outputs = { nixpkgs, nixpkgs-unstable, darwin, home-manager, self, ... }@inputs:
     let
       inherit (self) outputs;
 
@@ -53,10 +47,8 @@
       nixosConfiguration = system: hostName: modules: nixpkgs.lib.nixosSystem (
         commonConfig system {
           inherit inputs outputs;
-           nixpkgs = nixpkgs-unstable;
-         } (modules ++ [
-           jellyfin-flake.nixosModules.default
-         ])
+          nixpkgs = nixpkgs-unstable;
+        } modules
       );
 
       darwinConfiguration = system: hostName: modules: darwin.lib.darwinSystem (
