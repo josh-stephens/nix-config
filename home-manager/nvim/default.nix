@@ -15,9 +15,8 @@
     package = pkgs.unstable.neovim-unwrapped;
   };
 
-  xdg.configFile = {
-    "nvim/init.lua".source = ./config/init.lua;
-    "nvim/lua/plugins".source = ./config/lua/plugins;
-    "nvim/lua/core".source = ./config/lua/core;
+  xdg.configFile."nvim" = {
+    source = ./nvim;
+    recursive = true;
   };
 }
