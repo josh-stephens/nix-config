@@ -12,7 +12,7 @@
     defaultEditor = true;
     viAlias = true;
     vimAlias = true;
-    package = pkgs.unstable.neovim-unwrapped;
+    package = inputs.neovim-nightly.packages.${pkgs.system}.default;
   };
 
   xdg.configFile."nvim" = {

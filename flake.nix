@@ -22,6 +22,9 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+
+    # Neovim Nightly
+    neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
   };
 
   outputs = { nixpkgs, nixpkgs-unstable, darwin, home-manager, self, ... }@inputs:

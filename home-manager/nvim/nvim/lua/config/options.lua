@@ -2,8 +2,9 @@
 -- Default options that are always set: https://github.com/LazyVim/LazyVim/blob/main/lua/lazyvim/config/options.lua
 -- Add any additional options here
 -- Basic vim options
--- local opt = vim.opt
---
+local opt = vim.opt
+
+opt.wrap = true
 -- opt.textwidth = 0
 -- opt.scrolloff = 4
 -- opt.wildmode = "longest:full,full"
