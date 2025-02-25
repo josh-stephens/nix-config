@@ -1,0 +1,15 @@
+pretty: true
+stream: true
+show-model-warnings: false
+code-theme: "monokai"
+dark-mode: true
+model: "bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+user-input-color: "#a6da95"
+tool-output-color: "#8aadf4"
+tool-error-color: "#ed8796"
+tool-warning-color: "#eed49f"
+assistant-output-color: "#c6a0f6"
+completion-menu-color: "#cad3f5"
+completion-menu-bg-color: "#24273a"
+completion-menu-current-color: "#181926"
+completion-menu-current-bg-color: "#f4dbd6"
