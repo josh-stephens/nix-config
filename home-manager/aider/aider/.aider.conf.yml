@@ -4,7 +4,7 @@ show-model-warnings: false
 code-theme: "monokai"
 dark-mode: true
 model: "bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
-user-input-color: "#a6da95"
+user-input-color: "#94e2d5"
 tool-output-color: "#8aadf4"
 tool-error-color: "#ed8796"
 tool-warning-color: "#eed49f"
