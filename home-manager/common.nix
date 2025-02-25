@@ -2,18 +2,12 @@
 let
   # Short alias for pkgs.unstable
   u = pkgs.unstable;
-
-  # Overridden aider derivation
-  aiderWithBoto3 = u.aider-chat.overridePythonAttrs (oldAttrs: {
-    dependencies = oldAttrs.dependencies ++ [
-      u.python3.pkgs.boto3
-    ];
-  });
 in
 {
   # You can import other home-manager modules here
   imports = [
     # You can also split up your configuration and import pieces of it here:
+    ./aider
     ./atuin
     ./kitty
     ./nvim
@@ -48,8 +42,7 @@ in
       socat
       wireguard-tools
       k9s
-      aiderWithBoto3
-    ];
+    ] ++ [ pkgs.aider ];
   };
 
   # Programs

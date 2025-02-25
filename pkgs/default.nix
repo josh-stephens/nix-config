@@ -7,4 +7,5 @@
   xivlauncherRb = pkgs.callPackage ./xivlauncher { };
   fflogs = pkgs.callPackage ./fflogs { };
   jellyfin-patched = pkgs.callPackage ./jellyfin-patched { };
+  aider = pkgs.callPackage ./aider { };
 }
