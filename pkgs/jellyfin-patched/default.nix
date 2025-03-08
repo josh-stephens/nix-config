@@ -13,12 +13,12 @@
 
 buildDotnetModule rec {
   pname = "jellyfin";
-  version = "10.10.5"; # ensure that jellyfin-web has matching version
+  version = "10.10.6"; # ensure that jellyfin-web has matching version
 
   src = fetchFromGitHub {
-      owner = "Veraticus";
+      owner = pname;
       repo = pname;
-      rev = "d939b71b35edf67dd781d801702b5b213677e8d0";
+      rev = "v${version}";
       hash = "sha256-KSUoNiZ7oaS9XndL2g1vLEqZNs/nuhc2mZnDRCbe32c=";
   };
 
