@@ -191,7 +191,7 @@ in
 
   services.jellyfin = {
     enable = true;
-    package = pkgs.jellyfin-patched;
+    package = pkgs.unstable.jellyfin;
     group = "users";
     openFirewall = true;
     user = "jellyfin";
