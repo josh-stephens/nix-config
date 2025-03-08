@@ -1,0 +1,5 @@
+return {
+	{
+		"cappyzawa/trim.nvim",
+	},
+}
