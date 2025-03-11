@@ -42,43 +42,36 @@
 
       forAllSystems = f: nixpkgs.lib.genAttrs systems f;
 
-      # Common configurations for NixOS and Darwin
-      commonConfig = system: specialArgs: modules: {
-        inherit system specialArgs;
-        modules = modules;
+      # Common special arguments for all configurations
+      mkSpecialArgs = system: {
+        inherit inputs outputs;
+        nixpkgs = nixpkgs-unstable;
+        kitty-pkgs = kitty-40.legacyPackages.${system};
       };
 
-      nixosConfiguration = system: hostName: modules: nixpkgs.lib.nixosSystem (
-        commonConfig system {
-          inherit inputs outputs;
-          nixpkgs = nixpkgs-unstable;
-        } modules
-      );
-
-      darwinConfiguration = system: hostName: modules: darwin.lib.darwinSystem {
+      # NixOS configuration
+      nixosConfiguration = system: hostName: modules: nixpkgs.lib.nixosSystem {
         inherit system;
-        specialArgs = {
-          inherit inputs outputs;
-          nixpkgs = nixpkgs-unstable;
-          kitty-pkgs = kitty-40.legacyPackages.${system};
-        };
+        specialArgs = mkSpecialArgs system;
         modules = modules ++ [{
-          home-manager.extraSpecialArgs = {
-            inherit inputs outputs;
-            nixpkgs = nixpkgs-unstable;
-            kitty-pkgs = kitty-40.legacyPackages.${system};
-          };
+          home-manager.extraSpecialArgs = mkSpecialArgs system;
         }];
       };
 
+      # Darwin configuration
+      darwinConfiguration = system: hostName: modules: darwin.lib.darwinSystem {
+        inherit system;
+        specialArgs = mkSpecialArgs system;
+        modules = modules ++ [{
+          home-manager.extraSpecialArgs = mkSpecialArgs system;
+        }];
+      };
+
+      # Home Manager standalone configuration
       homeConfiguration = system: modules: home-manager.lib.homeManagerConfiguration {
         inherit system;
         pkgs = nixpkgs-unstable.legacyPackages.${system};
-        extraSpecialArgs = {
-          inherit inputs outputs;
-          nixpkgs = nixpkgs-unstable;
-          kitty-pkgs = kitty-40.legacyPackages.${system};
-        };
+        extraSpecialArgs = mkSpecialArgs system;
         modules = modules;
       };
     in
