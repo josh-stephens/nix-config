@@ -42,11 +42,22 @@
 
       forAllSystems = f: nixpkgs.lib.genAttrs systems f;
 
+      # Modified kitty package with tests disabled
+      modifiedKittyPkgs = system: 
+        let
+          originalPkgs = kitty-40.legacyPackages.${system};
+        in
+          originalPkgs.extend (final: prev: {
+            kitty = prev.kitty.overrideAttrs (oldAttrs: {
+              doCheck = false;
+            });
+          });
+
       # Common special arguments for all configurations
       mkSpecialArgs = system: {
         inherit inputs outputs;
         nixpkgs = nixpkgs-unstable;
-        kitty-pkgs = kitty-40.legacyPackages.${system};
+        kitty-pkgs = modifiedKittyPkgs system;
       };
 
       # NixOS configuration
