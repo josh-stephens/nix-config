@@ -21,6 +21,14 @@ let
         inherit (self) buildPythonPackage fetchPypi;
         tree-sitter = self.tree-sitter;
       };
+      tree-sitter-language-pack = callPackage ../tree-sitter-language-pack {
+        inherit (self) buildPythonPackage fetchPypi;
+        tree-sitter = self.tree-sitter;
+      };
+      tree-sitter-yaml = callPackage ../tree-sitter-yaml {
+        inherit (self) buildPythonPackage fetchPypi;
+        tree-sitter = self.tree-sitter;
+      };
     };
   };
   version = "0.76.0";
