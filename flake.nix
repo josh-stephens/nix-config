@@ -49,11 +49,8 @@
         in
           originalPkgs.extend (final: prev: {
             kitty = prev.kitty.overrideAttrs (oldAttrs: {
-              doCheck = false;
-              checkPhase = "true"; # Replace the checkPhase with a no-op
-              dontCheck = true;    # For Python packages
-              preCheck = "";       # Clear any preCheck commands
-              postCheck = "";      # Clear any postCheck commands
+              checkPhase = "true";
+              installCheckPhase = "true";
             });
           });
 
