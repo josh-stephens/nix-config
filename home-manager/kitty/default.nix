@@ -1,4 +1,4 @@
-{ inputs, lib, config, pkgs, ... }: {
+{ inputs, lib, config, pkgs, kitty-pkgs, ... }: {
   xdg.configFile."kitty/macos-launch-services-cmdline".source = ./macos-launch-services-cmdline;
 
   programs.kitty = {
