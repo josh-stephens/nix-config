@@ -13,6 +13,71 @@ let
     self = python3;
     packageOverrides = self: super: { 
       tree-sitter = super.tree-sitter_0_21;
+      
+      # Custom tree-sitter packages
+      tree-sitter-c-sharp = self.buildPythonPackage rec {
+        pname = "tree-sitter-c-sharp";
+        version = "0.20.0";
+        format = "setuptools";
+        
+        src = self.fetchPypi {
+          inherit pname version;
+          sha256 = "0000000000000000000000000000000000000000000000000000";
+        };
+        
+        doCheck = false;
+        pythonImportsCheck = [ "tree_sitter_c_sharp" ];
+        
+        propagatedBuildInputs = [ self.tree-sitter ];
+      };
+      
+      tree-sitter-embedded-template = self.buildPythonPackage rec {
+        pname = "tree-sitter-embedded-template";
+        version = "0.20.0";
+        format = "setuptools";
+        
+        src = self.fetchPypi {
+          inherit pname version;
+          sha256 = "0000000000000000000000000000000000000000000000000000";
+        };
+        
+        doCheck = false;
+        pythonImportsCheck = [ "tree_sitter_embedded_template" ];
+        
+        propagatedBuildInputs = [ self.tree-sitter ];
+      };
+      
+      tree-sitter-language-pack = self.buildPythonPackage rec {
+        pname = "tree-sitter-language-pack";
+        version = "0.20.0";
+        format = "setuptools";
+        
+        src = self.fetchPypi {
+          inherit pname version;
+          sha256 = "0000000000000000000000000000000000000000000000000000";
+        };
+        
+        doCheck = false;
+        pythonImportsCheck = [ "tree_sitter_language_pack" ];
+        
+        propagatedBuildInputs = [ self.tree-sitter ];
+      };
+      
+      tree-sitter-yaml = self.buildPythonPackage rec {
+        pname = "tree-sitter-yaml";
+        version = "0.20.0";
+        format = "setuptools";
+        
+        src = self.fetchPypi {
+          inherit pname version;
+          sha256 = "0000000000000000000000000000000000000000000000000000";
+        };
+        
+        doCheck = false;
+        pythonImportsCheck = [ "tree_sitter_yaml" ];
+        
+        propagatedBuildInputs = [ self.tree-sitter ];
+      };
     };
   };
   version = "0.76.0";
@@ -112,6 +177,10 @@ let
       tqdm
       tree-sitter
       tree-sitter-languages
+      tree-sitter-c-sharp
+      tree-sitter-embedded-template
+      tree-sitter-language-pack
+      tree-sitter-yaml
       typing-extensions
       urllib3
       watchfiles
@@ -166,18 +235,10 @@ let
     makeWrapperArgs = [
       "--set AIDER_CHECK_UPDATE false"
       "--set AIDER_ANALYTICS false"
+      # Disable tree-sitter syntax highlighting for problematic languages
+      "--set AIDER_DISABLE_SYNTAX_HIGHLIGHT true"
     ];
 
-    preInstall = ''
-      # Install missing tree-sitter packages
-      export PIP_PREFIX="$out"
-      export PYTHONPATH="$out/${python3.sitePackages}:$PYTHONPATH"
-      ${python3.interpreter} -m pip install --no-index --no-build-isolation --no-deps \
-        tree-sitter-c-sharp \
-        tree-sitter-embedded-template \
-        tree-sitter-language-pack \
-        tree-sitter-yaml
-    '';
 
     preCheck = ''
       export HOME=$(mktemp -d)
