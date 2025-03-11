@@ -13,22 +13,6 @@ let
     self = python3;
     packageOverrides = self: super: { 
       tree-sitter = super.tree-sitter_0_21;
-      tree-sitter-c-sharp = callPackage ../tree-sitter-c-sharp { 
-        inherit (self) buildPythonPackage fetchPypi;
-        tree-sitter = self.tree-sitter;
-      };
-      tree-sitter-embedded-template = callPackage ../tree-sitter-embedded-template {
-        inherit (self) buildPythonPackage fetchPypi;
-        tree-sitter = self.tree-sitter;
-      };
-      tree-sitter-language-pack = callPackage ../tree-sitter-language-pack {
-        inherit (self) buildPythonPackage fetchPypi;
-        tree-sitter = self.tree-sitter;
-      };
-      tree-sitter-yaml = callPackage ../tree-sitter-yaml {
-        inherit (self) buildPythonPackage fetchPypi;
-        tree-sitter = self.tree-sitter;
-      };
     };
   };
   version = "0.76.0";
@@ -127,11 +111,7 @@ let
       tokenizers
       tqdm
       tree-sitter
-      tree-sitter-c-sharp
       tree-sitter-languages
-      tree-sitter-embedded-template
-      tree-sitter-language-pack
-      tree-sitter-yaml
       typing-extensions
       urllib3
       watchfiles
@@ -187,6 +167,17 @@ let
       "--set AIDER_CHECK_UPDATE false"
       "--set AIDER_ANALYTICS false"
     ];
+
+    postInstall = ''
+      # Install missing tree-sitter packages
+      export PIP_PREFIX="$out"
+      export PYTHONPATH="$out/${python3.sitePackages}:$PYTHONPATH"
+      ${python3.interpreter} -m pip install --no-index --no-build-isolation --no-deps \
+        tree-sitter-c-sharp \
+        tree-sitter-embedded-template \
+        tree-sitter-language-pack \
+        tree-sitter-yaml
+    '';
 
     preCheck = ''
       export HOME=$(mktemp -d)
