@@ -1,18 +1,18 @@
 {
   lib,
   stdenv,
-  python312,
+  python314Full,
   fetchFromGitHub,
   gitMinimal,
   portaudio,
 }:
 
 let
-  python3 = python312.override {
+  python3 = python314Full.override {
     self = python3;
     packageOverrides = _: super: { tree-sitter = super.tree-sitter_0_21; };
   };
-  version = "0.75.2.dev";
+  version = "0.76.0";
   aider = python3.pkgs.buildPythonPackage {
     pname = "aider";
     inherit version;
@@ -21,8 +21,8 @@ let
     src = fetchFromGitHub {
       owner = "Aider-AI";
       repo = "aider";
-      tag = "46eee9e642fba0355d21a3f7859f3f0d09474e6b";
-      hash = "sha256-JXzkvuSOOEUxNqF6l5USzIPftpnIW+CptEv/0yp0eGM=";
+      tag = "v0.76.0";
+      hash = "sha256-PbsUNueLXj5WZW8lc+t3cm+ftKWcllYtE2CAsZhuK/s=";
     };
 
     pythonRelaxDeps = true;
@@ -100,6 +100,7 @@ let
       scipy
       smmap
       sniffio
+      socksio
       sounddevice
       soundfile
       soupsieve
@@ -107,7 +108,11 @@ let
       tokenizers
       tqdm
       tree-sitter
+      tree-sitter-c-sharp
       tree-sitter-languages
+      tree-sitter-embedded-template
+      tree-sitter-language-pack
+      tree-sitter-yaml
       typing-extensions
       urllib3
       watchfiles
