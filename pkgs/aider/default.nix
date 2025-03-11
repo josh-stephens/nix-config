@@ -17,6 +17,10 @@ let
         inherit (self) buildPythonPackage fetchPypi;
         tree-sitter = self.tree-sitter;
       };
+      tree-sitter-embedded-template = callPackage ../tree-sitter-embedded-template {
+        inherit (self) buildPythonPackage fetchPypi;
+        tree-sitter = self.tree-sitter;
+      };
     };
   };
   version = "0.76.0";
