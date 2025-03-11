@@ -4,8 +4,9 @@
   inputs = {
     # Nixpkgs
     nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-    nixpkgs-unstable.url = "github:leiserfg/nixpkgs/kitty-0.40.0";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     nur.url = "github:nix-community/NUR";
+    kitty-40.url = "github:leiserfg/nixpkgs/kitty-0.40.0";
 
     # Darwin
     darwin = {
@@ -27,7 +28,7 @@
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
   };
 
-  outputs = { nixpkgs, nixpkgs-unstable, darwin, home-manager, self, ... }@inputs:
+  outputs = { nixpkgs, nixpkgs-unstable, darwin, home-manager, kitty-40, self, ... }@inputs:
     let
       inherit (self) outputs;
 
