@@ -5,12 +5,19 @@
   fetchFromGitHub,
   gitMinimal,
   portaudio,
+  callPackage,
 }:
 
 let
   python3 = python314Full.override {
     self = python3;
-    packageOverrides = _: super: { tree-sitter = super.tree-sitter_0_21; };
+    packageOverrides = self: super: { 
+      tree-sitter = super.tree-sitter_0_21;
+      tree-sitter-c-sharp = callPackage ../tree-sitter-c-sharp { 
+        inherit (self) buildPythonPackage fetchPypi;
+        tree-sitter = self.tree-sitter;
+      };
+    };
   };
   version = "0.76.0";
   aider = python3.pkgs.buildPythonPackage {
