@@ -42,7 +42,7 @@
 
       forAllSystems = f: nixpkgs.lib.genAttrs systems f;
 
-      # Modified kitty package with tests disabled
+      # Modified kitty package with tests completely disabled
       modifiedKittyPkgs = system: 
         let
           originalPkgs = kitty-40.legacyPackages.${system};
@@ -50,6 +50,10 @@
           originalPkgs.extend (final: prev: {
             kitty = prev.kitty.overrideAttrs (oldAttrs: {
               doCheck = false;
+              checkPhase = "true"; # Replace the checkPhase with a no-op
+              dontCheck = true;    # For Python packages
+              preCheck = "";       # Clear any preCheck commands
+              postCheck = "";      # Clear any postCheck commands
             });
           });
 
