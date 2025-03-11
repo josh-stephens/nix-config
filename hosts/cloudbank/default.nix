@@ -82,7 +82,7 @@ in
   };
 
   # Security
-  security.pam.enableSudoTouchIdAuth = true;
+  security.pam.services.sudo_local.touchIdAuth = true;
 
   # Services
   programs.zsh.enable = true; # This is necessary to set zsh paths properly
