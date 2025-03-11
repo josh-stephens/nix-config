@@ -1,5 +1,5 @@
 { inputs, lib, config, pkgs, ... }: {
-  home.packages = [ pkgs.aider ];
+  home.packages = [ pkgs.uv ];
 
   home.file.".aider.model.metadata.json" = {
     source = ./aider/.aider.model.metadata.json;

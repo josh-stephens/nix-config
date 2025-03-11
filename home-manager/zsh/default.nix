@@ -86,7 +86,7 @@
         eval "$(it wrapper)"
       fi
 
-      export PATH=''${PATH}:''${PATH}:/Applications/Windsurf.app/Contents/Resources/app/bin:''${HOME}/go/bin
+      export PATH=''${PATH}:''${PATH}:/Applications/Windsurf.app/Contents/Resources/app/bin:''${HOME}/go/bin:''${HOME}/.local/share/../bin
 
       cd ~
     '';

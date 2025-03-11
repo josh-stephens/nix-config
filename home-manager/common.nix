@@ -42,7 +42,7 @@ in
       socat
       wireguard-tools
       k9s
-    ] ++ [ pkgs.aider ];
+    ];
   };
 
   # Programs
