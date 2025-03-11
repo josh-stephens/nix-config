@@ -55,13 +55,21 @@
         } modules
       );
 
-      darwinConfiguration = system: hostName: modules: darwin.lib.darwinSystem (
-        commonConfig system {
+      darwinConfiguration = system: hostName: modules: darwin.lib.darwinSystem {
+        inherit system;
+        specialArgs = {
           inherit inputs outputs;
           nixpkgs = nixpkgs-unstable;
           kitty-pkgs = kitty-40.legacyPackages.${system};
-        } modules
-      );
+        };
+        modules = modules ++ [{
+          home-manager.extraSpecialArgs = {
+            inherit inputs outputs;
+            nixpkgs = nixpkgs-unstable;
+            kitty-pkgs = kitty-40.legacyPackages.${system};
+          };
+        }];
+      };
 
       homeConfiguration = system: modules: home-manager.lib.homeManagerConfiguration {
         inherit system;
