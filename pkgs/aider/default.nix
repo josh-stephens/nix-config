@@ -1,7 +1,7 @@
 {
   lib,
   stdenv,
-  python314Full,
+  python313,
   fetchFromGitHub,
   gitMinimal,
   portaudio,
@@ -9,7 +9,7 @@
 }:
 
 let
-  python3 = python314Full.override {
+  python3 = python313.override {
     self = python3;
     packageOverrides = self: super: { 
       tree-sitter = super.tree-sitter_0_21;
@@ -168,7 +168,7 @@ let
       "--set AIDER_ANALYTICS false"
     ];
 
-    postInstall = ''
+    preInstall = ''
       # Install missing tree-sitter packages
       export PIP_PREFIX="$out"
       export PYTHONPATH="$out/${python3.sitePackages}:$PYTHONPATH"
