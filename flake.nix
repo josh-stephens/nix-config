@@ -68,6 +68,7 @@
         extraSpecialArgs = {
           inherit inputs outputs;
           nixpkgs = nixpkgs-unstable;
+          kitty-pkgs = kitty-40.legacyPackages.${system};
         };
         modules = modules;
       };

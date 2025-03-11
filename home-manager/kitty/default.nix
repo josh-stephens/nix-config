@@ -3,7 +3,7 @@
 
   programs.kitty = {
     enable = true;
-    package = pkgs.unstable.kitty;
+    package = kitty-pkgs.kitty;
 
     font.name = "Maple Mono NF CN";
     themeFile = "Catppuccin-Mocha";
