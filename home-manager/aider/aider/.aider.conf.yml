@@ -2,9 +2,10 @@ pretty: true
 stream: true
 show-model-warnings: false
 code-theme: "monokai"
-thinking-tokens: 32000
 notifications: "true"
-model: "bedrock/us.anthropic.claude-3-7-sonnet-20250219-v1:0"
+architect: true
+model: "o3"
+chat-language: "English"
 user-input-color: "#94e2d5"
 tool-output-color: "#8aadf4"
 tool-error-color: "#ed8796"
