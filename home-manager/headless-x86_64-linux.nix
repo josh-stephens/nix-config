@@ -10,6 +10,7 @@
     packages = with pkgs.unstable; [
       file
       unzip
+      dmidecode
     ];
   };
 
