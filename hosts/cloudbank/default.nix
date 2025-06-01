@@ -5,9 +5,11 @@ in
 { inputs, outputs, lib, config, pkgs, ... }: {
   # You can import other NixOS modules here
   imports = [
-    inputs.home-manager.darwinModules.home-manager
     ./homebrew.nix
   ];
+
+  # Set primary user for nix-darwin
+  system.primaryUser = "joshsymonds";
 
   nixpkgs = {
     # You can add overlays here
@@ -24,7 +26,7 @@ in
   };
 
   nix = {
-    package = pkgs.unstable.nix;
+    package = pkgs.nix;
 
     gc = {
       automatic = true;
@@ -34,12 +36,12 @@ in
 
     # Configure the nix registry
     registry = {
-      nixpkgs.flake = inputs.nixpkgs-unstable;
+      nixpkgs.flake = inputs.nixpkgs;
     };
 
     # Configure the nixPath
     nixPath = [
-      "nixpkgs=${inputs.nixpkgs-unstable}"
+      "nixpkgs=${inputs.nixpkgs}"
     ];
 
     optimise.automatic = true;
@@ -67,19 +69,10 @@ in
 
   # Users and their homes
   users.users.${user} = {
-    shell = pkgs.unstable.zsh;
+    shell = pkgs.zsh;
     home = "/Users/${user}";
   };
 
-  home-manager = {
-    extraSpecialArgs = { inherit inputs; };
-    useUserPackages = true;
-    useGlobalPkgs = true;
-    users = {
-      # Import your home-manager configuration
-      ${user} = import ../../home-manager/${system}.nix;
-    };
-  };
 
   # Security
   security.pam.services.sudo_local.touchIdAuth = true;

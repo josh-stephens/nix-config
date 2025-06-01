@@ -6,9 +6,6 @@ in
   # You can import other NixOS modules here
   imports = [
     inputs.hardware.nixosModules.common-cpu-intel
-    inputs.agenix.nixosModules.default
-    # inputs.agenix-rekey.nixosModules.default
-    inputs.home-manager.nixosModules.home-manager
 
     # You can also split up your configuration and import pieces of it here:
     # ./users.nix
@@ -22,14 +19,13 @@ in
     cpu = {
       intel.updateMicrocode = true;
     };
-    opengl = {
+    graphics = {
       enable = true;
+      enable32Bit = true;
       extraPackages = with pkgs; [
         intel-media-driver
         libvdpau-va-gl
       ];
-      driSupport = true;
-      driSupport32Bit = true;
     };
     enableAllFirmware = true;
   };
@@ -64,18 +60,18 @@ in
       # Enable flakes and new 'nix' command
       experimental-features = "nix-command flakes";
       # Deduplicate and optimize nix store
-      optimise.automatic = true;
+      auto-optimise-store = true;
 
       # Caches
       substituters = [
-        "https://hyprland.cachix.org"
+        # "https://hyprland.cachix.org"
         "https://cache.nixos.org"
-        "https://nixpkgs-wayland.cachix.org"
+        # "https://nixpkgs-wayland.cachix.org"
       ];
       trusted-public-keys = [
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+        # "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+        # "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
       ];
     };
   };
@@ -128,7 +124,7 @@ in
   # Users and their homes
   users.defaultUserShell = pkgs.zsh;
   users.users.${user} = {
-    shell = pkgs.unstable.zsh;
+    shell = pkgs.zsh;
     home = "/home/${user}";
     initialPassword = "correcthorsebatterystaple";
     isNormalUser = true;
@@ -140,7 +136,7 @@ in
     extraGroups = [ "wheel" config.users.groups.keys.name ];
   };
   users.users.raymond = {
-    shell = pkgs.unstable.zsh;
+    shell = pkgs.zsh;
     home = "/home/raymond";
     initialPassword = "correcthorsebatterystaple";
     isNormalUser = true;
@@ -150,15 +146,6 @@ in
     extraGroups = [ "wheel" config.users.groups.keys.name ];
   };
 
-  home-manager = {
-    extraSpecialArgs = { inherit inputs; };
-    useUserPackages = true;
-    useGlobalPkgs = true;
-    users = {
-      # Import your home-manager configuration
-      ${user} = import ../../home-manager/headless-${system}.nix;
-    };
-  };
 
   # Security
   security = {
@@ -194,7 +181,7 @@ in
 
   services.tailscale = {
     enable = true;
-    package = pkgs.unstable.tailscale;
+    package = pkgs.tailscale;
     useRoutingFeatures = "both";
   };
 
@@ -202,7 +189,7 @@ in
   environment = {
     pathsToLink = [ "/share/zsh" ];
 
-    systemPackages = with pkgs.unstable; [
+    systemPackages = with pkgs; [
       polkit
       pciutils
       hwdata

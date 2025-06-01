@@ -1,5 +1,5 @@
 { inputs, lib, config, pkgs, ... }: {
-  home.packages = [ pkgs.unstable.k9s ];
+  home.packages = [ pkgs.k9s ];
 
   xdg.configFile."k9s" = {
     source = ./k9s;

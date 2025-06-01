@@ -5,9 +5,6 @@ in
 { inputs, outputs, lib, config, pkgs, ... }: {
   # You can import other NixOS modules here
   imports = [
-    inputs.agenix.nixosModules.default
-    inputs.home-manager.nixosModules.home-manager
-
     ../common.nix
 
     # You can also split up your configuration and import pieces of it here:
@@ -71,14 +68,14 @@ in
 
       # Caches
       substituters = [
-        "https://hyprland.cachix.org"
+        # "https://hyprland.cachix.org"
         "https://cache.nixos.org"
-        "https://nixpkgs-wayland.cachix.org"
+        # "https://nixpkgs-wayland.cachix.org"
       ];
       trusted-public-keys = [
-        "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
+        # "hyprland.cachix.org-1:a7pgxzMz7+chwVL3/pzj6jIBMioiJM7ypFP8PwtkuGc="
         "cache.nixos.org-1:6NCHdD59X431o0gWypbMrAURkbJ16ZPMQFGspcDShjY="
-        "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
+        # "nixpkgs-wayland.cachix.org-1:3lwxaILxMRkVhehr5StQprHdEo4IrE8sRho9R9HOLYA="
       ];
     };
   };
@@ -110,7 +107,7 @@ in
       "i915.enable_fbc=1"
       "i915.enable_psr=2"
     ];
-    kernelPackages = pkgs.unstable.linuxPackages_latest;
+    kernelPackages = pkgs.linuxPackages_latest;
     loader = {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
@@ -125,7 +122,7 @@ in
   # Users and their homes
   users.defaultUserShell = pkgs.zsh;
   users.users.${user} = {
-    shell = pkgs.unstable.zsh;
+    shell = pkgs.zsh;
     home = "/home/${user}";
     initialPassword = "correcthorsebatterystaple";
     isNormalUser = true;
@@ -137,15 +134,6 @@ in
     extraGroups = [ "wheel" config.users.groups.keys.name ];
   };
 
-  home-manager = {
-    extraSpecialArgs = { inherit inputs; };
-    useUserPackages = true;
-    useGlobalPkgs = true;
-    users = {
-      # Import your home-manager configuration
-      ${user} = import ../../home-manager/headless-${system}.nix;
-    };
-  };
 
   # Security
   security = {
@@ -183,7 +171,7 @@ in
 
   services.tailscale = {
     enable = true;
-    package = pkgs.unstable.tailscale;
+    package = pkgs.tailscale;
     useRoutingFeatures = "server";
   };
 
@@ -191,7 +179,7 @@ in
 
   services.jellyfin = {
     enable = true;
-    package = pkgs.unstable.jellyfin;
+    package = pkgs.jellyfin;
     group = "users";
     openFirewall = true;
     user = "jellyfin";
@@ -203,17 +191,17 @@ in
 
   services.sonarr = {
     enable = true;
-    package = pkgs.unstable.sonarr;
+    package = pkgs.sonarr;
   };
 
   services.radarr = {
     enable = true;
-    package = pkgs.unstable.radarr;
+    package = pkgs.radarr;
   };
 
   services.readarr = {
     enable = true;
-    package = pkgs.unstable.readarr;
+    package = pkgs.readarr;
   };
 
   services.prowlarr = {
@@ -509,7 +497,7 @@ in
   environment = {
     pathsToLink = [ "/share/zsh" ];
 
-    systemPackages = with pkgs.unstable; [
+    systemPackages = with pkgs; [
       polkit
       pciutils
       hwdata

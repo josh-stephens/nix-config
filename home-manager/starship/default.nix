@@ -1,6 +1,6 @@
 { inputs, lib, config, pkgs, ... }: {
   programs.starship = {
-    package = pkgs.unstable.starship;
+    package = pkgs.starship;
     enable = true;
     enableZshIntegration = true;
 

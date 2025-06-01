@@ -7,7 +7,7 @@
   home = {
     homeDirectory = "/home/joshsymonds";
 
-    packages = with pkgs.unstable; [
+    packages = with pkgs; [
       file
       unzip
       dmidecode

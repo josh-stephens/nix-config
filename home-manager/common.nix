@@ -1,28 +1,23 @@
 { inputs, lib, config, pkgs, ... }:
-let
-  # Short alias for pkgs.unstable
-  u = pkgs.unstable;
-in
 {
   # You can import other home-manager modules here
   imports = [
     # You can also split up your configuration and import pieces of it here:
-    ./aider
     ./atuin
+    ./claude-code
     ./kitty
     ./nvim
     ./git
     ./k9s
     ./zsh
     ./starship
-    ./lazygit
   ];
 
   home = {
     enableNixpkgsReleaseCheck = false;
     username = "joshsymonds";
 
-    packages = with u; [
+    packages = with pkgs; [
       coreutils-full
       curl
       ripgrep
@@ -48,21 +43,16 @@ in
   # Programs
   programs.go = {
     enable = true;
-    package = pkgs.unstable.go_1_23;
+    package = pkgs.go_1_23;
   };
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
   programs.htop = {
     enable = true;
-    package = pkgs.unstable.htop;
+    package = pkgs.htop;
     settings.show_program_path = true;
   };
   xdg.enable = true;
-
-  home.file."Backgrounds" = {
-    source = ./Backgrounds;
-    recursive = true;
-  };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion
   home.stateVersion = "25.05";

@@ -2,89 +2,41 @@
   description = "Josh Symonds' nix config";
 
   inputs = {
-    # Nixpkgs
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-24.11";
-    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
-    nur.url = "github:nix-community/NUR";
-    kitty-40.url = "github:leiserfg/nixpkgs/kitty-0.40.0";
+    # Nixpkgs - using unstable as primary
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs-stable.url = "github:nixos/nixpkgs/nixos-24.11"; # Keep stable available if needed
 
     # Darwin
     darwin = {
       url = "github:LnL7/nix-darwin";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
-
-    # Secrets
-    agenix.url = "github:ryantm/agenix";
-    agenix-rekey.url = "github:oddlama/agenix-rekey";
 
     # Home manager
     home-manager = {
       url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
+      inputs.nixpkgs.follows = "nixpkgs";
     };
 
     # Neovim Nightly
     neovim-nightly.url = "github:nix-community/neovim-nightly-overlay";
+
+    # Hardware-specific optimizations
+    hardware.url = "github:nixos/nixos-hardware/master";
   };
 
-  outputs = { nixpkgs, nixpkgs-unstable, darwin, home-manager, kitty-40, self, ... }@inputs:
+  outputs = { nixpkgs, darwin, home-manager, self, ... }@inputs:
     let
       inherit (self) outputs;
+      inherit (nixpkgs) lib;
 
-      systems = [
-        "aarch64-linux"
-        "i686-linux"
-        "x86_64-linux"
-        "aarch64-darwin"
-        "x86_64-darwin"
-      ];
-
-      forAllSystems = f: nixpkgs.lib.genAttrs systems f;
-
-      # Modified kitty package with tests completely disabled
-      modifiedKittyPkgs = system: 
-        let
-          originalPkgs = kitty-40.legacyPackages.${system};
-        in
-          originalPkgs.extend (final: prev: {
-            kitty = prev.kitty.overrideAttrs (oldAttrs: {
-              checkPhase = "true";
-              installCheckPhase = "true";
-            });
-          });
+      # Only the systems we actually use
+      systems = [ "x86_64-linux" "aarch64-darwin" ];
+      forAllSystems = f: lib.genAttrs systems f;
 
       # Common special arguments for all configurations
       mkSpecialArgs = system: {
         inherit inputs outputs;
-        nixpkgs = nixpkgs-unstable;
-        kitty-pkgs = modifiedKittyPkgs system;
-      };
-
-      # NixOS configuration
-      nixosConfiguration = system: hostName: modules: nixpkgs.lib.nixosSystem {
-        inherit system;
-        specialArgs = mkSpecialArgs system;
-        modules = modules ++ [{
-          home-manager.extraSpecialArgs = mkSpecialArgs system;
-        }];
-      };
-
-      # Darwin configuration
-      darwinConfiguration = system: hostName: modules: darwin.lib.darwinSystem {
-        inherit system;
-        specialArgs = mkSpecialArgs system;
-        modules = modules ++ [{
-          home-manager.extraSpecialArgs = mkSpecialArgs system;
-        }];
-      };
-
-      # Home Manager standalone configuration
-      homeConfiguration = system: modules: home-manager.lib.homeManagerConfiguration {
-        inherit system;
-        pkgs = nixpkgs-unstable.legacyPackages.${system};
-        extraSpecialArgs = mkSpecialArgs system;
-        modules = modules;
       };
     in
     {
@@ -95,23 +47,94 @@
 
       overlays = import ./overlays { inherit inputs; };
 
+      # NixOS configurations - inlined for clarity
       nixosConfigurations = {
-        morningstar = nixosConfiguration "x86_64-linux" "morningstar" [ ./hosts/morningstar ];
-        ultraviolet = nixosConfiguration "x86_64-linux" "ultraviolet" [ ./hosts/ultraviolet ];
-        bluedesert = nixosConfiguration "x86_64-linux" "bluedesert" [ ./hosts/bluedesert ];
-        echelon = nixosConfiguration "x86_64-linux" "bluedesert" [ ./hosts/echelon ];
+        ultraviolet = lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = mkSpecialArgs "x86_64-linux";
+          modules = [
+            ./hosts/ultraviolet
+            ./hosts/common.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.joshsymonds = import ./home-manager/headless-x86_64-linux.nix;
+              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux";
+            }
+          ];
+        };
+        
+        bluedesert = lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = mkSpecialArgs "x86_64-linux";
+          modules = [
+            ./hosts/bluedesert
+            ./hosts/common.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.joshsymonds = import ./home-manager/headless-x86_64-linux.nix;
+              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux";
+            }
+          ];
+        };
+        
+        echelon = lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = mkSpecialArgs "x86_64-linux";
+          modules = [
+            ./hosts/echelon  # Fixed: was using bluedesert
+            ./hosts/common.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.joshsymonds = import ./home-manager/headless-x86_64-linux.nix;
+              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux";
+            }
+          ];
+        };
       };
 
+      # Darwin configuration - inlined for clarity
       darwinConfigurations = {
-        cloudbank = darwinConfiguration "aarch64-darwin" "cloudbank" [ ./hosts/cloudbank ];
+        cloudbank = darwin.lib.darwinSystem {
+          system = "aarch64-darwin";
+          specialArgs = mkSpecialArgs "aarch64-darwin";
+          modules = [
+            ./hosts/cloudbank
+            home-manager.darwinModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.joshsymonds = import ./home-manager/aarch64-darwin.nix;
+              home-manager.extraSpecialArgs = mkSpecialArgs "aarch64-darwin";
+            }
+          ];
+        };
       };
 
-      homeConfigurations = {
-        "joshsymonds@morningstar" = homeConfiguration "x86_64-linux" [ ./home-manager ];
-        "joshsymonds@ultraviolet" = homeConfiguration "x86_64-linux" [ ./home-manager ];
-        "joshsymonds@bluedesert" = homeConfiguration "x86_64-linux" [ ./home-manager ];
-        "joshsymonds@echelon" = homeConfiguration "x86_64-linux" [ ./home-manager ];
-        "joshsymonds@cloudbank" = homeConfiguration "aarch64-darwin" [ ./home-manager ];
-      };
+      # Simplified home configurations - generated programmatically
+      homeConfigurations = 
+        let
+          mkHome = { system, module }: home-manager.lib.homeManagerConfiguration {
+            inherit system;
+            pkgs = nixpkgs.legacyPackages.${system};
+            extraSpecialArgs = mkSpecialArgs system;
+            modules = [ module ];
+          };
+          
+          linuxHosts = [ "ultraviolet" "bluedesert" "echelon" ];
+          darwinHosts = [ "cloudbank" ];
+        in
+          (lib.genAttrs 
+            (map (h: "joshsymonds@${h}") linuxHosts)
+            (_: mkHome { system = "x86_64-linux"; module = ./home-manager/headless-x86_64-linux.nix; })
+          ) // (lib.genAttrs 
+            (map (h: "joshsymonds@${h}") darwinHosts)
+            (_: mkHome { system = "aarch64-darwin"; module = ./home-manager/aarch64-darwin.nix; })
+          );
     };
 }

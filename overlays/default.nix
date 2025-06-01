@@ -1,73 +1,48 @@
 # This file defines overlays
 { inputs, ... }:
 {
-  # This one brings our custom packages from the 'pkgs' directory
-  additions = final: _prev: import ../pkgs { pkgs = final; };
-
-  # This one contains whatever you want to overlay
-  # You can change versions, add patches, set compilation flags, anything really.
-  # https://nixos.wiki/wiki/Overlays
-  modifications = final: prev: {
-    # example = prev.example.overrideAttrs (oldAttrs: rec {
-    # ...
-    # });
-  };
-
-  # When applied, the unstable nixpkgs set (declared in the flake inputs) will
-  # be accessible through 'pkgs.unstable'
-  unstable-packages = final: _prev: {
-    unstable = import inputs.nixpkgs-unstable {
+  # Single default overlay that combines everything
+  default = final: prev: {
+    # Import custom packages from the 'pkgs' directory
+    inherit (import ../pkgs { pkgs = final; })
+      myCaddy;
+    
+    # Package modifications
+    waybar = prev.waybar.overrideAttrs (oldAttrs: {
+      mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
+      version = "0.9.21";
+    });
+    
+    catppuccin-gtk = prev.catppuccin-gtk.override {
+      accents = [ "lavender" ];
+      size = "compact";
+      tweaks = [ "rimless" "black" ];
+      variant = "mocha";
+    };
+    
+    catppuccin-plymouth = prev.catppuccin-plymouth.override {
+      variant = "mocha";
+    };
+    
+    # XIVLauncher customizations
+    xivlauncher = prev.xivlauncher.override {
+      steam = prev.steam.override {
+        extraLibraries = pkgs: [ prev.gamemode.lib ];
+      };
+    } // {
+      # Remove desktop items as we're setting them ourselves
+      desktopItems = [];
+    };
+    
+    # Stable packages available under pkgs.stable (if needed)
+    stable = import inputs.nixpkgs-stable {
       system = final.system;
       config.allowUnfree = true;
-      overlays = [
-
-        (self: super: {
-          waybar = super.waybar.overrideAttrs (oldAttrs: {
-            mesonFlags = oldAttrs.mesonFlags ++ [ "-Dexperimental=true" ];
-          });
-        })
-
-        # Fix Catppuccino theme
-        (self: super: {
-          catppuccin-gtk = super.catppuccin-gtk.override
-            {
-              accents = [ "lavender" ]; # You can specify multiple accents here to output multiple themes
-              size = "compact";
-              tweaks = [ "rimless" "black" ]; # You can also specify multiple tweaks here
-              variant = "mocha";
-            };
-        })
-        (self: super: {
-          catppuccin-gtk = super.catppuccin-plymouth.override
-            {
-              variant = "mocha";
-            };
-        })
-
-        # Update Waybar
-        (self: super: {
-          waybar = super.waybar.overrideAttrs (oldAttrs: {
-            version = "0.9.21";
-          });
-        })
-
-        # We are setting this ourselves
-        (self: super: {
-          xivlauncher = super.xivlauncher.overrideAttrs (oldAttrs: {
-            desktopItems = [ ];
-          });
-        })
-
-        # Get gamemode working in FFXIV
-        (self: super: {
-          xivlauncher = super.xivlauncher.override
-            {
-              steam = (super.pkgs.steam.override {
-                extraLibraries = pkgs: [ super.pkgs.gamemode.lib ];
-              });
-            };
-        })
-      ];
     };
   };
+  
+  # Legacy overlay references for backwards compatibility
+  additions = final: _prev: import ../pkgs { pkgs = final; };
+  modifications = final: prev: { };  # Empty, kept for compatibility
+  unstable-packages = final: prev: { };  # Empty, no longer needed since we use unstable as primary
 }

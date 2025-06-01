@@ -1,9 +1,8 @@
-{ inputs, lib, config, pkgs, kitty-pkgs, ... }: {
+{ inputs, lib, config, pkgs, ... }: {
   xdg.configFile."kitty/macos-launch-services-cmdline".source = ./macos-launch-services-cmdline;
 
   programs.kitty = {
     enable = true;
-    package = kitty-pkgs.kitty;
 
     font.name = "Maple Mono NF CN";
     themeFile = "Catppuccin-Mocha";

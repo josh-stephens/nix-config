@@ -1,7 +1,7 @@
 { inputs, lib, config, pkgs, ... }: {
   programs.atuin = {
     enable = true;
-    package = pkgs.unstable.atuin;
+    package = pkgs.atuin;
 
     enableZshIntegration = true;
   };

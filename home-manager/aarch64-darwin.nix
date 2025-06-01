@@ -6,6 +6,6 @@
 
   home.homeDirectory = "/Users/joshsymonds";
 
-  programs.zsh.shellAliases.update = "darwin-rebuild switch --flake \".#$(hostname -s)\"";
+  programs.zsh.shellAliases.update = "sudo darwin-rebuild switch --flake \".#$(hostname -s)\"";
   programs.kitty.font.size = 13;
 }

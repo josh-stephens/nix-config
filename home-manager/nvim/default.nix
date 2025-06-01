@@ -1,5 +1,5 @@
 { inputs, lib, config, pkgs, ... }: {
-  home.packages = with pkgs.unstable; [
+  home.packages = with pkgs; [
     nodejs_20
     ripgrep
     fd
