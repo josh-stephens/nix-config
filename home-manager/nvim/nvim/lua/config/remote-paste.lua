@@ -1,5 +1,10 @@
--- Smart paste for SSH sessions - use terminal paste instead of OSC52
-if vim.env.SSH_TTY then
+-- Smart paste for SSH/ET sessions - use terminal paste instead of OSC52
+-- Check for SSH_CLIENT or SSH_CONNECTION as they're more reliably set than SSH_TTY
+if vim.env.SSH_CLIENT or vim.env.SSH_CONNECTION then
+  -- Debug: notify that remote paste is active
+  vim.defer_fn(function()
+    vim.notify("Remote paste mode active (SSH_CLIENT: " .. (vim.env.SSH_CLIENT or "nil") .. ")", vim.log.levels.INFO)
+  end, 100)
   -- Helper function to paste using terminal
   local function terminal_paste(mode, before_cursor)
     -- Save current position

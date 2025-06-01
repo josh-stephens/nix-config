@@ -1,7 +1,7 @@
 -- Clipboard configuration for remote/local compatibility
 
--- For SSH sessions, use OSC52 for copying to local clipboard
-if vim.env.SSH_TTY and vim.fn.has('nvim-0.10') == 1 then
+-- For SSH/ET sessions, use OSC52 for copying to local clipboard
+if (vim.env.SSH_CLIENT or vim.env.SSH_CONNECTION) and vim.fn.has('nvim-0.10') == 1 then
   vim.g.clipboard = {
     name = 'OSC52',
     copy = {
