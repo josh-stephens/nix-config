@@ -30,7 +30,7 @@ in
         *) echo "🚀 Connecting to devspace $devspace..." ;;
       esac
       # Use ultraviolet command (ET with SSH fallback) for better responsiveness
-      ultraviolet tmux attach-session -t devspace-$devspace || echo '❌ Devspace $devspace not initialized. Run devspace-init on ultraviolet first.'
+      ultraviolet "tmux attach-session -t devspace-$devspace || echo '❌ Devspace $devspace not initialized. Run devspace-init on ultraviolet first.'"
     }
     
     # 🔧 Setup a devspace with a project
@@ -61,12 +61,14 @@ in
       ultraviolet devspace-status
     }
     
-    # 🔧 Setup commands from Mac
+    # 🔧 Setup commands from Mac (legacy - use earth setup instead)
     devspace-setup() {
       if [ $# -lt 1 ]; then
-        echo "Usage: devspace-setup <devspace> [project-path-on-ultraviolet]"
-        echo "  devspace-setup earth ~/projects/work/main-app"
-        echo "  devspace-setup mars"
+        echo "Note: This is a legacy command. Use the devspace shortcuts instead:"
+        echo "  earth setup ~/projects/work/main-app"
+        echo "  mars status"
+        echo ""
+        echo "Legacy usage: devspace-setup <devspace> [project-path-on-ultraviolet]"
         return 1
       fi
       

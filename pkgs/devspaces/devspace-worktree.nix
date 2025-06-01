@@ -19,18 +19,28 @@ writeScriptBin "devspace-worktree" ''
   NC='\033[0m' # No Color
   
   usage() {
-    echo "Usage: devspace-worktree <command> <devspace> [options]"
+    echo "Usage: devspace-worktree <command> [devspace] [options]"
+    echo "       OR called via: <devspace> worktree <command> [options]"
     echo
     echo "Commands:"
-    echo "  create <devspace> <branch>    Create a worktree for the devspace"
-    echo "  list <devspace>               List worktrees for a devspace"
-    echo "  clean <devspace>              Remove worktree for a devspace"
-    echo "  status                        Show all devspace worktree status"
+    echo "  create <branch>    Create a worktree for the devspace"
+    echo "  list               List worktrees for a devspace"
+    echo "  clean              Remove worktree for a devspace"
+    echo "  status             Show all devspace worktree status"
     echo
-    echo "Examples:"
+    echo "Examples (when called directly):"
     echo "  devspace-worktree create earth feature/new-ui"
-    echo "  devspace-worktree create mars bugfix/memory-leak"
+    echo "  devspace-worktree list mars"
     echo "  devspace-worktree clean earth"
+    echo
+    echo "Examples (when called via devspace commands):"
+    echo "  earth worktree create feature/new-ui"
+    echo "  mars worktree list"
+    echo "  earth worktree clean"
+    echo
+    echo "Note: Use the devspace commands directly for better experience:"
+    echo "  earth worktree create feature/new-ui"
+    echo "  mars worktree clean"
     exit 1
   }
   
@@ -81,7 +91,7 @@ writeScriptBin "devspace-worktree" ''
     local main_repo=$(get_main_repo "$devspace")
     if [ -z "$main_repo" ]; then
       echo -e "''${RED}❌ No git repository linked to $devspace''${NC}"
-      echo "First run: devspace-setup $devspace <repo-path>"
+      echo "First run: $devspace <repo-path>"
       exit 1
     fi
     

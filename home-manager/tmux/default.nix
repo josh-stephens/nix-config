@@ -547,6 +547,19 @@ in {
         # Allow OSC52 sequences to pass through for clipboard operations
         set -g allow-passthrough on
         
+        ${optionalString cfg.devspaceMode ''
+          # 🪝 Devspace state saving hooks
+          # Save state when windows are created/destroyed in devspace sessions
+          set-hook -g window-linked 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
+          set-hook -g window-unlinked 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
+          
+          # Save state when client detaches (good time to save)
+          set-hook -g client-detached 'run-shell -b "devspace-save-hook 2>/dev/null || true"'
+          
+          # Save state on session changes
+          set-hook -g session-created 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
+        ''}
+        
         # 🎨 Status Bar Styling
         set -g status-style "fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_base}"
         set -g status-left-length 50

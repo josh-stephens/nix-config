@@ -39,9 +39,19 @@ writeScriptBin "devspace-status" ''
       
       echo "  🪟 Current window: $current_window"
       echo "  ✅ Status: active"
+      echo "  💡 Connect: $devspace connect"
     else
       echo "  ❌ Status: not initialized"
+      echo "  💡 Initialize: devspace-init"
     fi
     echo
   done
+  
+  echo "Quick Commands:"
+  echo "  Link project:     <devspace> <path>"
+  echo "  Show status:      <devspace> status"
+  echo "  Connect to tmux:  <devspace> connect"
+  echo "  Create worktree:  <devspace> worktree create <branch>"
+  echo ""
+  echo "Example: earth ~/projects/myapp"
 ''

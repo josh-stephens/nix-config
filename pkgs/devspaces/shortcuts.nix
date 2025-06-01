@@ -3,26 +3,83 @@
 let
   theme = import ./theme.nix;
   
-  # Create a setup shortcut script for each devspace
+  # Create a versatile shortcut script for each devspace
   makeShortcut = space: writeScriptBin space.name ''
     #!${bash}/bin/bash
     # ${space.icon} ${space.name} - ${space.description}
     
-    # If no arguments and we're in a remote session (SSH or ET), 
-    # connect to the tmux session instead of showing setup
-    # Check for SSH_TTY (SSH) or SSH_CONNECTION (ET) or ET_VERSION (ET)
-    if [ $# -eq 0 ] && [ -z "$TMUX" ] && { [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ] || [ -n "$ET_VERSION" ]; }; then
-      # Check if the tmux session exists
-      if tmux has-session -t devspace-${space.name} 2>/dev/null; then
-        exec tmux attach-session -t devspace-${space.name}
-      else
-        echo "${space.icon} ${space.name} not initialized. Run devspace-init first."
-        exit 1
-      fi
-    else
-      # Normal behavior: setup/show devspace configuration
-      exec devspace-setup ${space.name} "$@"
-    fi
+    # Handle different operations based on arguments
+    case "''${1:-}" in
+      # Setup/link operations
+      setup|link)
+        shift
+        exec devspace-setup ${space.name} "$@"
+        ;;
+      
+      # Status operation
+      status|info)
+        echo "${space.icon} ${space.name} status:"
+        devspace-setup ${space.name}
+        ;;
+      
+      # Worktree operations
+      worktree|wt)
+        shift
+        exec devspace-worktree "$@" ${space.name}
+        ;;
+      
+      # Connect operation (explicit)
+      connect|attach|tmux)
+        if tmux has-session -t devspace-${space.name} 2>/dev/null; then
+          exec tmux attach-session -t devspace-${space.name}
+        else
+          echo "${space.icon} ${space.name} not initialized. Run devspace-init first."
+          exit 1
+        fi
+        ;;
+      
+      # Default behavior
+      "")
+        # If no arguments and we're in a remote session, connect to tmux
+        if [ -z "$TMUX" ] && { [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ] || [ -n "$ET_VERSION" ]; }; then
+          if tmux has-session -t devspace-${space.name} 2>/dev/null; then
+            exec tmux attach-session -t devspace-${space.name}
+          else
+            echo "${space.icon} ${space.name} not initialized. Run devspace-init first."
+            exit 1
+          fi
+        else
+          # Otherwise show status
+          exec $0 status
+        fi
+        ;;
+      
+      # Path argument - treat as setup
+      *)
+        # If first arg looks like a path, treat as setup
+        if [ -d "$1" ] || [ "$1" = "." ] || [[ "$1" == /* ]] || [[ "$1" == ~/* ]]; then
+          exec devspace-setup ${space.name} "$@"
+        else
+          # Show help
+          echo "Usage: ${space.name} [command] [options]"
+          echo ""
+          echo "Commands:"
+          echo "  <path>           Link ${space.name} to a project directory"
+          echo "  status           Show ${space.name} status and configuration"
+          echo "  connect          Connect to ${space.name} tmux session"
+          echo "  worktree <cmd>   Manage git worktrees for ${space.name}"
+          echo ""
+          echo "Examples:"
+          echo "  ${space.name} ~/projects/myapp     # Link to project"
+          echo "  ${space.name} .                    # Link to current directory"
+          echo "  ${space.name} status               # Show current setup"
+          echo "  ${space.name} worktree create feature-branch"
+          echo ""
+          echo "When connected via SSH/ET, running '${space.name}' attaches to the tmux session."
+          exit 1
+        fi
+        ;;
+    esac
   '';
   
   shortcuts = map makeShortcut theme.spaces;

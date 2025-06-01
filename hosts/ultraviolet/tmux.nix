@@ -7,9 +7,9 @@
   # Install the devspaces package which provides devspace-init
   environment.systemPackages = [ pkgs.devspaces ];
   
-  # 🤖 Systemd service to initialize development spaces on boot
-  systemd.services.devspace-init = {
-    description = "Initialize development space tmux sessions";
+  # 🤖 Systemd service to restore/initialize development spaces on boot
+  systemd.services.devspace-restore = {
+    description = "Restore development space tmux sessions";
     after = [ "multi-user.target" "network.target" ];
     wantedBy = [ "multi-user.target" ];
     
@@ -17,7 +17,9 @@
       Type = "oneshot";
       RemainAfterExit = true;
       User = "joshsymonds";
-      ExecStart = "${pkgs.devspaces}/bin/devspace-init";
+      ExecStart = "${pkgs.devspaces}/bin/devspace-restore";
+      # Save state before stopping
+      ExecStop = "${pkgs.devspaces}/bin/save_session_state";
       StandardOutput = "journal";
       StandardError = "journal";
     };
@@ -28,22 +30,52 @@
     };
   };
   
-  # 🔄 Ensure devspace-init runs after system rebuilds
-  system.activationScripts.devspace-init = {
+  # 🔄 Ensure devspace-restore runs after system rebuilds
+  system.activationScripts.devspace-restore = {
     text = ''
-      # Run devspace-init after system activation
-      ${pkgs.systemd}/bin/systemctl restart devspace-init.service || true
+      # Save current state before activation
+      if ${pkgs.systemd}/bin/systemctl is-active --quiet devspace-restore.service; then
+        ${pkgs.sudo}/bin/sudo -u joshsymonds ${pkgs.devspaces}/bin/save_session_state || true
+      fi
+      
+      # Run devspace-restore after system activation
+      ${pkgs.systemd}/bin/systemctl restart devspace-restore.service || true
     '';
     deps = [];
   };
   
-  # 📁 Create devspace directories
-  systemd.tmpfiles.rules = [
+  # 💾 Save tmux state periodically and on shutdown
+  systemd.timers.devspace-save-state = {
+    description = "Periodically save devspace tmux state";
+    wantedBy = [ "timers.target" ];
+    timerConfig = {
+      OnBootSec = "5min";
+      OnUnitActiveSec = "30min";
+      Unit = "devspace-save-state.service";
+    };
+  };
+  
+  systemd.services.devspace-save-state = {
+    description = "Save devspace tmux state";
+    serviceConfig = {
+      Type = "oneshot";
+      User = "joshsymonds";
+      ExecStart = "${pkgs.devspaces}/bin/save_session_state";
+    };
+    environment = {
+      HOME = "/home/joshsymonds";
+      USER = "joshsymonds";
+    };
+  };
+  
+  # 📁 Create devspace directories and state directory
+  systemd.tmpfiles.rules = let
+    theme = import ../../pkgs/devspaces/theme.nix;
+    devspaceRules = map (space: 
+      "d /home/joshsymonds/devspaces/${space.name} 0755 joshsymonds users -"
+    ) theme.spaces;
+  in [
     "d /home/joshsymonds/devspaces 0755 joshsymonds users -"
-    "d /home/joshsymonds/devspaces/mercury 0755 joshsymonds users -"
-    "d /home/joshsymonds/devspaces/venus 0755 joshsymonds users -"
-    "d /home/joshsymonds/devspaces/earth 0755 joshsymonds users -"
-    "d /home/joshsymonds/devspaces/mars 0755 joshsymonds users -"
-    "d /home/joshsymonds/devspaces/jupiter 0755 joshsymonds users -"
-  ];
+    "d /home/joshsymonds/.local/state/tmux-devspaces 0755 joshsymonds users -"
+  ] ++ devspaceRules;
 }
