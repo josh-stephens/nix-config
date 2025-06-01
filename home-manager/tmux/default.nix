@@ -549,6 +549,9 @@ in {
         set -g allow-passthrough on
         set -g copy-command 'kitty +kitten clipboard'
         
+        # Set DISPLAY for X11 clipboard tools
+        setenv -g DISPLAY :0
+        
         # 🎨 Status Bar Styling
         set -g status-style "fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_base}"
         set -g status-left-length 50
