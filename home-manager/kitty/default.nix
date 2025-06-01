@@ -9,6 +9,10 @@
 
     keybindings = {
       "kitty_mod"   = "ctrl+shift";
+      # Keep default macOS clipboard behavior
+      "cmd+c" = "copy_to_clipboard";
+      "cmd+v" = "paste_from_clipboard";
+      # Also allow kitty modifier versions
       "kitty_mod+c" = "copy_to_clipboard";
       "kitty_mod+v" = "paste_from_clipboard";
       "kitty_mod+s" = "launch --type=overlay --cwd=current cursor -";
@@ -55,6 +59,10 @@
       # SSH clipboard integration
       "share_connections" = true;
       "remote_kitty" = "yes";
+      # macOS clipboard integration
+      "copy_on_select" = false;  # Don't auto-copy on select
+      "paste_actions" = "quote-urls-at-prompt";
+      "strip_trailing_spaces" = "smart";
       "background_opacity" = "0.9";
       "hide_window_decorations" = true;
       "mouse_map ctrl+shift+right" = "press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output";
