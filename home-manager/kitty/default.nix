@@ -53,8 +53,8 @@
       "tab_bar_margin_width" = "0.0";
       "tab_bar_style" = "powerline";
       "tab_separator" = " ┇";
-      "allow_remote_control" = true;
-      "listen_on" = "unix:/tmp/kitty";
+      "allow_remote_control" = "socket-only";
+      "listen_on" = "unix:/tmp/kitty-${config.home.username}";
       "shell_integration" = "enabled";
       "clipboard_control" = "write-clipboard write-primary read-clipboard read-primary";
       "term" = "xterm-kitty";
@@ -75,10 +75,6 @@
       "detect_urls" = "yes";
       "url_prefixes" = "file ftp ftps gemini git gopher http https irc ircs kitty mailto news sftp ssh";
       "url_style" = "curly";
-      
-      # Remote control settings (secure)
-      "allow_remote_control" = "socket-only";
-      "listen_on" = "unix:/tmp/kitty-${config.home.username}";
     };
   };
 }
