@@ -30,8 +30,8 @@ in
         *) echo "🚀 Connecting to devspace $devspace..." ;;
       esac
       # Use ultraviolet command (ET with SSH fallback) for better responsiveness
-      # First check if session exists, if not try to restore
-      ultraviolet "if ! tmux has-session -t devspace-$devspace 2>/dev/null; then devspace-restore >/dev/null 2>&1 || true; fi; tmux attach-session -t devspace-$devspace || echo '❌ Devspace $devspace not initialized.'"
+      # Run the devspace command directly on the server
+      ultraviolet "$devspace"
     }
     
     # 🔧 Setup a devspace with a project
