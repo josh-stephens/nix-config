@@ -1,28 +1,22 @@
-{ lib, stdenv, fetchurl, go }:
+{ lib, buildGoModule, fetchFromGitHub }:
 
-stdenv.mkDerivation rec {
+buildGoModule rec {
   pname = "starlark-lsp";
-  version = "latest";
+  version = "0.0.0-20240730211532";
 
-  src = ./.;
+  src = fetchFromGitHub {
+    owner = "tilt-dev";
+    repo = "starlark-lsp";
+    rev = "5689e7e8a3aa8ab55eca07d215054a0f25dbc17c";
+    hash = "sha256-zsrUuU5aBjDaXONwETwxHPeiAOvM89xqj8whlqd6t9U=";
+  };
 
-  nativeBuildInputs = [ go ];
+  vendorHash = "sha256-PqMed2czM5BxnQs9O641W9MlrVZe0Uv+bII1KK4h974=";
 
-  dontBuild = true;
-  dontConfigure = true;
+  # Build the specific binary we want
+  subPackages = [ "cmd/starlark-lsp" ];
 
-  installPhase = ''
-    export HOME=$TMPDIR
-    export GOPATH=$TMPDIR/go
-    export GOCACHE=$TMPDIR/go-cache
-    mkdir -p $out/bin
-    
-    # Install directly from GitHub - the cmd/starlark-lsp path
-    ${go}/bin/go install github.com/tilt-dev/starlark-lsp/cmd/starlark-lsp@latest
-    
-    # Copy the binary to our output (it's already named starlark-lsp)
-    cp $GOPATH/bin/starlark-lsp $out/bin/
-  '';
+  ldflags = [ "-s" "-w" ];
 
   meta = with lib; {
     description = "Starlark Language Server Protocol implementation";
