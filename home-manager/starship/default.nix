@@ -9,7 +9,7 @@
 
       format = "[](fg:lavender)$directory$character";
 
-      right_format = "[](fg:mauve)$custom.planet[](fg:rosewater bg:mauve)$hostname[](fg:sky bg:rosewater)$git_branch$git_status[](fg:peach bg:sky)$aws[](bg:peach fg:teal)$kubernetes[](fg:teal)";
+      right_format = "[](fg:mauve)\${custom.planet}[](fg:rosewater bg:mauve)$hostname[](fg:sky bg:rosewater)$git_branch$git_status[](fg:peach bg:sky)$aws[](bg:peach fg:teal)$kubernetes[](fg:teal)";
 
       add_newline = false;
 
@@ -67,37 +67,23 @@
         style = "bg:teal fg:base";
       };
 
-      "custom.planet" = {
-        when = ''test -n "$TMUX_PLANET"'';
-        command = ''
-          if [ -n "$TMUX_PLANET" ]; then
-            window=$(tmux display-message -p '#W' 2>/dev/null || echo "?")
+      custom = {
+        planet = {
+          when = ''test -n "$TMUX_PLANET"'';
+          command = ''
+            window=$(tmux display-message -p '#W' 2>/dev/null || echo '?')
             case "$TMUX_PLANET" in
-              mercury) echo "● mercury › $window" ;;
-              venus) echo "● venus › $window" ;;
-              earth) echo "● earth › $window" ;;
-              mars) echo "● mars › $window" ;;
-              jupiter) echo "● jupiter › $window" ;;
-              *) echo "● $TMUX_PLANET › $window" ;;
+              mercury) echo "☿ mercury › $window" ;;
+              venus)   echo "♀ venus › $window" ;;
+              earth)   echo "⊕ earth › $window" ;;
+              mars)    echo "♂ mars › $window" ;;
+              jupiter) echo "♃ jupiter › $window" ;;
+              *)       echo "● $TMUX_PLANET › $window" ;;
             esac
-          fi
-        '';
-        format = "[ $output ]($style)";
-        style = ''{{
-          if test "$TMUX_PLANET" = "mercury"; then
-            echo "bg:mauve fg:flamingo"
-          elif test "$TMUX_PLANET" = "venus"; then
-            echo "bg:mauve fg:pink"
-          elif test "$TMUX_PLANET" = "earth"; then
-            echo "bg:mauve fg:green"
-          elif test "$TMUX_PLANET" = "mars"; then
-            echo "bg:mauve fg:red"
-          elif test "$TMUX_PLANET" = "jupiter"; then
-            echo "bg:mauve fg:peach"
-          else
-            echo "bg:mauve fg:text"
-          fi
-        }}'';
+          '';
+          format = "[ $output ]($style)";
+          style = "bg:mauve fg:base bold";
+        };
       };
 
       palettes.catppuccin_mocha = {

@@ -2,7 +2,7 @@
 
 {
   # 🪐 Planet Client Commands for Mac
-  programs.zsh.initExtra = ''
+  programs.zsh.initContent = ''
     # 🌌 Planet Development Environment Client Functions
     
     # Helper function to check if we're on Tailscale network
