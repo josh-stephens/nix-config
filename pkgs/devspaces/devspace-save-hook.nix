@@ -1,4 +1,4 @@
-{ writeScriptBin, bash }:
+{ writeScriptBin, bash, devspace-save-state }:
 
 writeScriptBin "devspace-save-hook" ''
   #!${bash}/bin/bash
@@ -11,7 +11,7 @@ writeScriptBin "devspace-save-hook" ''
     sleep 0.5
     
     # Save the state
-    save_session_state >/dev/null 2>&1
+    ${devspace-save-state}/bin/save_session_state >/dev/null 2>&1
   ) &
   
   # Return immediately

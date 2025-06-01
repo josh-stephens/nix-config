@@ -1,4 +1,4 @@
-{ lib, writeScriptBin, bash, git, tmux }:
+{ lib, writeScriptBin, bash, git, tmux, devspace-save-hook }:
 
 let
   theme = import ./theme.nix;
@@ -305,7 +305,7 @@ writeScriptBin "devspace-setup" ''
     echo -e "''${GREEN}✨ Devspace $DEVSPACE is ready for development!''${NC}"
     
     # Save state after successful setup
-    devspace-save-hook
+    ${devspace-save-hook}/bin/devspace-save-hook
   else
     echo -e "''${YELLOW}⚠️  Tmux session not running. Connect with: $DEVSPACE''${NC}"
   fi

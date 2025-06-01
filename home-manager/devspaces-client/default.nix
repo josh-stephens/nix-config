@@ -30,7 +30,8 @@ in
         *) echo "🚀 Connecting to devspace $devspace..." ;;
       esac
       # Use ultraviolet command (ET with SSH fallback) for better responsiveness
-      ultraviolet "tmux attach-session -t devspace-$devspace || echo '❌ Devspace $devspace not initialized. Run devspace-init on ultraviolet first.'"
+      # First check if session exists, if not try to restore
+      ultraviolet "if ! tmux has-session -t devspace-$devspace 2>/dev/null; then devspace-restore >/dev/null 2>&1 || true; fi; tmux attach-session -t devspace-$devspace || echo '❌ Devspace $devspace not initialized.'"
     }
     
     # 🔧 Setup a devspace with a project
@@ -141,7 +142,7 @@ in
           shift
           devspace-sync-aws "$@"
           ;;
-        mercury|venus|earth|mars|jupiter)
+        ${lib.concatStringsSep "|" (map (s: s.name) theme.spaces)})
           _devspace_connect "$@"
           ;;
         *)

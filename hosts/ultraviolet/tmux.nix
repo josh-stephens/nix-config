@@ -22,11 +22,18 @@
       ExecStop = "${pkgs.devspaces}/bin/save_session_state";
       StandardOutput = "journal";
       StandardError = "journal";
+      # Allow service to succeed even if restore has issues
+      SuccessExitStatus = "0 1";
+      # Restart on failure with delay
+      Restart = "on-failure";
+      RestartSec = "5s";
+      StartLimitBurst = 3;
     };
     
     environment = {
       HOME = "/home/joshsymonds";
       USER = "joshsymonds";
+      PATH = "${pkgs.tmux}/bin:${pkgs.coreutils}/bin:${pkgs.bash}/bin";
     };
   };
   

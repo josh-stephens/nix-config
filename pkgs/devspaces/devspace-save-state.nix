@@ -10,6 +10,12 @@ writeScriptBin "save_session_state" ''
   # Clear previous state
   > "$STATE_DIR/sessions.txt"
   
+  # Check if tmux is running and has sessions
+  if ! ${tmux}/bin/tmux list-sessions -F '#S' 2>/dev/null | head -n1 >/dev/null; then
+    # No sessions to save
+    exit 0
+  fi
+  
   # Save each session's state
   ${tmux}/bin/tmux list-sessions -F '#S' 2>/dev/null | while read -r session; do
     if [[ "$session" =~ ^devspace-(.+)$ ]]; then

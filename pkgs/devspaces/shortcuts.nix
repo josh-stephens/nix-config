@@ -1,4 +1,4 @@
-{ lib, writeScriptBin, bash, symlinkJoin, devspace-context, devspace-setup, devspace-worktree }:
+{ lib, writeScriptBin, bash, symlinkJoin, devspace-context, devspace-setup, devspace-worktree, devspace-restore }:
 
 let
   theme = import ./theme.nix;
@@ -30,10 +30,16 @@ let
       
       # Connect operation (explicit)
       connect|attach|tmux)
+        # If session doesn't exist, try to restore first
+        if ! tmux has-session -t devspace-${space.name} 2>/dev/null; then
+          echo "🔄 Session not found, attempting to restore..."
+          ${devspace-restore}/bin/devspace-restore >/dev/null 2>&1 || true
+        fi
+        
         if tmux has-session -t devspace-${space.name} 2>/dev/null; then
           exec tmux attach-session -t devspace-${space.name}
         else
-          echo "${space.icon} ${space.name} not initialized. Run devspace-init first."
+          echo "${space.icon} ${space.name} could not be initialized."
           exit 1
         fi
         ;;
@@ -42,10 +48,16 @@ let
       "")
         # If no arguments and we're in a remote session, connect to tmux
         if [ -z "$TMUX" ] && { [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ] || [ -n "$ET_VERSION" ]; }; then
+          # If session doesn't exist, try to restore first
+          if ! tmux has-session -t devspace-${space.name} 2>/dev/null; then
+            echo "🔄 Session not found, attempting to restore..."
+            ${devspace-restore}/bin/devspace-restore >/dev/null 2>&1 || true
+          fi
+          
           if tmux has-session -t devspace-${space.name} 2>/dev/null; then
             exec tmux attach-session -t devspace-${space.name}
           else
-            echo "${space.icon} ${space.name} not initialized. Run devspace-init first."
+            echo "${space.icon} ${space.name} could not be initialized."
             exit 1
           fi
         else
