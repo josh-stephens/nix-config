@@ -27,8 +27,5 @@ in
       "ruby-install"
       "xz"
     ];
-    masApps = {
-      "Boop" = 1518425043;
-    };
   };
 }
