@@ -41,13 +41,17 @@ writeScriptBin "devspace-init-single" ''
   
   echo "🪐 Creating minimal devspace '$devspace'..."
   
-  # Create session with environment variables
+  # Create session with environment variables and start user's default shell
+  # Use the user's default shell, which will load all their configs
   TMUX_DEVSPACE="$devspace" TMUX_DEVSPACE_COLOR="$color" ${tmux}/bin/tmux new-session -d -s "$session" -n setup
   
   # Set environment for the session
   ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE "$devspace"
   ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_COLOR "$color"
   ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_INITIALIZED "false"
+  
+  # Wait a moment for shell to start
+  sleep 0.1
   
   # Create the setup prompt in the window
   ${tmux}/bin/tmux send-keys -t "$session:1" "clear" Enter

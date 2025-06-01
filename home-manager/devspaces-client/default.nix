@@ -30,8 +30,8 @@ in
         *) echo "🚀 Connecting to devspace $devspace..." ;;
       esac
       # Use ultraviolet command (ET with SSH fallback) for better responsiveness
-      # Run the devspace command directly on the server
-      ultraviolet "$devspace"
+      # The devspace command on the server will handle attaching to the correct tmux session
+      ultraviolet -c "$devspace"
     }
     
     # 🔧 Setup a devspace with a project
