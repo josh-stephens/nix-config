@@ -4,6 +4,7 @@
     ./aerospace
     ./devspaces-client
     ./ssh-hosts
+    ./ssh-config
   ];
 
   home.homeDirectory = "/Users/joshsymonds";

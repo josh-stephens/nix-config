@@ -50,8 +50,11 @@
       "allow_remote_control" = true;
       "listen_on" = "unix:/tmp/kitty";
       "shell_integration" = "enabled";
-      "clipboard_control" = "write-clipboard write-primary";
+      "clipboard_control" = "write-clipboard write-primary read-clipboard read-primary";
       "term" = "xterm-kitty";
+      # SSH clipboard integration
+      "share_connections" = true;
+      "remote_kitty" = "yes";
       "background_opacity" = "0.9";
       "hide_window_decorations" = true;
       "mouse_map ctrl+shift+right" = "press ungrabbed combine : mouse_select_command_output : kitty_scrollback_nvim --config ksb_builtin_last_visited_cmd_output";

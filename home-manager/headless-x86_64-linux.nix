@@ -13,6 +13,7 @@
       unzip
       dmidecode
       gcc  # C compiler for Neovim plugins (TreeSitter, etc.)
+      xclip  # Clipboard support for SSH sessions
     ];
   };
 
