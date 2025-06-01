@@ -60,16 +60,13 @@
       add-zsh-hook preexec set-title-preexec
 
 
+      # Ensure emacs mode (not vi mode)
+      bindkey -e
+      
       if [ -n "''${commands[fzf-share]}" ]; then
         source "$(fzf-share)/key-bindings.zsh"
         source "$(fzf-share)/completion.zsh"
-          function zvm_after_init() {
-            zvm_bindkey viins '^R' fzf-history-widget
-          }
       fi
-
-      source "$(fzf-share)/key-bindings.zsh"
-      source "$(fzf-share)/completion.zsh"
 
       if type it &>/dev/null
       then

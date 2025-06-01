@@ -4,8 +4,11 @@
   # 🪐 Development Spaces Environment - System-level configuration
   # Uses the devspaces package for initialization
   
-  # Install the devspaces package which provides devspace-init
-  environment.systemPackages = [ pkgs.devspaces ];
+  # Install the devspaces package and tmux
+  environment.systemPackages = with pkgs; [ 
+    devspaces 
+    tmux  # Ensure tmux is available system-wide
+  ];
   
   # 🤖 Systemd service to restore/initialize development spaces on boot
   systemd.services.devspace-restore = {

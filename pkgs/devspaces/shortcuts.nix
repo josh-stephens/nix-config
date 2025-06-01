@@ -30,10 +30,13 @@ let
       
       # Connect operation (explicit)
       connect|attach|tmux)
+        # Ensure tmux server is started
+        tmux start-server 2>/dev/null || true
+        
         # If session doesn't exist, try to restore first
         if ! tmux has-session -t devspace-${space.name} 2>/dev/null; then
           echo "🔄 Session not found, attempting to restore..."
-          ${devspace-restore}/bin/devspace-restore >/dev/null 2>&1 || true
+          ${devspace-restore}/bin/devspace-restore 2>&1 || echo "❌ Restore failed: $?"
         fi
         
         if tmux has-session -t devspace-${space.name} 2>/dev/null; then
@@ -48,10 +51,13 @@ let
       "")
         # If no arguments and we're in a remote session, connect to tmux
         if [ -z "$TMUX" ] && { [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ] || [ -n "$ET_VERSION" ]; }; then
+          # Ensure tmux server is started
+          tmux start-server 2>/dev/null || true
+          
           # If session doesn't exist, try to restore first
           if ! tmux has-session -t devspace-${space.name} 2>/dev/null; then
             echo "🔄 Session not found, attempting to restore..."
-            ${devspace-restore}/bin/devspace-restore >/dev/null 2>&1 || true
+            ${devspace-restore}/bin/devspace-restore 2>&1 || echo "❌ Restore failed: $?"
           fi
           
           if tmux has-session -t devspace-${space.name} 2>/dev/null; then

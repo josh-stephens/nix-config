@@ -22,6 +22,9 @@ writeScriptBin "devspace-restore" ''
   
   echo "🔄 Checking for existing tmux sessions..."
   
+  # Start tmux server if not running
+  ${tmux}/bin/tmux start-server 2>/dev/null || true
+  
   # Check if tmux server is running and has any sessions
   existing_sessions=$(${tmux}/bin/tmux list-sessions -F '#S' 2>/dev/null || echo "")
   
