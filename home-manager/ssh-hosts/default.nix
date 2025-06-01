@@ -124,8 +124,8 @@
         if command -v et &> /dev/null; then
           # If there are extra args, assume they're a command to run
           if [ ''${#extra_args[@]} -gt 0 ]; then
-            # Run command via ET
-            et -c "''${extra_args[*]}" "$target_host:2022" 2>/dev/null && return 0
+            # Run command via ET - ET takes command as trailing arguments
+            et "$target_host:2022" "''${extra_args[@]}" 2>/dev/null && return 0
           else
             # Just connect
             et "$target_host:2022" 2>/dev/null && return 0

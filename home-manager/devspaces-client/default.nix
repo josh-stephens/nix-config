@@ -31,7 +31,7 @@ in
       esac
       # Use ultraviolet command (ET with SSH fallback) for better responsiveness
       # The devspace command on the server will handle attaching to the correct tmux session
-      ultraviolet -c "$devspace"
+      ultraviolet "$devspace"
     }
     
     # 🔧 Setup a devspace with a project
