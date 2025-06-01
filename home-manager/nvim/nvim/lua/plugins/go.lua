@@ -68,10 +68,6 @@ return {
 		},
 	},
 	{
-		"williamboman/mason.nvim",
-		opts = { ensure_installed = { "goimports", "gofumpt", "gomodifytags", "impl" } },
-	},
-	{
 		"echasnovski/mini.icons",
 		opts = {
 			file = {

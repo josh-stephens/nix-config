@@ -2,10 +2,7 @@ return {
 	{
 		"neovim/nvim-lspconfig",
 		event = "LazyFile",
-		dependencies = {
-			"mason.nvim",
-			{ "williamboman/mason-lspconfig.nvim", config = function() end },
-		},
+		dependencies = {},
 		opts = function()
 			---@class PluginLspOpts
 			local ret = {
@@ -59,15 +56,22 @@ return {
 				---@type lspconfig.options
 				servers = {
 					lua_ls = {
-						-- mason = false, -- set to false if you don't want this server to be installed with mason
-						-- Use this to add any additional keymaps
-						-- for specific lsp servers
-						-- ---@type LazyKeysSpec[]
-						-- keys = {},
 						settings = {
 							Lua = {
+								runtime = {
+									version = "LuaJIT",
+								},
+								diagnostics = {
+									globals = { "vim" },
+								},
 								workspace = {
 									checkThirdParty = false,
+									library = {
+										vim.env.VIMRUNTIME,
+									},
+								},
+								telemetry = {
+									enable = false,
 								},
 								codeLens = {
 									enable = true,
@@ -89,6 +93,14 @@ return {
 							},
 						},
 					},
+					-- Add gopls here so it gets set up
+					gopls = {},
+					pyright = {},
+					nil_ls = {},
+					tsserver = {},
+					html = {},
+					cssls = {},
+					jsonls = {},
 				},
 				-- you can do any additional lsp server setup here
 				-- return true if you don't want this server to be setup with lspconfig
@@ -201,37 +213,14 @@ return {
 				require("lspconfig")[server].setup(server_opts)
 			end
 
-			-- get all the servers that are available through mason-lspconfig
-			local have_mason, mlsp = pcall(require, "mason-lspconfig")
-			local all_mslp_servers = {}
-			if have_mason then
-				all_mslp_servers = vim.tbl_keys(require("mason-lspconfig.mappings").get_mason_map().lspconfig_to_package)
-			end
-
-			local ensure_installed = {} ---@type string[]
+			-- Set up all configured LSP servers directly (no Mason)
 			for server, server_opts in pairs(servers) do
 				if server_opts then
 					server_opts = server_opts == true and {} or server_opts
 					if server_opts.enabled ~= false then
-						-- run manual setup if mason=false or if this is a server that cannot be installed with mason-lspconfig
-						if server_opts.mason == false or not vim.tbl_contains(all_mslp_servers, server) then
-							setup(server)
-						else
-							ensure_installed[#ensure_installed + 1] = server
-						end
+						setup(server)
 					end
 				end
-			end
-
-			if have_mason then
-				mlsp.setup({
-					ensure_installed = vim.tbl_deep_extend(
-						"force",
-						ensure_installed,
-						LazyVim.opts("mason-lspconfig.nvim").ensure_installed or {}
-					),
-					handlers = { setup },
-				})
 			end
 
 			if LazyVim.lsp.is_enabled("denols") and LazyVim.lsp.is_enabled("vtsls") then

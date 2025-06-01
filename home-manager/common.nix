@@ -38,6 +38,21 @@
       wireguard-tools
       k9s
       starlark-lsp
+      
+      # LSP servers
+      lua-language-server
+      gopls
+      pyright
+      nil # Nix LSP
+      nodePackages.typescript-language-server
+      nodePackages.vscode-langservers-extracted # HTML, CSS, JSON, ESLint
+      
+      # Formatters
+      stylua
+      nixpkgs-fmt
+      nodePackages.prettier
+      black
+      gofumpt
     ];
   };
 
