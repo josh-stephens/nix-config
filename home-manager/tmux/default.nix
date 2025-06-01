@@ -545,6 +545,8 @@ in {
         
         # 📋 Clipboard integration
         set -g set-clipboard on
+        # Allow OSC52 clipboard sequences to pass through
+        set -g allow-passthrough on
         set -g copy-command 'kitty +kitten clipboard'
         
         # 🎨 Status Bar Styling

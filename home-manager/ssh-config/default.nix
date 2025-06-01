@@ -12,6 +12,19 @@
       
       # Forward Kitty's remote control socket
       RemoteForward /tmp/kitty /tmp/kitty
+      
+      # Performance optimizations
+      Compression yes
+      CompressionLevel 6
+      TCPKeepAlive yes
+      
+      # Use faster ciphers for better responsiveness
+      Ciphers aes128-gcm@openssh.com,aes256-gcm@openssh.com,chacha20-poly1305@openssh.com
+      
+      # Reuse connections for faster subsequent connections
+      ControlMaster auto
+      ControlPath ~/.ssh/control-%h-%p-%r
+      ControlPersist 10m
     '';
     
     matchBlocks = {

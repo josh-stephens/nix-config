@@ -14,7 +14,7 @@ in
   programs.zsh.initContent = ''
     # 🌌 Development Spaces Client Functions
     
-    # Note: This module depends on ssh-hosts module for _smart_ssh function
+    # Note: This module depends on ssh-hosts module for host connection functions
     # The ultraviolet() function is defined there
     
     # 🚀 Connect to a devspace
@@ -29,7 +29,8 @@ in
         ${lib.concatStringsSep "\n        " (map (s: ''${s.name}) echo "${s.connectMessage}" ;;'') theme.spaces)}
         *) echo "🚀 Connecting to devspace $devspace..." ;;
       esac
-      _smart_ssh ultraviolet -t "tmux attach-session -t devspace-$devspace || (echo '❌ Devspace $devspace not initialized. Run devspace-init on ultraviolet first.' && exit 1)" $extra_args
+      # Use ultraviolet command (ET with SSH fallback) for better responsiveness
+      ultraviolet tmux attach-session -t devspace-$devspace || echo '❌ Devspace $devspace not initialized. Run devspace-init on ultraviolet first.'
     }
     
     # 🔧 Setup a devspace with a project
@@ -39,10 +40,10 @@ in
       
       if [ -z "$project" ]; then
         echo "📊 Checking $devspace setup..."
-        _smart_ssh ultraviolet "devspace-setup $devspace"
+        ultraviolet devspace-setup $devspace
       else
         echo "🔧 Setting up $devspace with project: $project"
-        _smart_ssh ultraviolet "devspace-setup $devspace '$project'"
+        ultraviolet devspace-setup $devspace "$project"
       fi
     }
     
@@ -57,7 +58,7 @@ in
     # 📊 Status command
     devspace-status() {
       echo "🌌 Fetching devspace status from ultraviolet..."
-      _smart_ssh ultraviolet devspace-status
+      ultraviolet devspace-status
     }
     
     # 🔧 Setup commands from Mac
@@ -116,7 +117,7 @@ in
         # Optionally sync to specific devspace
         if [ -n "$1" ]; then
           echo "🔄 Syncing to devspace $1..."
-          _smart_ssh ultraviolet "cp -r ~/.aws ~/devspaces/$1/.aws"
+          ultraviolet cp -r ~/.aws ~/devspaces/$1/.aws
         fi
       else
         echo "❌ Failed to sync AWS credentials"

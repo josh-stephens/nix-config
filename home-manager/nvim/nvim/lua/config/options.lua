@@ -5,6 +5,9 @@
 local opt = vim.opt
 
 opt.wrap = true
+
+-- Load clipboard configuration
+require("config.clipboard")
 -- opt.textwidth = 0
 -- opt.scrolloff = 4
 -- opt.wildmode = "longest:full,full"

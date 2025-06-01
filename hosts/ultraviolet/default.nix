@@ -88,8 +88,14 @@ in
       enable = true;
       checkReversePath = "loose";
       trustedInterfaces = [ "tailscale0" ];
-      allowedUDPPorts = [ 51820 config.services.tailscale.port ];
-      allowedTCPPorts = [ 22 80 443 ];
+      allowedUDPPorts = [ 
+        51820 
+        config.services.tailscale.port
+      ];
+      allowedTCPPorts = [ 
+        22 80 443 
+        2022  # Eternal Terminal
+      ];
     };
     defaultGateway = "172.31.0.1";
     nameservers = [ "172.31.0.1" ];
@@ -172,6 +178,12 @@ in
     };
   };
   programs.ssh.startAgent = true;
+  
+  # Enable Eternal Terminal service
+  services.eternal-terminal = {
+    enable = true;
+    port = 2022;
+  };
 
   services.tailscale = {
     enable = true;
@@ -511,6 +523,7 @@ in
       unar
       podman-tui
       jellyfin-ffmpeg
+      eternal-terminal  # ET - Low-latency SSH replacement
     ];
 
     loginShellInit = ''

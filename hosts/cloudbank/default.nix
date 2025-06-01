@@ -114,6 +114,11 @@ in
     variables = {
       EDITOR = "nvim";
     };
+    
+    # System packages
+    systemPackages = with pkgs; [
+      eternal-terminal  # ET - Low-latency SSH replacement
+    ];
   };
 
   # https://nixos.wiki/wiki/FAQ/When_do_I_update_stateVersion

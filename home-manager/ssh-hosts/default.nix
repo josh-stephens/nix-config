@@ -46,11 +46,26 @@
       return 1
     }
     
-    # Smart host connection function
-    _smart_ssh() {
+    # Smart host connection function - ET by default, SSH fallback
+    _smart_connect() {
       local hostname="$1"
       shift
-      local extra_args="$@"
+      local use_ssh=0
+      local extra_args=()
+      
+      # Parse arguments
+      while [[ $# -gt 0 ]]; do
+        case "$1" in
+          --ssh)
+            use_ssh=1
+            shift
+            ;;
+          *)
+            extra_args+=("$1")
+            shift
+            ;;
+        esac
+      done
       
       # Check if host is configured
       if [ -z "''${HOST_IPS[$hostname]}" ]; then
@@ -77,7 +92,11 @@
             # Quick ping test with very short timeout
             if ping -c 1 -W 1 "$tailscale_name" &> /dev/null; then
               target_host="$tailscale_name"
-              echo "🔒 Connecting to $hostname via Tailscale..."
+              if [ $use_ssh -eq 1 ]; then
+                echo "🔒 Connecting to $hostname via Tailscale (SSH)..."
+              else
+                echo "⚡ Connecting to $hostname via Tailscale (ET)..."
+              fi
             fi
           fi
         fi
@@ -88,7 +107,11 @@
         # Quick ping test for local network
         if ping -c 1 -W 1 "$local_ip" &> /dev/null; then
           target_host="$local_ip"
-          echo "🏠 Connecting to $hostname via local network..."
+          if [ $use_ssh -eq 1 ]; then
+            echo "🏠 Connecting to $hostname via local network (SSH)..."
+          else
+            echo "⚡ Connecting to $hostname via local network (ET)..."
+          fi
         else
           echo "❌ Cannot reach $hostname via Tailscale or local network ($local_ip)"
           echo "💡 Make sure you're on the local network or connected to Tailscale"
@@ -96,35 +119,56 @@
         fi
       fi
       
-      # Use kitten ssh for clipboard integration
-      kitten ssh "$target_host" $extra_args
+      # Try ET first, fall back to SSH if it fails
+      if [ $use_ssh -eq 0 ]; then
+        if command -v et &> /dev/null; then
+          et "$target_host:2022" ''${extra_args[@]} 2>/dev/null && return 0
+          echo "⚠️  ET connection failed, falling back to SSH..."
+        fi
+      fi
+      
+      # Use SSH (with kitten for clipboard integration)
+      kitten ssh "$target_host" ''${extra_args[@]}
     }
     
-    # Create command for each host
+    # Create command for each host (ET by default, SSH with --ssh flag)
     ultraviolet() {
-      _smart_ssh ultraviolet "$@"
+      _smart_connect ultraviolet "$@"
+    }
+    
+    ultraviolet-ssh() {
+      _smart_connect ultraviolet --ssh "$@"
     }
     
     bluedesert() {
-      _smart_ssh bluedesert "$@"
+      _smart_connect bluedesert "$@"
+    }
+    
+    bluedesert-ssh() {
+      _smart_connect bluedesert --ssh "$@"
     }
     
     echelon() {
-      _smart_ssh echelon "$@"
+      _smart_connect echelon "$@"
+    }
+    
+    echelon-ssh() {
+      _smart_connect echelon --ssh "$@"
     }
     
     cloudbank() {
-      _smart_ssh cloudbank "$@"
+      _smart_connect cloudbank "$@"
     }
     
     # Universal 'ssh-to' command
     ssh-to() {
       if [ $# -lt 1 ]; then
-        echo "Usage: ssh-to <hostname> [ssh-args]"
+        echo "Usage: ssh-to <hostname> [args]"
         echo "Available hosts: ''${(k)HOST_IPS[@]}"
+        echo "Note: Uses ET by default, add --ssh for regular SSH"
         return 1
       fi
-      _smart_ssh "$@"
+      _smart_connect "$@"
     }
     
     # List all configured hosts
@@ -166,6 +210,16 @@
       
       echo
       echo "Legend: 🏠 local | 🔒 tailscale | 🌐 local network | ❌ unreachable"
+      echo
+      echo "Connection types:"
+      echo "  host         - ET with SSH fallback"
+      echo "  host-ssh     - Force SSH"
     }
+    
+    # Convenient aliases
+    alias uv="ultraviolet"
+    alias uv-ssh="ultraviolet-ssh"
+    alias bd="bluedesert"
+    alias bd-ssh="bluedesert-ssh"
   '';
 }
