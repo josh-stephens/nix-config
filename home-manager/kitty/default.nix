@@ -53,8 +53,8 @@
       "tab_bar_margin_width" = "0.0";
       "tab_bar_style" = "powerline";
       "tab_separator" = " ┇";
-      "allow_remote_control" = "socket-only";
-      "listen_on" = "unix:/tmp/kitty-${config.home.username}";
+      "allow_remote_control" = true;
+      "listen_on" = "unix:/tmp/kitty";
       "shell_integration" = "enabled";
       "clipboard_control" = "write-clipboard write-primary read-clipboard read-primary";
       "term" = "xterm-kitty";

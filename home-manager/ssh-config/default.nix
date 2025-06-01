@@ -8,7 +8,7 @@
     
     extraConfig = ''
       # Enable Kitty terminal integration
-      SetEnv TERM=xterm-256color KITTY_REMOTE=1
+      SetEnv TERM=xterm-256color
       
       # Performance optimizations
       Compression yes
@@ -29,11 +29,6 @@
         user = "joshsymonds";
         forwardX11 = true;
         forwardX11Trusted = true;
-        # Forward Kitty socket for clipboard integration
-        remoteForwards = [{
-          bind.address = "/tmp/kitty-joshsymonds";
-          host.address = "/tmp/kitty-joshsymonds";
-        }];
       };
       
       "bluedesert" = {
@@ -41,10 +36,6 @@
         user = "joshsymonds";
         forwardX11 = true;
         forwardX11Trusted = true;
-        remoteForwards = [{
-          bind.address = "/tmp/kitty-joshsymonds";
-          host.address = "/tmp/kitty-joshsymonds";
-        }];
       };
       
       "echelon" = {
@@ -52,10 +43,6 @@
         user = "joshsymonds";
         forwardX11 = true;
         forwardX11Trusted = true;
-        remoteForwards = [{
-          bind.address = "/tmp/kitty-joshsymonds";
-          host.address = "/tmp/kitty-joshsymonds";
-        }];
       };
     };
   };
