@@ -12,6 +12,7 @@
       file
       unzip
       dmidecode
+      gcc  # C compiler for Neovim plugins (TreeSitter, etc.)
     ];
   };
 

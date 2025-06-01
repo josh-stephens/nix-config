@@ -543,6 +543,10 @@ in {
         set -g visual-activity off
         setw -g monitor-activity on
         
+        # 📋 Clipboard integration
+        set -g set-clipboard on
+        set -g copy-command 'kitty +kitten clipboard'
+        
         # 🎨 Status Bar Styling
         set -g status-style "fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_base}"
         set -g status-left-length 50

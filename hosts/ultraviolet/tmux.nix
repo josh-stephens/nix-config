@@ -20,6 +20,15 @@
     };
   };
   
+  # 🔄 Ensure planet-init runs after system rebuilds
+  system.activationScripts.planet-init = {
+    text = ''
+      # Run planet-init after system activation
+      ${pkgs.systemd}/bin/systemctl restart planet-init.service || true
+    '';
+    deps = [];
+  };
+  
   # 📁 Create planet directories
   systemd.tmpfiles.rules = [
     "d /home/joshsymonds/planets 0755 joshsymonds users -"

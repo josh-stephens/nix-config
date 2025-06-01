@@ -5,26 +5,8 @@
   programs.zsh.initContent = ''
     # 🌌 Planet Development Environment Client Functions
     
-    # Helper function to check if we're on Tailscale network
-    _check_tailscale() {
-      if ! command -v tailscale &> /dev/null; then
-        echo "❌ Tailscale not found. Please install Tailscale."
-        return 1
-      fi
-      
-      if ! tailscale status &> /dev/null; then
-        echo "❌ Tailscale is not running. Please start Tailscale."
-        return 1
-      fi
-      
-      if ! tailscale status | grep -q "ultraviolet"; then
-        echo "❌ Cannot find ultraviolet on Tailscale network."
-        echo "💡 Make sure ultraviolet is online and connected to Tailscale."
-        return 1
-      fi
-      
-      return 0
-    }
+    # Note: This module depends on ssh-hosts module for _smart_ssh function
+    # The ultraviolet() function is defined there
     
     # 🪐 Connect to a planet
     _planet_connect() {
@@ -32,14 +14,9 @@
       shift
       local extra_args="$@"
       
-      if ! _check_tailscale; then
-        return 1
-      fi
-      
-      echo "🚀 Connecting to planet $planet..."
-      
-      # Use SSH with tmux attach/new logic
-      ssh -t ultraviolet "tmux attach-session -t planet-$planet || (echo '❌ Planet $planet not initialized. Run planet-init on ultraviolet first.' && exit 1)" $extra_args
+      # Use the smart SSH function to connect, then run tmux command
+      echo "🪐 Connecting to planet $planet..."
+      _smart_ssh ultraviolet -t "tmux attach-session -t planet-$planet || (echo '❌ Planet $planet not initialized. Run planet-init on ultraviolet first.' && exit 1)" $extra_args
     }
     
     # 🔧 Setup a planet with a project
@@ -47,16 +24,12 @@
       local planet="$1"
       local project="$2"
       
-      if ! _check_tailscale; then
-        return 1
-      fi
-      
       if [ -z "$project" ]; then
         echo "📊 Checking $planet setup..."
-        ssh ultraviolet "planet-setup $planet"
+        _smart_ssh ultraviolet "planet-setup $planet"
       else
         echo "🔧 Setting up $planet with project: $project"
-        ssh ultraviolet "planet-setup $planet '$project'"
+        _smart_ssh ultraviolet "planet-setup $planet '$project'"
       fi
     }
     
@@ -83,12 +56,8 @@
     
     # 📊 Status command
     planet-status() {
-      if ! _check_tailscale; then
-        return 1
-      fi
-      
       echo "🌌 Fetching planet status from ultraviolet..."
-      ssh ultraviolet planet-status
+      _smart_ssh ultraviolet planet-status
     }
     
     # 🔧 Setup commands from Mac
@@ -105,10 +74,6 @@
     
     # 🔄 AWS credential sync
     planet-sync-aws() {
-      if ! _check_tailscale; then
-        return 1
-      fi
-      
       echo "🔐 Syncing AWS credentials to ultraviolet..."
       
       # Check if AWS config exists
@@ -117,8 +82,25 @@
         return 1
       fi
       
+      # Get the target host using smart SSH logic
+      local target_host
+      if command -v tailscale &> /dev/null && tailscale status 2>/dev/null | grep -q "ultraviolet"; then
+        if ping -c 1 -W 1 "ultraviolet" &> /dev/null; then
+          target_host="ultraviolet"
+        fi
+      fi
+      
+      if [ -z "$target_host" ] && ping -c 1 -W 1 "172.31.0.200" &> /dev/null; then
+        target_host="172.31.0.200"
+      fi
+      
+      if [ -z "$target_host" ]; then
+        echo "❌ Cannot reach ultraviolet"
+        return 1
+      fi
+      
       # Sync config files
-      echo "📤 Uploading AWS config..."
+      echo "📤 Uploading AWS config to $target_host..."
       rsync -av --delete \
         --include="config" \
         --include="credentials" \
@@ -126,7 +108,7 @@
         --include="sso/cache/" \
         --include="sso/cache/*.json" \
         --exclude="*" \
-        "$HOME/.aws/" ultraviolet:.aws/
+        "$HOME/.aws/" "$target_host:.aws/"
       
       if [ $? -eq 0 ]; then
         echo "✅ AWS credentials synced successfully!"
@@ -134,7 +116,7 @@
         # Optionally sync to specific planet
         if [ -n "$1" ]; then
           echo "🪐 Syncing to planet $1..."
-          ssh ultraviolet "cp -r ~/.aws ~/planets/$1/.aws"
+          _smart_ssh ultraviolet "cp -r ~/.aws ~/planets/$1/.aws"
         fi
       else
         echo "❌ Failed to sync AWS credentials"

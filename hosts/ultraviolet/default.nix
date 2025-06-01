@@ -166,6 +166,9 @@ in
     settings = {
       PermitRootLogin = "no";
       PasswordAuthentication = false;
+      # Enable clipboard forwarding for Kitty
+      X11Forwarding = true;
+      StreamLocalBindUnlink = true;
     };
   };
   programs.ssh.startAgent = true;
@@ -174,6 +177,7 @@ in
     enable = true;
     package = pkgs.tailscale;
     useRoutingFeatures = "server";
+    openFirewall = true;  # Open firewall for Tailscale
   };
 
   programs.zsh.enable = true;

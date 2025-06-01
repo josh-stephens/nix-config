@@ -3,6 +3,7 @@
     ./common.nix
     ./aerospace
     ./planet-client
+    ./ssh-hosts
   ];
 
   home.homeDirectory = "/Users/joshsymonds";
