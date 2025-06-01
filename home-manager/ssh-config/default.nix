@@ -10,12 +10,8 @@
       # Enable Kitty terminal integration
       SetEnv TERM=xterm-256color
       
-      # Forward Kitty's remote control socket
-      RemoteForward /tmp/kitty /tmp/kitty
-      
       # Performance optimizations
       Compression yes
-      CompressionLevel 6
       TCPKeepAlive yes
       
       # Use faster ciphers for better responsiveness
@@ -33,6 +29,11 @@
         user = "joshsymonds";
         forwardX11 = true;
         forwardX11Trusted = true;
+        # Forward Kitty socket for clipboard integration
+        remoteForwards = [{
+          bind.address = "/tmp/kitty";
+          host.address = "/tmp/kitty";
+        }];
       };
       
       "bluedesert" = {
@@ -40,6 +41,10 @@
         user = "joshsymonds";
         forwardX11 = true;
         forwardX11Trusted = true;
+        remoteForwards = [{
+          bind.address = "/tmp/kitty";
+          host.address = "/tmp/kitty";
+        }];
       };
       
       "echelon" = {
@@ -47,6 +52,10 @@
         user = "joshsymonds";
         forwardX11 = true;
         forwardX11Trusted = true;
+        remoteForwards = [{
+          bind.address = "/tmp/kitty";
+          host.address = "/tmp/kitty";
+        }];
       };
     };
   };
