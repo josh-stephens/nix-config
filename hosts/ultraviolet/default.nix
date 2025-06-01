@@ -172,7 +172,7 @@ in
     settings = {
       PermitRootLogin = "no";
       PasswordAuthentication = false;
-      # Enable clipboard forwarding for Kitty
+      # Enable X11 forwarding for GUI applications
       X11Forwarding = true;
       StreamLocalBindUnlink = true;
     };

@@ -8,6 +8,9 @@ opt.wrap = true
 
 -- Load clipboard configuration
 require("config.clipboard")
+
+-- Load remote paste override for SSH sessions
+require("config.remote-paste")
 -- opt.textwidth = 0
 -- opt.scrolloff = 4
 -- opt.wildmode = "longest:full,full"

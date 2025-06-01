@@ -12,6 +12,8 @@
       # Keep default macOS clipboard behavior
       "cmd+c" = "copy_to_clipboard";
       "cmd+v" = "paste_from_clipboard";
+      # Also map Ctrl+V for consistency in terminal apps
+      "ctrl+v" = "paste_from_clipboard";
       # Also allow kitty modifier versions
       "kitty_mod+c" = "copy_to_clipboard";
       "kitty_mod+v" = "paste_from_clipboard";

@@ -543,14 +543,9 @@ in {
         set -g visual-activity off
         setw -g monitor-activity on
         
-        # 📋 Clipboard integration
-        set -g set-clipboard on
-        # Allow OSC52 clipboard sequences to pass through
+        # 📋 Terminal integration
+        # Allow OSC52 sequences to pass through for clipboard operations
         set -g allow-passthrough on
-        set -g copy-command 'kitty +kitten clipboard'
-        
-        # Set DISPLAY for X11 clipboard tools
-        setenv -g DISPLAY :0
         
         # 🎨 Status Bar Styling
         set -g status-style "fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_base}"

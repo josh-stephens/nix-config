@@ -1,20 +1,20 @@
 -- Clipboard configuration for remote/local compatibility
 
--- Enable OSC52 support for SSH/ET sessions FIRST
--- Both regular SSH and Eternal Terminal support OSC52
+-- For SSH sessions, use OSC52 for copying to local clipboard
 if vim.env.SSH_TTY and vim.fn.has('nvim-0.10') == 1 then
   vim.g.clipboard = {
-    name = 'OSC 52',
+    name = 'OSC52',
     copy = {
       ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
       ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
     },
     paste = {
-      ['+'] = require('vim.ui.clipboard.osc52').paste('+'),
-      ['*'] = require('vim.ui.clipboard.osc52').paste('*'),
+      -- Paste is handled by remote-paste.lua with terminal integration
+      ['+'] = function() return {vim.fn.getreg('"'), vim.fn.getregtype('"')} end,
+      ['*'] = function() return {vim.fn.getreg('"'), vim.fn.getregtype('"')} end,
     },
   }
 end
 
--- Always use system clipboard (must come AFTER setting vim.g.clipboard)
+-- Always use system clipboard
 vim.opt.clipboard = "unnamedplus"
