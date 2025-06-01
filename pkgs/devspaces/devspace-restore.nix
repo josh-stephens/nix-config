@@ -54,9 +54,22 @@ writeScriptBin "devspace-restore" ''
     if [ -f "$STATE_DIR/sessions.txt" ]; then
       echo "📂 Found saved session state, attempting to restore..."
       
-      while IFS='|' read -r session_name window_count initialized project_path; do
-        if [[ "$session_name" =~ ^devspace-(.+)$ ]]; then
-          devspace="''${BASH_REMATCH[1]}"
+      # Debug: show file contents
+      echo "📄 State file contents:"
+      cat "$STATE_DIR/sessions.txt" || echo "  (empty or unreadable)"
+      
+      # Check if file is empty
+      if [ ! -s "$STATE_DIR/sessions.txt" ]; then
+        echo "⚠️  State file is empty, creating fresh sessions..."
+        for i in "''${!DEVSPACES[@]}"; do
+          devspace="''${DEVSPACES[$i]}"
+          echo "🪐 Creating devspace '$devspace'..."
+          ${devspace-init-single}/bin/devspace-init-single "$devspace"
+        done
+      else
+        while IFS='|' read -r session_name window_count initialized project_path; do
+          if [[ "$session_name" =~ ^devspace-(.+)$ ]]; then
+            devspace="''${BASH_REMATCH[1]}"
           
           # Validate it's a known devspace
           if [[ " ''${DEVSPACES[@]} " =~ " $devspace " ]]; then
@@ -78,6 +91,7 @@ writeScriptBin "devspace-restore" ''
           fi
         fi
       done < "$STATE_DIR/sessions.txt"
+      fi
       
       echo "✅ Session restoration complete"
     else
