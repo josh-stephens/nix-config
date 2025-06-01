@@ -122,13 +122,26 @@
       # Try ET first, fall back to SSH if it fails
       if [ $use_ssh -eq 0 ]; then
         if command -v et &> /dev/null; then
-          et "$target_host:2022" ''${extra_args[@]} 2>/dev/null && return 0
+          # If there are extra args, assume they're a command to run
+          if [ ''${#extra_args[@]} -gt 0 ]; then
+            # Run command via ET
+            et -c "''${extra_args[*]}" "$target_host:2022" 2>/dev/null && return 0
+          else
+            # Just connect
+            et "$target_host:2022" 2>/dev/null && return 0
+          fi
           echo "⚠️  ET connection failed, falling back to SSH..."
         fi
       fi
       
       # Use SSH (with kitten for clipboard integration)
-      kitten ssh "$target_host" ''${extra_args[@]}
+      if [ ''${#extra_args[@]} -gt 0 ]; then
+        # Run command via SSH
+        kitten ssh "$target_host" "''${extra_args[*]}"
+      else
+        # Just connect
+        kitten ssh "$target_host"
+      fi
     }
     
     # Create command for each host (ET by default, SSH with --ssh flag)

@@ -8,9 +8,10 @@ let
     #!${bash}/bin/bash
     # ${space.icon} ${space.name} - ${space.description}
     
-    # If no arguments and we're in an SSH session (likely from mobile), 
+    # If no arguments and we're in a remote session (SSH or ET), 
     # connect to the tmux session instead of showing setup
-    if [ $# -eq 0 ] && [ -n "$SSH_TTY" ] && [ -z "$TMUX" ]; then
+    # Check for SSH_TTY (SSH) or SSH_CONNECTION (ET) or ET_VERSION (ET)
+    if [ $# -eq 0 ] && [ -z "$TMUX" ] && { [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ] || [ -n "$ET_VERSION" ]; }; then
       # Check if the tmux session exists
       if tmux has-session -t devspace-${space.name} 2>/dev/null; then
         exec tmux attach-session -t devspace-${space.name}
