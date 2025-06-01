@@ -7,7 +7,10 @@ let
   devspaceSetup = pkgs.callPackage ./devspace-setup-enhanced.nix { };
   devspaceStatus = pkgs.callPackage ./devspace-status.nix { };
   devspaceWorktree = pkgs.callPackage ./devspace-worktree.nix { };
-  devspaceRestore = pkgs.callPackage ./devspace-restore.nix { };
+  devspaceRestore = pkgs.callPackage ./devspace-restore.nix { 
+    devspace-init-single = devspaceInitSingle;
+    devspace-setup = devspaceSetup;
+  };
   devspaceSaveState = pkgs.callPackage ./devspace-save-state.nix { };
   devspaceSaveHook = pkgs.callPackage ./devspace-save-hook.nix { };
   

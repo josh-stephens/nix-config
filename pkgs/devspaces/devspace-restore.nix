@@ -1,4 +1,4 @@
-{ lib, writeScriptBin, bash, tmux, coreutils }:
+{ lib, writeScriptBin, bash, tmux, coreutils, devspace-init-single, devspace-setup }:
 
 let
   theme = import ./theme.nix;
@@ -40,8 +40,8 @@ writeScriptBin "devspace-restore" ''
         echo "✅ Devspace '$devspace' session already exists"
       else
         echo "🔄 Recreating missing devspace '$devspace'..."
-        # Use devspace-init to create it
-        devspace-init-single "$devspace"
+        # Use devspace-init-single to create it
+        ${devspace-init-single}/bin/devspace-init-single "$devspace"
       fi
     done
   else
@@ -64,13 +64,13 @@ writeScriptBin "devspace-restore" ''
               echo "  📁 Restoring with project: $project_path"
               
               # First create minimal session
-              devspace-init-single "$devspace"
+              ${devspace-init-single}/bin/devspace-init-single "$devspace"
               
               # Then set up the project (which will expand it)
-              devspace-setup "$devspace" "$project_path" >/dev/null 2>&1 || echo "  ⚠️  Could not restore project link"
+              ${devspace-setup}/bin/devspace-setup "$devspace" "$project_path" >/dev/null 2>&1 || echo "  ⚠️  Could not restore project link"
             else
               # Just create minimal session
-              devspace-init-single "$devspace"
+              ${devspace-init-single}/bin/devspace-init-single "$devspace"
             fi
           fi
         fi
@@ -83,14 +83,20 @@ writeScriptBin "devspace-restore" ''
       for i in "''${!DEVSPACES[@]}"; do
         devspace="''${DEVSPACES[$i]}"
         echo "🪐 Creating devspace '$devspace'..."
-        devspace-init-single "$devspace"
+        ${devspace-init-single}/bin/devspace-init-single "$devspace"
       done
     fi
   fi
   
   # Save current state for next time
   echo "💾 Saving current session state..."
-  ${tmux}/bin/tmux list-sessions -F '#S' 2>/dev/null | while read -r session; do
+  
+  # Clear any existing temp file
+  rm -f "$STATE_DIR/sessions.txt.tmp"
+  
+  # Save each session (if any exist)
+  if ${tmux}/bin/tmux list-sessions -F '#S' 2>/dev/null; then
+    ${tmux}/bin/tmux list-sessions -F '#S' 2>/dev/null | while read -r session; do
     if [[ "$session" =~ ^devspace-(.+)$ ]]; then
       devspace="''${BASH_REMATCH[1]}"
       
@@ -109,11 +115,15 @@ writeScriptBin "devspace-restore" ''
       # Save state
       echo "$session|$window_count|$initialized|$project_path" >> "$STATE_DIR/sessions.txt.tmp"
     fi
-  done
+    done
+  fi
   
   # Atomic update
   if [ -f "$STATE_DIR/sessions.txt.tmp" ]; then
     mv "$STATE_DIR/sessions.txt.tmp" "$STATE_DIR/sessions.txt"
+  else
+    # No sessions to save, create empty state file
+    touch "$STATE_DIR/sessions.txt"
   fi
   
   echo "✨ Devspace session management complete!"
