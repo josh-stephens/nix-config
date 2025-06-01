@@ -2,6 +2,7 @@
   imports = [
     ./common.nix
     ./aerospace
+    ./planet-client
   ];
 
   home.homeDirectory = "/Users/joshsymonds";

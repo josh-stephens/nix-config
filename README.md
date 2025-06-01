@@ -17,6 +17,8 @@ This configuration manages:
 - **Custom Packages**: Currently includes a customized Caddy web server
 - **Development Environment**: Neovim, Git, Starship prompt, and modern CLI tools
 - **Simplified Architecture**: Streamlined flake structure with minimal abstraction
+- **Planet Development Environment**: Persistent tmux-based remote development sessions
+- **Remote Link Opening**: Seamless browser integration for SSH sessions
 
 ## Quick Start
 
@@ -95,6 +97,61 @@ To add a new package:
 1. Create package in `pkgs/<name>/default.nix`
 2. Add to `pkgs/default.nix`
 3. Add to overlay in `overlays/default.nix` if needed globally
+
+## Planet Development Environment
+
+The Planet system provides persistent tmux-based development environments on remote servers, each with its own project context and color theme.
+
+### Available Planets
+- **Mercury** (flamingo) - Quick experiments
+- **Venus** (pink) - Personal creative projects
+- **Earth** (green) - Primary work
+- **Mars** (red) - Secondary work
+- **Jupiter** (peach) - Large personal project
+
+### Usage from macOS
+
+```bash
+# Connect to a planet
+earth              # Connect to primary work environment
+mars               # Connect to secondary work environment
+
+# Manage planets
+planet-status      # Show all planets and their linked projects (alias: ps)
+planet-setup earth ~/projects/work/main-app  # Link a planet to a project
+planet-sync-aws    # Sync AWS credentials from Mac to server (alias: psa)
+```
+
+### Server-side Commands
+
+```bash
+# Within tmux sessions
+Ctrl-b c          # Switch to Claude window
+Ctrl-b n          # Switch to Neovim window
+Ctrl-b t          # Switch to Terminal window
+Ctrl-b l          # Switch to Logs window
+
+# Quick session switching
+Ctrl-b E          # Switch to Earth
+Ctrl-b M          # Switch to Mars
+# ... etc
+```
+
+## Remote Link Opening
+
+When SSH'd into a server, links can be opened on your local Mac browser automatically. This is especially useful for AWS SSO authentication.
+
+### How it Works
+1. The server sets `BROWSER=remote-link-open`
+2. When applications try to open URLs, they display as clickable links in Kitty
+3. Click the link in your terminal to open it in your Mac browser
+
+### Example
+```bash
+# On the server
+aws sso login     # Will display a clickable authentication URL
+remote-link-open https://example.com  # Manually open a URL
+```
 
 ## Testing Changes
 

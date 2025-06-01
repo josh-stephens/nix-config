@@ -157,6 +157,84 @@ Each planet should support:
 - **No forgotten work**: Every planet should be discoverable
 - **No lost state**: Reboots shouldn't lose work
 
+## Implementation Details
+
+### 1. Notification System (nfty.sh)
+- **Approach**: Wrapper script around Claude Code that monitors output and terminal bells
+- **Triggers**:
+  - Terminal bell character (^G) from Claude Code
+  - Claude prints "Task completed" or similar completion messages
+  - Claude asks questions (detected by "?" at end of output)
+  - Claude encounters errors requiring user intervention
+  - Inactivity for extended period after user request
+- **Implementation**: 
+  - Shell script monitoring Claude's stdout/stderr and bell characters
+  - Forward all output while intercepting bells
+  - Send to nfty.sh topic `CUFVGE2uFcTRl7Br` with planet name in title
+  - Include brief context in notification body
+
+### 2. Starship Integration
+Building on existing Catppuccin Mocha theme:
+- **Planet Indicator**: Add custom module showing current planet with colored dot and name
+  - `● mercury` (all in flamingo #f2cdcd) - Quick experiments
+  - `● venus` (all in pink #f5c2e7) - Personal creative projects
+  - `● earth` (all in green #a6e3a1) - Primary work
+  - `● mars` (all in red #f38ba8) - Secondary work  
+  - `● jupiter` (all in peach #fab387) - Large personal project
+- **Position**: After hostname, before git info
+- **Format**: `[ ● $planet_name ]($planet_style)` where style sets foreground color
+- **Detection**: Based on TMUX_PLANET environment variable
+
+### 3. AWS SSO Credential Management
+- **Primary Method**: Automated sync via dedicated command
+- **Implementation**:
+  - `planet-sync-aws` command on Mac that:
+    - Copies `~/.aws/config` and `~/.aws/sso/cache/*` to ultraviolet
+    - Uses rsync over Tailscale SSH
+    - Optionally accepts planet name to sync to specific session
+  - Cron job on ultraviolet to distribute to all planet sessions
+- **Fallback**: Manual `aws sso login` in each planet if needed
+
+### 4. Workspace Structure
+```
+~/planets/
+├── mercury/     # Ephemeral experiments
+├── venus/       # Personal creative projects
+├── earth/       # Primary work
+├── mars/        # Secondary work
+└── jupiter/     # Large personal project
+
+~/projects/      # Actual project repositories
+├── work/
+│   ├── main-app/
+│   └── secondary-app/
+└── personal/
+    ├── website/
+    └── big-project/
+```
+- Planets contain symlinks to actual projects
+- Each planet has `.planet-config` with project mappings
+- **Commands**:
+  - `<planet> .` - Set planet to current directory
+  - `<planet> /path/to/project` - Set planet to specific project
+  - `<planet>` - Connect to planet with existing workspace
+  - Confirmation prompt when replacing existing project
+
+### 5. Mac Client Commands
+Shell functions in zsh config:
+- `mercury`, `venus`, `earth`, `mars`, `jupiter` - Connect to planet
+- Each runs: `ssh -t ultraviolet 'tmux attach -t planet-<name> || tmux new -s planet-<name>'`
+- Optional: `planet <name>` as generic accessor
+- `planet-status` - Show all planets and current projects (via SSH)
+
+### 6. Session Layout
+Default tmux layout for each planet:
+- **Window 1: Claude** - Claude Code instance
+- **Window 2: Editor** - Neovim
+- **Window 3: Terminal** - General commands
+- **Window 4: Logs** - System logs, Claude output history
+- Auto-created on first connection if missing
+
 ## Migration Path
 
 Starting from current state (multiple Kitty tabs with local Claude Code):

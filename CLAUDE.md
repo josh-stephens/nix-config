@@ -29,6 +29,14 @@ This is a flake-based Nix configuration managing multiple systems:
 
 ## Testing and Validation
 
+### Important: Git and Nix Flakes
+**CRITICAL**: Nix flakes only see files that are tracked by git. Before running `nix flake check` or any nix build commands, you MUST:
+1. Add all new files to git: `git add <files>`
+2. Stage any modifications: `git add -u`
+3. Only then run `nix flake check`
+
+This is a common Nix gotcha - untracked files are invisible to flake evaluation!
+
 ### Safe Testing Methods
 1. **Validate flake structure** (non-destructive):
    ```bash
