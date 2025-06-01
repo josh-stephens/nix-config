@@ -6,7 +6,8 @@
     # Import custom packages from the 'pkgs' directory
     inherit (import ../pkgs { pkgs = final; })
       myCaddy
-      devspaces;
+      devspaces
+      starlark-lsp;
     
     # Package modifications
     waybar = prev.waybar.overrideAttrs (oldAttrs: {

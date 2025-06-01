@@ -37,6 +37,7 @@
       socat
       wireguard-tools
       k9s
+      starlark-lsp
     ];
   };
 
