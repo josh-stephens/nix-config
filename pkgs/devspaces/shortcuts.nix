@@ -1,4 +1,4 @@
-{ lib, writeScriptBin, bash, symlinkJoin }:
+{ lib, writeScriptBin, bash, symlinkJoin, devspace-context, devspace-setup, devspace-worktree }:
 
 let
   theme = import ./theme.nix;
@@ -13,19 +13,19 @@ let
       # Setup/link operations
       setup|link)
         shift
-        exec devspace-setup ${space.name} "$@"
+        exec ${devspace-setup}/bin/devspace-setup ${space.name} "$@"
         ;;
       
       # Status operation
       status|info)
         echo "${space.icon} ${space.name} status:"
-        devspace-setup ${space.name}
+        ${devspace-setup}/bin/devspace-setup ${space.name}
         ;;
       
       # Worktree operations
       worktree|wt)
         shift
-        exec devspace-worktree "$@" ${space.name}
+        exec ${devspace-worktree}/bin/devspace-worktree "$@" ${space.name}
         ;;
       
       # Connect operation (explicit)
@@ -58,7 +58,7 @@ let
       *)
         # If first arg looks like a path, treat as setup
         if [ -d "$1" ] || [ "$1" = "." ] || [[ "$1" == /* ]] || [[ "$1" == ~/* ]]; then
-          exec devspace-setup ${space.name} "$@"
+          exec ${devspace-setup}/bin/devspace-setup ${space.name} "$@"
         else
           # Show help
           echo "Usage: ${space.name} [command] [options]"
