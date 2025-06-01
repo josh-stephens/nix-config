@@ -75,6 +75,10 @@
       "detect_urls" = "yes";
       "url_prefixes" = "file ftp ftps gemini git gopher http https irc ircs kitty mailto news sftp ssh";
       "url_style" = "curly";
+      
+      # Remote control settings (secure)
+      "allow_remote_control" = "socket-only";
+      "listen_on" = "unix:/tmp/kitty-${config.home.username}";
     };
   };
 }
