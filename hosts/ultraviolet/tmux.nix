@@ -33,7 +33,6 @@
     environment = {
       HOME = "/home/joshsymonds";
       USER = "joshsymonds";
-      PATH = "${pkgs.tmux}/bin:${pkgs.coreutils}/bin:${pkgs.bash}/bin";
     };
   };
   

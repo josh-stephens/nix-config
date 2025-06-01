@@ -83,165 +83,245 @@ Each devspace should support:
 - No need to manage session names or remember configurations
 - Quick access to the right environment for the current task
 
-## Ideal End State
-
-### Morning Workflow
-1. Open laptop, press Cmd+3
-2. Immediately see Earth session with Claude Code where I left it
-3. Claude has been working overnight on assigned tasks
-4. Review output, provide guidance, switch to another devspace
-5. Open neovim in the same project with another shortcut
-6. See where I am inside NeoVim itself
-
-### Context Switching
-- Press Cmd+1 to check Mercury experiment
-- Press Cmd+4 to review Mars work project
-- Each environment maintains its state perfectly
-- No mental overhead remembering what's where
-
-### Mobile Check-in
-- Open Blink on phone while commuting
-- Type "earth" to see main project progress
-- Scroll through Claude's output
-- Disconnect without disrupting anything
-
-### Credential Management
-- Run AWS SSO login on Mac
-- Single command syncs to all devspaces
-- All Claude instances have fresh credentials
-- No manual credential management per session
-
-### Mobile push
-- At lunch, eating happily
-- Claude needs my approval for a task and activates a terminal bell
-- I get a push notification on my phone, informing me which devspace is summoning me
-- I open Blink, type "mars"
-- Respond to Claude, and lock my phone
-
-## Technical Considerations
-
-### Why tmux?
-- Provides persistent sessions that survive disconnection
-- Mature, stable tool with wide support
-- Built-in window management and organization
-- Excellent terminal compatibility
-- Native copy/paste buffer management
-
-### Why Planetary Theme for Devspaces?
-- Fixed set prevents proliferation of unnamed sessions
-- Natural ordering (distance from sun = experiment to production)
-- Memorable without being unprofessional
-- Short to type
-- Fun enough to stick with
-
-### Integration Points
-- Should work with existing home-manager configuration
-- Must integrate with Tailscale networking
-- Should complement (not replace) local development
-- Must handle both NixOS and Darwin environments
-
-## Success Criteria
-
-1. **Zero friction**: Connecting to a devspace should be as easy as opening a new terminal
-2. **Perfect persistence**: Work continues exactly where you left it
-3. **Clear organization**: Always know which devspace has which project
-4. **Credential simplicity**: One sync command handles all auth needs
-5. **Mobile friendly**: Can meaningfully check progress from phone
-6. **Crash resilient**: System recovers gracefully from any failure
-
-## Anti-Requirements
-
-- **No complex session management**: Don't make users think about session names
-- **No manual tmux configuration**: Should just work out of the box
-- **No credential complexity**: Don't require per-session auth setup
-- **No forgotten work**: Every devspace should be discoverable
-- **No lost state**: Reboots shouldn't lose work
-
 ## Implementation Details
 
-### 1. Notification System (nfty.sh)
-- **Approach**: Wrapper script around Claude Code that monitors output and terminal bells
-- **Triggers**:
-  - Terminal bell character (^G) from Claude Code
-  - Claude prints "Task completed" or similar completion messages
-  - Claude asks questions (detected by "?" at end of output)
-  - Claude encounters errors requiring user intervention
-  - Inactivity for extended period after user request
-- **Implementation**: 
-  - Shell script monitoring Claude's stdout/stderr and bell characters
-  - Forward all output while intercepting bells
-  - Send to nfty.sh topic `CUFVGE2uFcTRl7Br` with devspace name in title
-  - Include brief context in notification body
+### Core Architecture
 
-### 2. Starship Integration
-Building on existing Catppuccin Mocha theme:
-- **Devspace Indicator**: Add custom module showing current devspace with colored dot and name
-  - `● mercury` (all in flamingo #f2cdcd) - Quick experiments
-  - `● venus` (all in pink #f5c2e7) - Personal creative projects
-  - `● earth` (all in green #a6e3a1) - Primary work
-  - `● mars` (all in red #f38ba8) - Secondary work  
-  - `● jupiter` (all in peach #fab387) - Large personal project
-- **Position**: After hostname, before git info
-- **Format**: `[ ● $planet_name ]($planet_style)` where style sets foreground color
-- **Detection**: Based on TMUX_DEVSPACE environment variable
+The devspace system is implemented as a Nix package with the following components:
 
-### 3. AWS SSO Credential Management
-- **Primary Method**: Automated sync via dedicated command
-- **Implementation**:
-  - `devspace-sync-aws` command on Mac that:
-    - Copies `~/.aws/config` and `~/.aws/sso/cache/*` to ultraviolet
-    - Uses rsync over Tailscale SSH
-    - Optionally accepts devspace name to sync to specific session
-  - Cron job on ultraviolet to distribute to all devspace sessions
-- **Fallback**: Manual `aws sso login` in each devspace if needed
+```
+pkgs/devspaces/
+├── theme.nix                    # Central theme definition
+├── devspace-restore.nix         # Main restoration/initialization service
+├── devspace-init-single.nix     # Creates individual minimal sessions
+├── devspace-setup-enhanced.nix  # Links projects and expands sessions
+├── devspace-save-state.nix      # Persists session state
+├── devspace-save-hook.nix       # Background state saver
+├── devspace-context.nix         # Detects current devspace
+├── devspace-worktree.nix        # Git worktree management
+├── devspace-status.nix          # Shows all devspace status
+└── shortcuts.nix                # Creates earth, mars, etc. commands
+```
 
-### 4. Workspace Structure
+### 1. Session Lifecycle
+
+#### Boot/Rebuild Process
+1. **systemd service** `devspace-restore` runs on boot/rebuild
+2. Checks for existing tmux sessions
+3. If none exist, reads state from `~/.local/state/tmux-devspaces/sessions.txt`
+4. Creates minimal placeholder sessions for each devspace
+5. Restores project links if directories still exist
+
+#### Minimal vs Full Sessions
+- **Minimal**: Single "setup" window with welcome message and instructions
+- **Full**: Four windows (claude, nvim, term, logs) with project directory set
+- Transition happens automatically when project is linked
+
+#### State Persistence
+State is saved automatically when:
+- Project is linked/changed (via save hook)
+- Windows are created/destroyed (tmux hooks)
+- Client detaches (tmux hook)
+- Every 30 minutes (systemd timer)
+- System shutdown/rebuild (systemd service)
+
+### 2. Command Structure
+
+All devspace commands follow a consistent pattern:
+
+```bash
+<devspace> [command] [args]
+```
+
+Examples:
+- `earth` - Connect to devspace (creates if needed)
+- `earth ~/Work/project` - Link project and connect
+- `earth status` - Show configuration
+- `earth worktree create feature` - Create git worktree
+
+### 3. Connection Flow
+
+#### From Mac (Client)
+1. User runs `earth`
+2. ET (Eternal Terminal) connects to server
+3. Command checks if tmux session exists
+4. If not, runs `devspace-restore` to create it
+5. Attaches to tmux session
+
+#### On Server (Direct)
+1. Same commands available directly
+2. Auto-restore happens if session missing
+3. Full environment available immediately
+
+### 4. Git Worktree Management
+
+Automatic isolation when multiple devspaces use same repo:
+
+```bash
+# First devspace
+earth ~/Work/main-app     # Links directly
+
+# Second devspace  
+mars ~/Work/main-app      # Creates worktree at:
+                         # ~/devspaces/mars/worktrees/devspace-mars-20241201-143022
+```
+
+Worktrees are cleaned up when:
+- Branch is merged into main
+- Devspace is linked to different project
+- User runs `earth worktree clean`
+
+### 5. Theme Integration
+
+Central theme file defines all devspaces:
+
+```nix
+# pkgs/devspaces/theme.nix
+{
+  spaces = [
+    {
+      name = "mercury";
+      icon = "🚀";
+      color = "flamingo";  # Catppuccin color
+      description = "Quick experiments and prototypes";
+      hotkey = "m";        # Meta-M to switch
+      connectMessage = "🚀 Launching into Mercury orbit...";
+    }
+    # ... other spaces
+  ];
+}
+```
+
+### 6. Tmux Configuration
+
+#### Key Bindings (in devspace sessions)
+- `Ctrl-b c` - Jump to Claude window
+- `Ctrl-b n` - Jump to Neovim window  
+- `Ctrl-b t` - Jump to Terminal window
+- `Ctrl-b l` - Jump to Logs window
+- `Meta-<first-letter>` - Switch between devspace sessions
+
+#### Visual Theming
+- Status bar colored by devspace theme color
+- Pane borders match devspace color
+- Window names clearly labeled
+
+### 7. Notification System
+
+Claude wrapper script monitors for:
+- Terminal bells (^G)
+- Question patterns (ending with "?")
+- Completion patterns ("done", "finished", etc.)
+- Error patterns
+- Extended idle time
+
+Notifications sent via nfty.sh with devspace context.
+
+### 8. AWS Credential Sync
+
+From Mac:
+```bash
+devspace-sync-aws              # Syncs to ~/.aws on server
+devspace-sync-aws earth        # Also copies to ~/devspaces/earth/.aws
+```
+
+Uses rsync over SSH/Tailscale for secure transfer.
+
+### 9. Mobile Access (Blink Shell)
+
+Blink configuration example:
+```bash
+# Host: ultraviolet
+# Command: earth
+# Port: 2022 (for ET)
+```
+
+Single tap connects directly to devspace.
+
+### 10. Clipboard Integration
+
+- **Copy**: OSC52 sequences work in SSH/ET sessions
+- **Paste**: Use Cmd-V in terminal (native terminal paste)
+- Internal vim operations use registers normally
+
+## File Structure
+
+### Server Side
 ```
 ~/devspaces/
-├── mercury/     # Ephemeral experiments
-├── venus/       # Personal creative projects
-├── earth/       # Primary work
-├── mars/        # Secondary work
-└── jupiter/     # Large personal project
+├── mercury/
+│   ├── project -> /home/user/Work/some-project (symlink)
+│   └── worktrees/
+│       └── devspace-mercury-20241201-143022/
+├── venus/
+├── earth/
+├── mars/
+└── jupiter/
 
-~/projects/      # Actual project repositories
-├── work/
-│   ├── main-app/
-│   └── secondary-app/
-└── personal/
-    ├── website/
-    └── big-project/
+~/.local/state/tmux-devspaces/
+└── sessions.txt  # Saved session state
 ```
-- Devspaces contain symlinks to actual projects
-- Each devspace has `.devspace-config` with project mappings
-- **Commands**:
-  - `<devspace> .` - Set devspace to current directory
-  - `<devspace> /path/to/project` - Set devspace to specific project
-  - `<devspace>` - Connect to devspace with existing workspace
-  - Confirmation prompt when replacing existing project
 
-### 5. Mac Client Commands
-Shell functions in zsh config:
-- `mercury`, `venus`, `earth`, `mars`, `jupiter` - Connect to devspace
-- Each runs: `ssh -t ultraviolet 'tmux attach -t devspace-<name> || tmux new -s devspace-<name>'`
-- Optional: `devspace <name>` as generic accessor
-- `devspace-status` - Show all devspaces and current projects (via SSH)
+### Configuration Files
+```
+hosts/ultraviolet/tmux.nix      # Server tmux/devspace configuration
+home-manager/devspaces-client/  # Mac client commands
+home-manager/tmux/              # Tmux configuration with hooks
+pkgs/devspaces/                 # Core implementation
+```
 
-### 6. Session Layout
-Default tmux layout for each devspace:
-- **Window 1: Claude** - Claude Code instance
-- **Window 2: Editor** - Neovim
-- **Window 3: Terminal** - General commands
-- **Window 4: Logs** - System logs, Claude output history
-- Auto-created on first connection if missing
+## Troubleshooting
 
-## Migration Path
+### Common Issues
 
-Starting from current state (multiple Kitty tabs with local Claude Code):
-1. Set up basic tmux sessions on NixOS server
-2. Test with one devspace (earth) for main work
-3. Migrate other projects to appropriate devspaces
-4. Add mobile access once desktop flow is solid
-5. Enhance with notifications/monitoring as needed
+1. **Session not found after rebuild**
+   - Check: `systemctl status devspace-restore`
+   - Fix: `devspace-restore` manually
 
-The goal is to enhance productivity without adding complexity - the infrastructure should be invisible when it's working correctly.
+2. **Can't connect to devspace**
+   - Check: `tmux ls` on server
+   - Fix: Kill stuck session and reconnect
+
+3. **State not saving**
+   - Check: `~/.local/state/tmux-devspaces/sessions.txt`
+   - Fix: `save_session_state` manually
+
+4. **Project link broken**
+   - Check: `earth status`
+   - Fix: `earth /path/to/project` to relink
+
+### Debug Commands
+```bash
+# View systemd logs
+journalctl -u devspace-restore -f
+journalctl -u devspace-save-state -f
+
+# Check tmux environment
+tmux show-environment -t devspace-earth
+
+# Force state save
+save_session_state
+
+# Manual restore
+devspace-restore
+```
+
+## Future Enhancements
+
+1. **Enhanced Mobile UI**: Custom tmux status for small screens
+2. **Project Templates**: Auto-setup for common project types
+3. **Backup/Sync**: Sync devspace state across servers
+4. **Integration**: Direct VSCode/IntelliJ remote development
+5. **Metrics**: Track time spent in each devspace
+
+## Success Metrics
+
+The implementation successfully achieves:
+- ✅ Zero-friction connection (`earth` from anywhere)
+- ✅ Perfect persistence (survives reboots)
+- ✅ Clear organization (themed devspaces)
+- ✅ Credential simplicity (one sync command)
+- ✅ Mobile friendly (Blink integration)
+- ✅ Crash resilient (auto-restore)
+- ✅ Minimal resource usage (lazy expansion)
+- ✅ Git isolation (automatic worktrees)
