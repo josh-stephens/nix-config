@@ -9,7 +9,7 @@
 
       format = "[](fg:lavender)$directory$character";
 
-      right_format = "[](fg:mauve)\${custom.planet}[](fg:rosewater bg:mauve)$hostname[](fg:sky bg:rosewater)$git_branch$git_status[](fg:peach bg:sky)$aws[](bg:peach fg:teal)$kubernetes[](fg:teal)";
+      right_format = "[](fg:mauve)\${custom.devspace}[](fg:rosewater bg:mauve)$hostname[](fg:sky bg:rosewater)$git_branch$git_status[](fg:peach bg:sky)$aws[](bg:peach fg:teal)$kubernetes[](fg:teal)";
 
       add_newline = false;
 
@@ -68,17 +68,17 @@
       };
 
       custom = {
-        planet = {
-          when = ''test -n "$TMUX_PLANET"'';
+        devspace = {
+          when = ''test -n "$TMUX_DEVSPACE"'';
           command = ''
             window=$(tmux display-message -p '#W' 2>/dev/null || echo '?')
-            case "$TMUX_PLANET" in
+            case "$TMUX_DEVSPACE" in
               mercury) echo "☿ mercury › $window" ;;
               venus)   echo "♀ venus › $window" ;;
               earth)   echo "⊕ earth › $window" ;;
               mars)    echo "♂ mars › $window" ;;
               jupiter) echo "♃ jupiter › $window" ;;
-              *)       echo "● $TMUX_PLANET › $window" ;;
+              *)       echo "● $TMUX_DEVSPACE › $window" ;;
             esac
           '';
           format = "[ $output ]($style)";

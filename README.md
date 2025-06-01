@@ -17,7 +17,7 @@ This configuration manages:
 - **Custom Packages**: Currently includes a customized Caddy web server
 - **Development Environment**: Neovim, Git, Starship prompt, and modern CLI tools
 - **Simplified Architecture**: Streamlined flake structure with minimal abstraction
-- **Planet Development Environment**: Persistent tmux-based remote development sessions
+- **Devspace Development Environment**: Persistent tmux-based remote development sessions
 - **Remote Link Opening**: Seamless browser integration for SSH sessions
 
 ## Quick Start
@@ -98,11 +98,11 @@ To add a new package:
 2. Add to `pkgs/default.nix`
 3. Add to overlay in `overlays/default.nix` if needed globally
 
-## Planet Development Environment
+## Devspace Development Environment
 
-The Planet system provides persistent tmux-based development environments on remote servers, each with its own project context and color theme.
+The Devspace system provides persistent tmux-based development environments on remote servers, each with its own project context and color theme.
 
-### Available Planets
+### Available Devspaces
 - **Mercury** (flamingo) - Quick experiments
 - **Venus** (pink) - Personal creative projects
 - **Earth** (green) - Primary work
@@ -112,14 +112,14 @@ The Planet system provides persistent tmux-based development environments on rem
 ### Usage from macOS
 
 ```bash
-# Connect to a planet
+# Connect to a devspace
 earth              # Connect to primary work environment
 mars               # Connect to secondary work environment
 
-# Manage planets
-planet-status      # Show all planets and their linked projects (alias: ps)
-planet-setup earth ~/projects/work/main-app  # Link a planet to a project
-planet-sync-aws    # Sync AWS credentials from Mac to server (alias: psa)
+# Manage devspaces
+devspace-status      # Show all devspaces and their linked projects (alias: ds)
+devspace-setup earth ~/projects/work/main-app  # Link a devspace to a project
+devspace-sync-aws    # Sync AWS credentials from Mac to server (alias: dsa)
 ```
 
 ### Server-side Commands

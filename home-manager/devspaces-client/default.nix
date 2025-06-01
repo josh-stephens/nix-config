@@ -1,79 +1,79 @@
 { inputs, lib, config, pkgs, ... }:
 
+let
+  # Import the theme from the devspaces package
+  theme = import ../../pkgs/devspaces/theme.nix;
+  spaceNames = lib.concatStringsSep " " (map (s: s.name) theme.spaces);
+  
+  # Generate connection message lookup
+  connectMessages = lib.listToAttrs (map (s: { name = s.name; value = s.connectMessage; }) theme.spaces);
+in
+
 {
-  # 🪐 Planet Client Commands for Mac
+  # 🚀 Devspaces Client Commands for Mac
   programs.zsh.initContent = ''
-    # 🌌 Planet Development Environment Client Functions
+    # 🌌 Development Spaces Client Functions
     
     # Note: This module depends on ssh-hosts module for _smart_ssh function
     # The ultraviolet() function is defined there
     
-    # 🪐 Connect to a planet
-    _planet_connect() {
-      local planet="$1"
+    # 🚀 Connect to a devspace
+    _devspace_connect() {
+      local devspace="$1"
       shift
       local extra_args="$@"
       
       # Use the smart SSH function to connect, then run tmux command
-      echo "🪐 Connecting to planet $planet..."
-      _smart_ssh ultraviolet -t "tmux attach-session -t planet-$planet || (echo '❌ Planet $planet not initialized. Run planet-init on ultraviolet first.' && exit 1)" $extra_args
+      # Theme-aware connection message from theme configuration
+      case "$devspace" in
+        ${lib.concatStringsSep "\n        " (map (s: ''${s.name}) echo "${s.connectMessage}" ;;'') theme.spaces)}
+        *) echo "🚀 Connecting to devspace $devspace..." ;;
+      esac
+      _smart_ssh ultraviolet -t "tmux attach-session -t devspace-$devspace || (echo '❌ Devspace $devspace not initialized. Run devspace-init on ultraviolet first.' && exit 1)" $extra_args
     }
     
-    # 🔧 Setup a planet with a project
-    _planet_setup() {
-      local planet="$1"
+    # 🔧 Setup a devspace with a project
+    _devspace_setup() {
+      local devspace="$1"
       local project="$2"
       
       if [ -z "$project" ]; then
-        echo "📊 Checking $planet setup..."
-        _smart_ssh ultraviolet "planet-setup $planet"
+        echo "📊 Checking $devspace setup..."
+        _smart_ssh ultraviolet "devspace-setup $devspace"
       else
-        echo "🔧 Setting up $planet with project: $project"
-        _smart_ssh ultraviolet "planet-setup $planet '$project'"
+        echo "🔧 Setting up $devspace with project: $project"
+        _smart_ssh ultraviolet "devspace-setup $devspace '$project'"
       fi
     }
     
-    # 🌍 Planet connection functions
-    mercury() {
-      _planet_connect mercury "$@"
-    }
+    # 🌍 Dynamically create devspace connection functions
+    # Generated from the theme configuration
+    DEVSPACE_NAMES=(${spaceNames})
     
-    venus() {
-      _planet_connect venus "$@"
-    }
-    
-    earth() {
-      _planet_connect earth "$@"
-    }
-    
-    mars() {
-      _planet_connect mars "$@"
-    }
-    
-    jupiter() {
-      _planet_connect jupiter "$@"
-    }
+    for devspace in "''${DEVSPACE_NAMES[@]}"; do
+      eval "$devspace() { _devspace_connect $devspace \"\$@\"; }"
+    done
     
     # 📊 Status command
-    planet-status() {
-      echo "🌌 Fetching planet status from ultraviolet..."
-      _smart_ssh ultraviolet planet-status
+    devspace-status() {
+      echo "🌌 Fetching devspace status from ultraviolet..."
+      _smart_ssh ultraviolet devspace-status
     }
     
     # 🔧 Setup commands from Mac
-    planet-setup() {
+    devspace-setup() {
       if [ $# -lt 1 ]; then
-        echo "Usage: planet-setup <planet> [project-path-on-ultraviolet]"
-        echo "  planet-setup earth ~/projects/work/main-app"
-        echo "  planet-setup mars"
+        echo "Usage: devspace-setup <devspace> [project-path-on-ultraviolet]"
+        echo "  devspace-setup earth ~/projects/work/main-app"
+        echo "  devspace-setup mars"
         return 1
       fi
       
-      _planet_setup "$@"
+      _devspace_setup "$@"
     }
     
     # 🔄 AWS credential sync
-    planet-sync-aws() {
+    devspace-sync-aws() {
       echo "🔐 Syncing AWS credentials to ultraviolet..."
       
       # Check if AWS config exists
@@ -113,10 +113,10 @@
       if [ $? -eq 0 ]; then
         echo "✅ AWS credentials synced successfully!"
         
-        # Optionally sync to specific planet
+        # Optionally sync to specific devspace
         if [ -n "$1" ]; then
-          echo "🪐 Syncing to planet $1..."
-          _smart_ssh ultraviolet "cp -r ~/.aws ~/planets/$1/.aws"
+          echo "🔄 Syncing to devspace $1..."
+          _smart_ssh ultraviolet "cp -r ~/.aws ~/devspaces/$1/.aws"
         fi
       else
         echo "❌ Failed to sync AWS credentials"
@@ -125,31 +125,31 @@
     }
     
     # 🚀 Quick connect with project setup
-    planet() {
+    devspace() {
       case "$1" in
         status)
-          planet-status
+          devspace-status
           ;;
         setup)
           shift
-          planet-setup "$@"
+          devspace-setup "$@"
           ;;
         sync-aws)
           shift
-          planet-sync-aws "$@"
+          devspace-sync-aws "$@"
           ;;
         mercury|venus|earth|mars|jupiter)
-          _planet_connect "$@"
+          _devspace_connect "$@"
           ;;
         *)
-          echo "🌌 Planet Development Environment"
+          echo "🌌 Development Spaces Environment"
           echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
           echo
           echo "Usage:"
-          echo "  mercury|venus|earth|mars|jupiter  - Connect to planet"
-          echo "  planet status                     - Show all planets status"
-          echo "  planet setup <name> [path]        - Setup planet project"
-          echo "  planet sync-aws [planet]          - Sync AWS credentials"
+          echo "  mercury|venus|earth|mars|jupiter  - Connect to devspace"
+          echo "  devspace status                   - Show all devspaces status"
+          echo "  devspace setup <name> [path]      - Setup devspace project"
+          echo "  devspace sync-aws [devspace]      - Sync AWS credentials"
           echo
           echo "Quick connect:"
           echo "  earth     - Connect to primary work project"
@@ -162,8 +162,14 @@
     }
     
     # 📱 Mobile-friendly aliases (shorter to type)
-    alias ps="planet status"
-    alias psa="planet sync-aws"
+    alias ds="devspace status"
+    alias dsa="devspace sync-aws"
+    
+    # 🌳 Worktree management aliases
+    alias dwt="devspace-worktree"
+    alias dwtc="devspace-worktree create"
+    alias dwts="devspace-worktree status"
+    alias dwtl="devspace-worktree list"
   '';
   
   # 🔧 Additional tools that might be useful

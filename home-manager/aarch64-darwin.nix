@@ -2,7 +2,7 @@
   imports = [
     ./common.nix
     ./aerospace
-    ./planet-client
+    ./devspaces-client
     ./ssh-hosts
   ];
 

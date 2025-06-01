@@ -1,41 +1,49 @@
 { config, lib, pkgs, ... }:
 
 {
-  # 🪐 Planet Development Environment - System-level configuration
-  # This module provides system-level services for the planet tmux environment
-  # The actual tmux configuration and scripts are in home-manager/tmux
+  # 🪐 Development Spaces Environment - System-level configuration
+  # Uses the devspaces package for initialization
   
-  # 🤖 Systemd service to initialize planets on boot
-  systemd.services.planet-init = {
-    description = "Initialize planet tmux sessions";
-    after = [ "multi-user.target" ];
+  # Install the devspaces package which provides devspace-init
+  environment.systemPackages = [ pkgs.devspaces ];
+  
+  # 🤖 Systemd service to initialize development spaces on boot
+  systemd.services.devspace-init = {
+    description = "Initialize development space tmux sessions";
+    after = [ "multi-user.target" "network.target" ];
     wantedBy = [ "multi-user.target" ];
     
     serviceConfig = {
       Type = "oneshot";
       RemainAfterExit = true;
       User = "joshsymonds";
-      # The planet-init command is provided by home-manager tmux module
-      ExecStart = "${pkgs.bash}/bin/bash -c 'sleep 5 && /home/joshsymonds/.nix-profile/bin/planet-init'";
+      ExecStart = "${pkgs.devspaces}/bin/devspace-init";
+      StandardOutput = "journal";
+      StandardError = "journal";
+    };
+    
+    environment = {
+      HOME = "/home/joshsymonds";
+      USER = "joshsymonds";
     };
   };
   
-  # 🔄 Ensure planet-init runs after system rebuilds
-  system.activationScripts.planet-init = {
+  # 🔄 Ensure devspace-init runs after system rebuilds
+  system.activationScripts.devspace-init = {
     text = ''
-      # Run planet-init after system activation
-      ${pkgs.systemd}/bin/systemctl restart planet-init.service || true
+      # Run devspace-init after system activation
+      ${pkgs.systemd}/bin/systemctl restart devspace-init.service || true
     '';
     deps = [];
   };
   
-  # 📁 Create planet directories
+  # 📁 Create devspace directories
   systemd.tmpfiles.rules = [
-    "d /home/joshsymonds/planets 0755 joshsymonds users -"
-    "d /home/joshsymonds/planets/mercury 0755 joshsymonds users -"
-    "d /home/joshsymonds/planets/venus 0755 joshsymonds users -"
-    "d /home/joshsymonds/planets/earth 0755 joshsymonds users -"
-    "d /home/joshsymonds/planets/mars 0755 joshsymonds users -"
-    "d /home/joshsymonds/planets/jupiter 0755 joshsymonds users -"
+    "d /home/joshsymonds/devspaces 0755 joshsymonds users -"
+    "d /home/joshsymonds/devspaces/mercury 0755 joshsymonds users -"
+    "d /home/joshsymonds/devspaces/venus 0755 joshsymonds users -"
+    "d /home/joshsymonds/devspaces/earth 0755 joshsymonds users -"
+    "d /home/joshsymonds/devspaces/mars 0755 joshsymonds users -"
+    "d /home/joshsymonds/devspaces/jupiter 0755 joshsymonds users -"
   ];
 }

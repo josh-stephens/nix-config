@@ -3,17 +3,17 @@
 with lib;
 
 let
-  cfg = config.programs.tmux-planet;
+  cfg = config.programs.tmux-devspace;
   
-  # 🪐 Planet configuration
-  planetConfig = {
-    planets = [
-      { name = "mercury"; color = "flamingo"; description = "☿ Mercury - Quick experiments"; }
-      { name = "venus"; color = "pink"; description = "♀ Venus - Personal creative projects"; }
-      { name = "earth"; color = "green"; description = "🌍 Earth - Primary work"; }
-      { name = "mars"; color = "red"; description = "♂ Mars - Secondary work"; }
-      { name = "jupiter"; color = "peach"; description = "♃ Jupiter - Large personal project"; }
-    ];
+  # 🪐 Import devspace theme configuration
+  theme = import ../../pkgs/devspaces/theme.nix;
+  devspaceConfig = {
+    devspaces = map (s: {
+      name = s.name;
+      color = s.color;
+      description = "${s.icon} ${s.name} - ${s.description}";
+      hotkey = s.hotkey;
+    }) theme.spaces;
   };
   
   # 🎨 Catppuccin Mocha theme colors
@@ -39,32 +39,32 @@ let
     set -g @catppuccin_mocha_crust "#11111b"
   '';
   
-  # 🚀 Planet management scripts
-  planetInitScript = pkgs.writeScriptBin "planet-init" ''
+  # 🚀 Devspace management scripts
+  devspaceInitScript = pkgs.writeScriptBin "devspace-init" ''
     #!${pkgs.bash}/bin/bash
-    # 🚀 Initialize all planet tmux sessions
+    # 🚀 Initialize all devspace tmux sessions
     
     set -euo pipefail
     
-    PLANETS=(${concatStringsSep " " (map (p: ''"${p.name}"'') planetConfig.planets)})
-    COLORS=(${concatStringsSep " " (map (p: ''"${p.color}"'') planetConfig.planets)})
+    DEVSPACES=(${concatStringsSep " " (map (p: ''"${p.name}"'') devspaceConfig.devspaces)})
+    COLORS=(${concatStringsSep " " (map (p: ''"${p.color}"'') devspaceConfig.devspaces)})
     
-    echo "🌌 Initializing planet development environments..."
+    echo "🌌 Initializing devspace development environments..."
     
-    for i in "''${!PLANETS[@]}"; do
-      planet="''${PLANETS[$i]}"
+    for i in "''${!DEVSPACES[@]}"; do
+      devspace="''${DEVSPACES[$i]}"
       color="''${COLORS[$i]}"
-      session="planet-$planet"
+      session="devspace-$devspace"
       
       if ! ${pkgs.tmux}/bin/tmux has-session -t "$session" 2>/dev/null; then
-        echo "🪐 Creating $planet (color: $color)..."
+        echo "🪐 Creating $devspace (color: $color)..."
         
         # Create session with environment variables
-        TMUX_PLANET="$planet" TMUX_PLANET_COLOR="$color" ${pkgs.tmux}/bin/tmux new-session -d -s "$session" -n claude
+        TMUX_DEVSPACE="$devspace" TMUX_DEVSPACE_COLOR="$color" ${pkgs.tmux}/bin/tmux new-session -d -s "$session" -n claude
         
         # Set environment for the session
-        ${pkgs.tmux}/bin/tmux set-environment -t "$session" TMUX_PLANET "$planet"
-        ${pkgs.tmux}/bin/tmux set-environment -t "$session" TMUX_PLANET_COLOR "$color"
+        ${pkgs.tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE "$devspace"
+        ${pkgs.tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_COLOR "$color"
         
         # Create default windows
         ${pkgs.tmux}/bin/tmux new-window -t "$session:2" -n nvim
@@ -72,40 +72,40 @@ let
         ${pkgs.tmux}/bin/tmux new-window -t "$session:4" -n logs
         
         # Set working directory if it exists
-        if [ -d "$HOME/planets/$planet" ]; then
-          ${pkgs.tmux}/bin/tmux send-keys -t "$session:1" "cd ~/planets/$planet" Enter
-          ${pkgs.tmux}/bin/tmux send-keys -t "$session:2" "cd ~/planets/$planet" Enter
-          ${pkgs.tmux}/bin/tmux send-keys -t "$session:3" "cd ~/planets/$planet" Enter
+        if [ -d "$HOME/devspaces/$devspace" ]; then
+          ${pkgs.tmux}/bin/tmux send-keys -t "$session:1" "cd ~/devspaces/$devspace" Enter
+          ${pkgs.tmux}/bin/tmux send-keys -t "$session:2" "cd ~/devspaces/$devspace" Enter
+          ${pkgs.tmux}/bin/tmux send-keys -t "$session:3" "cd ~/devspaces/$devspace" Enter
         fi
         
         # Start log monitoring in window 4
-        ${pkgs.tmux}/bin/tmux send-keys -t "$session:4" "tail -f ~/.claude-code-$planet.log 2>/dev/null || echo '📋 Log file will appear when Claude starts...'" Enter
+        ${pkgs.tmux}/bin/tmux send-keys -t "$session:4" "tail -f ~/.claude-code-$devspace.log 2>/dev/null || echo '📋 Log file will appear when Claude starts...'" Enter
       else
-        echo "✅ $planet already exists"
+        echo "✅ $devspace already exists"
       fi
     done
     
-    echo "✨ All planets initialized!"
+    echo "✨ All devspaces initialized!"
     ${pkgs.tmux}/bin/tmux list-sessions
   '';
   
-  planetStatusScript = pkgs.writeScriptBin "planet-status" ''
+  devspaceStatusScript = pkgs.writeScriptBin "devspace-status" ''
     #!${pkgs.bash}/bin/bash
-    # 📊 Show status of all planet sessions
+    # 📊 Show status of all devspace sessions
     
-    echo "🌌 Planet Development Environment Status"
+    echo "🌌 Devspace Development Environment Status"
     echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
     echo
     
-    PLANETS=(${concatStringsSep " " (map (p: ''"${p.name}"'') planetConfig.planets)})
+    DEVSPACES=(${concatStringsSep " " (map (p: ''"${p.name}"'') devspaceConfig.devspaces)})
     DESCRIPTIONS=(
-      ${concatStringsSep "\n      " (map (p: ''"${p.description}"'') planetConfig.planets)}
+      ${concatStringsSep "\n      " (map (p: ''"${p.description}"'') devspaceConfig.devspaces)}
     )
     
-    for i in "''${!PLANETS[@]}"; do
-      planet="''${PLANETS[$i]}"
+    for i in "''${!DEVSPACES[@]}"; do
+      devspace="''${DEVSPACES[$i]}"
       desc="''${DESCRIPTIONS[$i]}"
-      session="planet-$planet"
+      session="devspace-$devspace"
       
       echo "$desc"
       
@@ -114,8 +114,8 @@ let
         current_window=$(${pkgs.tmux}/bin/tmux display-message -t "$session" -p '#W' 2>/dev/null || echo "unknown")
         
         # Check for linked project
-        if [ -L "$HOME/planets/$planet/project" ]; then
-          project=$(readlink "$HOME/planets/$planet/project" | xargs basename)
+        if [ -L "$HOME/devspaces/$devspace/project" ]; then
+          project=$(readlink "$HOME/devspaces/$devspace/project" | xargs basename)
           echo "  📁 Project: $project"
         else
           echo "  📁 Project: none"
@@ -184,8 +184,8 @@ let
     # Configuration
     NFTY_TOPIC="CUFVGE2uFcTRl7Br"
     NFTY_SERVER="https://ntfy.sh"
-    PLANET="''${TMUX_PLANET:-unknown}"
-    LOG_FILE="$HOME/.claude-code-$PLANET.log"
+    DEVSPACE="''${TMUX_DEVSPACE:-unknown}"
+    LOG_FILE="$HOME/.claude-code-$DEVSPACE.log"
     
     # 🎨 Color codes for output
     RED='\033[0;31m'
@@ -215,12 +215,12 @@ let
     }
     
     # 🚀 Start Claude Code
-    echo -e "''${BLUE}🤖 Starting Claude Code on planet $PLANET...''${NC}"
+    echo -e "''${BLUE}🤖 Starting Claude Code in devspace $DEVSPACE...''${NC}"
     log "Starting Claude Code wrapper"
     
     # Create temporary files for output monitoring
-    STDOUT_FIFO="/tmp/claude-$PLANET-$$.out"
-    STDERR_FIFO="/tmp/claude-$PLANET-$$.err"
+    STDOUT_FIFO="/tmp/claude-$DEVSPACE-$$.out"
+    STDERR_FIFO="/tmp/claude-$DEVSPACE-$$.err"
     mkfifo "$STDOUT_FIFO" "$STDERR_FIFO"
     
     # Cleanup on exit
@@ -259,10 +259,10 @@ let
         if [[ "$line" == *$'\a'* ]]; then
           log "Bell detected!"
           send_notification \
-            "🔔 $PLANET needs attention" \
+            "🔔 $DEVSPACE needs attention" \
             "Claude is requesting your input" \
             "high" \
-            "bell,planet_$PLANET"
+            "bell,devspace_$DEVSPACE"
         fi
         
         # ❓ Check for questions
@@ -271,10 +271,10 @@ let
             question_detected=true
             log "Question detected: $line"
             send_notification \
-              "❓ $PLANET has a question" \
+              "❓ $DEVSPACE has a question" \
               "$line" \
               "default" \
-              "question,planet_$PLANET"
+              "question,devspace_$DEVSPACE"
           fi
         else
           question_detected=false
@@ -287,10 +287,10 @@ let
             completion_detected=true
             log "Completion detected: $line"
             send_notification \
-              "✅ $PLANET task completed" \
+              "✅ $DEVSPACE task completed" \
               "$line" \
               "default" \
-              "done,planet_$PLANET"
+              "done,devspace_$DEVSPACE"
           fi
         else
           completion_detected=false
@@ -300,10 +300,10 @@ let
         if [[ "$line" =~ (error|failed|failure|exception|traceback) ]]; then
           log "Error detected: $line"
           send_notification \
-            "🚨 $PLANET encountered an error" \
+            "🚨 $DEVSPACE encountered an error" \
             "$line" \
             "high" \
-            "error,planet_$PLANET"
+            "error,devspace_$DEVSPACE"
         fi
       done < "$1"
       
@@ -316,10 +316,10 @@ let
           if [ $idle_time -gt $idle_threshold ]; then
             log "Idle timeout detected ($idle_time seconds)"
             send_notification \
-              "💤 $PLANET is idle" \
+              "💤 $DEVSPACE is idle" \
               "No output for $(($idle_time / 60)) minutes" \
               "low" \
-              "idle,planet_$PLANET"
+              "idle,devspace_$DEVSPACE"
             break
           fi
           
@@ -335,10 +335,10 @@ let
     # 🎬 Run Claude Code with output redirection
     echo -e "''${GREEN}✨ Claude Code starting...''${NC}"
     send_notification \
-      "🚀 $PLANET Claude starting" \
-      "Claude Code is initializing on planet $PLANET" \
+      "🚀 $DEVSPACE Claude starting" \
+      "Claude Code is initializing in devspace $DEVSPACE" \
       "low" \
-      "start,planet_$PLANET"
+      "start,devspace_$DEVSPACE"
     
     # Run claude with all arguments passed through
     ${pkgs.claude-code}/bin/claude "$@" > "$STDOUT_FIFO" 2> "$STDERR_FIFO" &
@@ -360,40 +360,40 @@ let
     # Send final notification
     if [ $CLAUDE_EXIT -eq 0 ]; then
       send_notification \
-        "👋 $PLANET Claude stopped" \
+        "👋 $DEVSPACE Claude stopped" \
         "Claude Code exited normally" \
         "low" \
-        "stop,planet_$PLANET"
+        "stop,devspace_$DEVSPACE"
     else
       send_notification \
-        "💥 $PLANET Claude crashed" \
+        "💥 $DEVSPACE Claude crashed" \
         "Claude Code exited with code $CLAUDE_EXIT" \
         "urgent" \
-        "crash,planet_$PLANET"
+        "crash,devspace_$DEVSPACE"
     fi
     
     exit $CLAUDE_EXIT
   '';
   
-  claudePlanetScript = pkgs.writeScriptBin "claude-planet" ''
+  claudeDevspaceScript = pkgs.writeScriptBin "claude-devspace" ''
     #!${pkgs.bash}/bin/bash
-    # 🪐 Start Claude in the current planet's project directory
+    # 🪐 Start Claude in the current devspace's project directory
     
-    PLANET="''${TMUX_PLANET:-}"
+    DEVSPACE="''${TMUX_DEVSPACE:-}"
     
-    if [ -z "$PLANET" ]; then
-      echo "❌ Not in a planet tmux session!"
+    if [ -z "$DEVSPACE" ]; then
+      echo "❌ Not in a devspace tmux session!"
       echo "Use one of: mercury, venus, earth, mars, jupiter"
       exit 1
     fi
     
     # Check for linked project
-    if [ -L "$HOME/planets/$PLANET/project" ]; then
-      cd "$HOME/planets/$PLANET/project"
+    if [ -L "$HOME/devspaces/$DEVSPACE/project" ]; then
+      cd "$HOME/devspaces/$DEVSPACE/project"
       echo "📁 Starting Claude in $(pwd)"
     else
-      echo "⚠️  No project linked to $PLANET"
-      echo "Use: planet-setup $PLANET /path/to/project"
+      echo "⚠️  No project linked to $DEVSPACE"
+      echo "Use: devspace-setup $DEVSPACE /path/to/project"
       exit 1
     fi
     
@@ -401,39 +401,39 @@ let
     exec claude-notify "$@"
   '';
   
-  planetSetupScript = pkgs.writeScriptBin "planet-setup" ''
+  devspaceSetupScript = pkgs.writeScriptBin "devspace-setup" ''
     #!${pkgs.bash}/bin/bash
-    # 🔧 Set up or change a planet's project
+    # 🔧 Set up or change a devspace's project
     
     set -euo pipefail
     
     if [ $# -lt 1 ]; then
-      echo "Usage: planet-setup <planet> [project-path]"
-      echo "  planet-setup earth ~/projects/work/main-app"
-      echo "  planet-setup mars ."
+      echo "Usage: devspace-setup <devspace> [project-path]"
+      echo "  devspace-setup earth ~/projects/work/main-app"
+      echo "  devspace-setup mars ."
       exit 1
     fi
     
-    PLANET="$1"
+    DEVSPACE="$1"
     PROJECT_PATH="''${2:-}"
     
-    # Validate planet name
-    if [[ ! "$PLANET" =~ ^(mercury|venus|earth|mars|jupiter)$ ]]; then
-      echo "❌ Invalid planet: $PLANET"
-      echo "Valid planets: mercury, venus, earth, mars, jupiter"
+    # Validate devspace name
+    if [[ ! "$DEVSPACE" =~ ^(mercury|venus|earth|mars|jupiter)$ ]]; then
+      echo "❌ Invalid devspace: $DEVSPACE"
+      echo "Valid devspaces: mercury, venus, earth, mars, jupiter"
       exit 1
     fi
     
-    PLANET_DIR="$HOME/planets/$PLANET"
+    DEVSPACE_DIR="$HOME/devspaces/$DEVSPACE"
     
-    # Create planet directory if needed
-    mkdir -p "$PLANET_DIR"
+    # Create devspace directory if needed
+    mkdir -p "$DEVSPACE_DIR"
     
     # If no project path specified, show current setup
     if [ -z "$PROJECT_PATH" ]; then
-      echo "🪐 Current setup for $PLANET:"
-      if [ -L "$PLANET_DIR/project" ]; then
-        echo "  📁 Project: $(readlink "$PLANET_DIR/project")"
+      echo "🪐 Current setup for $DEVSPACE:"
+      if [ -L "$DEVSPACE_DIR/project" ]; then
+        echo "  📁 Project: $(readlink "$DEVSPACE_DIR/project")"
       else
         echo "  📁 No project linked"
       fi
@@ -454,14 +454,14 @@ let
     fi
     
     # Check if already linked
-    if [ -L "$PLANET_DIR/project" ]; then
-      current=$(readlink "$PLANET_DIR/project")
+    if [ -L "$DEVSPACE_DIR/project" ]; then
+      current=$(readlink "$DEVSPACE_DIR/project")
       if [ "$current" = "$PROJECT_PATH" ]; then
-        echo "✅ $PLANET is already linked to $PROJECT_PATH"
+        echo "✅ $DEVSPACE is already linked to $PROJECT_PATH"
         exit 0
       fi
       
-      echo "⚠️  $PLANET is currently linked to: $current"
+      echo "⚠️  $DEVSPACE is currently linked to: $current"
       read -p "Replace with $PROJECT_PATH? (y/N) " -n 1 -r
       echo
       if [[ ! $REPLY =~ ^[Yy]$ ]]; then
@@ -469,15 +469,15 @@ let
         exit 1
       fi
       
-      rm "$PLANET_DIR/project"
+      rm "$DEVSPACE_DIR/project"
     fi
     
     # Create symlink
-    ln -s "$PROJECT_PATH" "$PLANET_DIR/project"
-    echo "✅ Linked $PLANET to $PROJECT_PATH"
+    ln -s "$PROJECT_PATH" "$DEVSPACE_DIR/project"
+    echo "✅ Linked $DEVSPACE to $PROJECT_PATH"
     
     # Update tmux session if it exists
-    session="planet-$PLANET"
+    session="devspace-$DEVSPACE"
     if ${pkgs.tmux}/bin/tmux has-session -t "$session" 2>/dev/null; then
       # Send cd command to all windows
       for window in 1 2 3; do
@@ -488,13 +488,13 @@ let
   '';
 
 in {
-  options.programs.tmux-planet = {
-    enable = mkEnableOption "tmux planet development environment";
+  options.programs.tmux-devspace = {
+    enable = mkEnableOption "tmux devspace development environment";
     
-    planetMode = mkOption {
+    devspaceMode = mkOption {
       type = types.bool;
       default = false;
-      description = "Enable planet development environment mode";
+      description = "Enable devspace development environment mode";
     };
     
     remoteOpener = mkOption {
@@ -512,7 +512,7 @@ in {
     enableSystemdService = mkOption {
       type = types.bool;
       default = false;
-      description = "Enable systemd service to initialize planets on boot (NixOS only)";
+      description = "Enable systemd service to initialize devspaces on boot (NixOS only)";
     };
   };
 
@@ -552,9 +552,9 @@ in {
         set -g status-left-length 50
         set -g status-right-length 100
         
-        ${if cfg.planetMode then ''
-          # 🪐 Dynamic planet coloring based on session name
-          set -g status-left "#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_#{TMUX_PLANET_COLOR}},bold] 🪐 #S #[fg=#{@catppuccin_mocha_#{TMUX_PLANET_COLOR}},bg=#{@catppuccin_mocha_base}]"
+        ${if cfg.devspaceMode then ''
+          # 🪐 Dynamic devspace coloring based on session name
+          set -g status-left "#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}},bold] 🪐 #S #[fg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}},bg=#{@catppuccin_mocha_base}]"
         '' else ''
           set -g status-left "#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_blue},bold] #S #[fg=#{@catppuccin_mocha_blue},bg=#{@catppuccin_mocha_base}]"
         ''}
@@ -568,8 +568,8 @@ in {
         
         # 🎯 Pane borders
         set -g pane-border-style "fg=#{@catppuccin_mocha_surface0}"
-        ${if cfg.planetMode then ''
-          set -g pane-active-border-style "fg=#{@catppuccin_mocha_#{TMUX_PLANET_COLOR}}"
+        ${if cfg.devspaceMode then ''
+          set -g pane-active-border-style "fg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}}"
         '' else ''
           set -g pane-active-border-style "fg=#{@catppuccin_mocha_blue}"
         ''}
@@ -596,43 +596,41 @@ in {
         bind-key k select-pane -U
         bind-key l select-pane -R
         
-        ${optionalString cfg.planetMode ''
-          # ⌨️ Planet-specific keybindings
+        ${optionalString cfg.devspaceMode ''
+          # ⌨️ Devspace-specific keybindings
           # Quick window switching with memorable keys
           bind-key c select-window -t :1   # Claude
           bind-key n select-window -t :2   # Neovim
           bind-key t select-window -t :3   # Terminal
           bind-key l select-window -t :4   # Logs
           
-          # 🚀 Quick session switching
-          bind-key M switch-client -t planet-mercury
-          bind-key V switch-client -t planet-venus
-          bind-key E switch-client -t planet-earth
-          bind-key R switch-client -t planet-mars
-          bind-key J switch-client -t planet-jupiter
+          # 🚀 Quick session switching (theme-based hotkeys)
+          ${concatStringsSep "\n          " (map (d: 
+            "bind-key -n M-${d.hotkey} switch-client -t devspace-${d.name}"
+          ) devspaceConfig.devspaces)}
         ''}
       '';
     };
     
-    home.packages = with pkgs; (optionals cfg.planetMode [
-      planetInitScript
-      planetStatusScript
-      planetSetupScript
+    home.packages = with pkgs; (optionals cfg.devspaceMode [
+      devspaceInitScript
+      devspaceStatusScript
+      devspaceSetupScript
     ]) ++ (optionals cfg.remoteOpener [
       remoteLinkOpenScript
-    ]) ++ (optionals (cfg.planetMode && cfg.claudeNotifications) [
+    ]) ++ (optionals (cfg.devspaceMode && cfg.claudeNotifications) [
       claudeNotifyScript
-      claudePlanetScript
+      claudeDevspaceScript
     ]);
     
-    # 📁 Create planet directories if planet mode is enabled
-    home.file = mkIf cfg.planetMode (
-      listToAttrs (map (planet: {
-        name = "planets/${planet.name}/.keep";
+    # 📁 Create devspace directories if devspace mode is enabled
+    home.file = mkIf cfg.devspaceMode (
+      listToAttrs (map (devspace: {
+        name = "devspaces/${devspace.name}/.keep";
         value = {
           text = "";
         };
-      }) planetConfig.planets)
+      }) devspaceConfig.devspaces)
     );
     
     # 🌐 Set up environment for remote link opening
@@ -642,8 +640,8 @@ in {
     };
     
     # 🔧 Shell aliases for Claude commands
-    programs.zsh.shellAliases = mkIf (cfg.planetMode && cfg.claudeNotifications) {
-      claude = "claude-planet";
+    programs.zsh.shellAliases = mkIf (cfg.devspaceMode && cfg.claudeNotifications) {
+      claude = "claude-devspace";
       cn = "claude-notify";
     };
   };

@@ -5,7 +5,8 @@
   default = final: prev: {
     # Import custom packages from the 'pkgs' directory
     inherit (import ../pkgs { pkgs = final; })
-      myCaddy;
+      myCaddy
+      devspaces;
     
     # Package modifications
     waybar = prev.waybar.overrideAttrs (oldAttrs: {

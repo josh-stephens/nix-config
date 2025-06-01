@@ -18,10 +18,10 @@
 
   programs.zsh.shellAliases.update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
   
-  # Enable tmux with planet mode for servers
-  programs.tmux-planet = {
+  # Enable tmux with devspace mode for servers
+  programs.tmux-devspace = {
     enable = true;
-    planetMode = true;
+    devspaceMode = true;
     remoteOpener = true;  # Enable remote link opening
     claudeNotifications = true;  # Enable Claude notification wrapper
   };

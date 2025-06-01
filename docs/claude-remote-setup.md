@@ -25,7 +25,7 @@ This provides natural ordering and memorable associations without requiring per-
 ### 3. Client Access Requirements
 
 #### Mac (Primary Development)
-- Quick keyboard shortcuts to connect to any planet (ideally Cmd+1 through Cmd+5)
+- Quick keyboard shortcuts to connect to any devspace (ideally Cmd+1 through Cmd+5)
 - Visual indicators showing which environment is active
 - Seamless connection via Tailscale SSH
 - Proper terminal emulation (works well with Kitty)
@@ -39,7 +39,7 @@ This provides natural ordering and memorable associations without requiring per-
 
 ### 4. Development Environment Structure
 
-Each planet should support:
+Each devspace should support:
 - **Multiple windows/panes** within each session:
   - Claude Code instance
   - Neovim for editing
@@ -66,7 +66,7 @@ Each planet should support:
 ### 6. Quality of Life Features
 
 #### Status Monitoring
-- Quick command to see all planets and their current state
+- Quick command to see all devspaces and their current state
 - Visual differentiation between environments (colors, emojis) in Starship
 - Ability to see what each Claude instance is working on
 - No requirement to remember what each session contains
@@ -74,7 +74,7 @@ Each planet should support:
 #### Session Management
 - Automatic session creation on system boot
 - Graceful handling of crashed sessions
-- Easy restart/reset of individual planets
+- Easy restart/reset of individual devspaces
 - Protection against accidental session termination
 
 #### Workflow Integration
@@ -89,7 +89,7 @@ Each planet should support:
 1. Open laptop, press Cmd+3
 2. Immediately see Earth session with Claude Code where I left it
 3. Claude has been working overnight on assigned tasks
-4. Review output, provide guidance, switch to another planet
+4. Review output, provide guidance, switch to another devspace
 5. Open neovim in the same project with another shortcut
 6. See where I am inside NeoVim itself
 
@@ -107,14 +107,14 @@ Each planet should support:
 
 ### Credential Management
 - Run AWS SSO login on Mac
-- Single command syncs to all planets
+- Single command syncs to all devspaces
 - All Claude instances have fresh credentials
 - No manual credential management per session
 
 ### Mobile push
 - At lunch, eating happily
 - Claude needs my approval for a task and activates a terminal bell
-- I get a push notification on my phone, informing me which planet is summoning me
+- I get a push notification on my phone, informing me which devspace is summoning me
 - I open Blink, type "mars"
 - Respond to Claude, and lock my phone
 
@@ -127,7 +127,7 @@ Each planet should support:
 - Excellent terminal compatibility
 - Native copy/paste buffer management
 
-### Why Planets?
+### Why Planetary Theme for Devspaces?
 - Fixed set prevents proliferation of unnamed sessions
 - Natural ordering (distance from sun = experiment to production)
 - Memorable without being unprofessional
@@ -142,9 +142,9 @@ Each planet should support:
 
 ## Success Criteria
 
-1. **Zero friction**: Connecting to a planet should be as easy as opening a new terminal
+1. **Zero friction**: Connecting to a devspace should be as easy as opening a new terminal
 2. **Perfect persistence**: Work continues exactly where you left it
-3. **Clear organization**: Always know which planet has which project
+3. **Clear organization**: Always know which devspace has which project
 4. **Credential simplicity**: One sync command handles all auth needs
 5. **Mobile friendly**: Can meaningfully check progress from phone
 6. **Crash resilient**: System recovers gracefully from any failure
@@ -154,7 +154,7 @@ Each planet should support:
 - **No complex session management**: Don't make users think about session names
 - **No manual tmux configuration**: Should just work out of the box
 - **No credential complexity**: Don't require per-session auth setup
-- **No forgotten work**: Every planet should be discoverable
+- **No forgotten work**: Every devspace should be discoverable
 - **No lost state**: Reboots shouldn't lose work
 
 ## Implementation Details
@@ -170,12 +170,12 @@ Each planet should support:
 - **Implementation**: 
   - Shell script monitoring Claude's stdout/stderr and bell characters
   - Forward all output while intercepting bells
-  - Send to nfty.sh topic `CUFVGE2uFcTRl7Br` with planet name in title
+  - Send to nfty.sh topic `CUFVGE2uFcTRl7Br` with devspace name in title
   - Include brief context in notification body
 
 ### 2. Starship Integration
 Building on existing Catppuccin Mocha theme:
-- **Planet Indicator**: Add custom module showing current planet with colored dot and name
+- **Devspace Indicator**: Add custom module showing current devspace with colored dot and name
   - `● mercury` (all in flamingo #f2cdcd) - Quick experiments
   - `● venus` (all in pink #f5c2e7) - Personal creative projects
   - `● earth` (all in green #a6e3a1) - Primary work
@@ -183,21 +183,21 @@ Building on existing Catppuccin Mocha theme:
   - `● jupiter` (all in peach #fab387) - Large personal project
 - **Position**: After hostname, before git info
 - **Format**: `[ ● $planet_name ]($planet_style)` where style sets foreground color
-- **Detection**: Based on TMUX_PLANET environment variable
+- **Detection**: Based on TMUX_DEVSPACE environment variable
 
 ### 3. AWS SSO Credential Management
 - **Primary Method**: Automated sync via dedicated command
 - **Implementation**:
-  - `planet-sync-aws` command on Mac that:
+  - `devspace-sync-aws` command on Mac that:
     - Copies `~/.aws/config` and `~/.aws/sso/cache/*` to ultraviolet
     - Uses rsync over Tailscale SSH
-    - Optionally accepts planet name to sync to specific session
-  - Cron job on ultraviolet to distribute to all planet sessions
-- **Fallback**: Manual `aws sso login` in each planet if needed
+    - Optionally accepts devspace name to sync to specific session
+  - Cron job on ultraviolet to distribute to all devspace sessions
+- **Fallback**: Manual `aws sso login` in each devspace if needed
 
 ### 4. Workspace Structure
 ```
-~/planets/
+~/devspaces/
 ├── mercury/     # Ephemeral experiments
 ├── venus/       # Personal creative projects
 ├── earth/       # Primary work
@@ -212,23 +212,23 @@ Building on existing Catppuccin Mocha theme:
     ├── website/
     └── big-project/
 ```
-- Planets contain symlinks to actual projects
-- Each planet has `.planet-config` with project mappings
+- Devspaces contain symlinks to actual projects
+- Each devspace has `.devspace-config` with project mappings
 - **Commands**:
-  - `<planet> .` - Set planet to current directory
-  - `<planet> /path/to/project` - Set planet to specific project
-  - `<planet>` - Connect to planet with existing workspace
+  - `<devspace> .` - Set devspace to current directory
+  - `<devspace> /path/to/project` - Set devspace to specific project
+  - `<devspace>` - Connect to devspace with existing workspace
   - Confirmation prompt when replacing existing project
 
 ### 5. Mac Client Commands
 Shell functions in zsh config:
-- `mercury`, `venus`, `earth`, `mars`, `jupiter` - Connect to planet
-- Each runs: `ssh -t ultraviolet 'tmux attach -t planet-<name> || tmux new -s planet-<name>'`
-- Optional: `planet <name>` as generic accessor
-- `planet-status` - Show all planets and current projects (via SSH)
+- `mercury`, `venus`, `earth`, `mars`, `jupiter` - Connect to devspace
+- Each runs: `ssh -t ultraviolet 'tmux attach -t devspace-<name> || tmux new -s devspace-<name>'`
+- Optional: `devspace <name>` as generic accessor
+- `devspace-status` - Show all devspaces and current projects (via SSH)
 
 ### 6. Session Layout
-Default tmux layout for each planet:
+Default tmux layout for each devspace:
 - **Window 1: Claude** - Claude Code instance
 - **Window 2: Editor** - Neovim
 - **Window 3: Terminal** - General commands
@@ -239,8 +239,8 @@ Default tmux layout for each planet:
 
 Starting from current state (multiple Kitty tabs with local Claude Code):
 1. Set up basic tmux sessions on NixOS server
-2. Test with one planet (earth) for main work
-3. Migrate other projects to appropriate planets
+2. Test with one devspace (earth) for main work
+3. Migrate other projects to appropriate devspaces
 4. Add mobile access once desktop flow is solid
 5. Enhance with notifications/monitoring as needed
 
