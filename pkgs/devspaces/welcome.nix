@@ -1,4 +1,4 @@
-{ lib, writeScriptBin, bash, toilet, lolcat, coreutils }:
+{ lib, writeScriptBin, bash, toilet, coreutils }:
 
 let
   theme = import ./theme.nix;
@@ -35,8 +35,8 @@ writeScriptBin "devspace-welcome" ''
   clear
   
   # Display colorful space-themed banner
-  # Using toilet for colored ASCII art
-  ${toilet}/bin/toilet -f pagga -F border --gay "$DEVSPACE"
+  # Using toilet for ASCII art (redirect stderr to suppress Ruby warnings)
+  ${toilet}/bin/toilet -f pagga -F border --gay "$DEVSPACE" 2>/dev/null
   
   # Display planet ASCII art based on devspace
   case "$DEVSPACE" in
@@ -68,11 +68,11 @@ writeScriptBin "devspace-welcome" ''
   esac
   
   echo
-  # Colorful divider
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | ${lolcat}/bin/lolcat -f
+  # Colorful divider - suppress Ruby warnings from toilet
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" 2>/dev/null
   echo "$icon Devspace: $DEVSPACE"
   echo "📝 Purpose: $description"
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | ${lolcat}/bin/lolcat -f
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" 2>/dev/null
   echo
   
   # Check if project is linked
@@ -120,7 +120,7 @@ writeScriptBin "devspace-welcome" ''
   fi
   
   echo
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" 2>/dev/null
   
   # If project is linked, cd to it
   if [ -L "$DEVSPACE_DIR/project" ] && [ -e "$DEVSPACE_DIR/project" ]; then

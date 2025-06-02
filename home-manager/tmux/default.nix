@@ -563,14 +563,16 @@ in {
           set-hook -g session-created 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
         ''}
         
-        # 🎨 Status Bar Styling - Clean minimal design like kitty tabs
-        set -g status-style "fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_base}"
-        set -g status-left-length 20
+        # 🎨 Status Bar Styling - Match kitty tabs exactly
+        # Transparent background
+        set -g status-style "fg=#{@catppuccin_mocha_text},bg=default"
+        set -g status-left-length 30
         set -g status-right-length 0
         
-        # Left status - show devspace icon and name with theme color
+        # Left status - show devspace icon and name
         ${if cfg.devspaceMode then ''
-          set -g status-left "#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}},bold] #{TMUX_DEVSPACE_ICON} #{TMUX_DEVSPACE} #[fg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}},bg=#{@catppuccin_mocha_base}]"
+          # Show devspace name with icon on the left, no background
+          set -g status-left "#[fg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}}]#{TMUX_DEVSPACE_ICON} #{TMUX_DEVSPACE} "
         '' else ''
           set -g status-left ""
         ''}
@@ -578,14 +580,14 @@ in {
         # No right status - clean look
         set -g status-right ""
         
-        # 🪟 Window status - minimal like kitty tabs
-        # Inactive tabs - subtle text on dark background
-        set -g window-status-format "#[fg=#{@catppuccin_mocha_subtext0},bg=#{@catppuccin_mocha_base}] #W "
-        # Active tab - blue background with white text
-        set -g window-status-current-format "#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_blue}]#[fg=#{@catppuccin_mocha_crust},bg=#{@catppuccin_mocha_blue},bold] #W #[fg=#{@catppuccin_mocha_blue},bg=#{@catppuccin_mocha_base}]"
+        # 🪟 Window status - match kitty tabs with chevrons
+        # Inactive tabs - subtle text with chevron separator
+        set -g window-status-format "#[fg=#{@catppuccin_mocha_subtext0}]#W #[fg=#{@catppuccin_mocha_surface0}]❯ "
+        # Active tab - blue text, bold, with chevron
+        set -g window-status-current-format "#[fg=#{@catppuccin_mocha_blue},bold]#W #[fg=#{@catppuccin_mocha_surface0}]❯ "
         
-        # Center the window list
-        set -g status-justify centre
+        # Left justify like kitty
+        set -g status-justify left
         
         # 🎯 Pane borders
         set -g pane-border-style "fg=#{@catppuccin_mocha_surface0}"
