@@ -1,4 +1,4 @@
-{ lib, writeScriptBin, bash, tmux, figlet, cowsay }:
+{ lib, writeScriptBin, bash, tmux, devspace-welcome }:
 
 let
   theme = import ./theme.nix;
@@ -41,48 +41,24 @@ writeScriptBin "devspace-init-single" ''
   
   echo "🪐 Creating minimal devspace '$devspace'..."
   
-  # Create session with environment variables and start user's default shell
-  # Use the user's default shell, which will load all their configs
-  TMUX_DEVSPACE="$devspace" TMUX_DEVSPACE_COLOR="$color" ${tmux}/bin/tmux new-session -d -s "$session" -n setup
+  # Create session and start user's default shell
+  ${tmux}/bin/tmux new-session -d -s "$session" -n setup
   
-  # Set environment for the session
+  # Set environment for the session - these need to be available to shells
   ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE "$devspace"
   ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_COLOR "$color"
   ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_INITIALIZED "false"
   
+  # Send commands to export the variables in the shell
+  ${tmux}/bin/tmux send-keys -t "$session:1" "export TMUX_DEVSPACE='$devspace'" Enter
+  ${tmux}/bin/tmux send-keys -t "$session:1" "export TMUX_DEVSPACE_COLOR='$color'" Enter
+  ${tmux}/bin/tmux send-keys -t "$session:1" "export TMUX_DEVSPACE_INITIALIZED='false'" Enter
+  
   # Wait a moment for shell to start
   sleep 0.1
   
-  # Create the setup prompt in the window
-  ${tmux}/bin/tmux send-keys -t "$session:1" "clear" Enter
-  
-  # Display welcome message
-  ${tmux}/bin/tmux send-keys -t "$session:1" "${figlet}/bin/figlet -f slant '$devspace' | ${cowsay}/bin/cowsay -n -f tux" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo '$icon Devspace: $devspace'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo '📝 Purpose: $description'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo '⚡ This devspace is not initialized yet!'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo 'To set up this devspace, run:'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo '  $devspace /path/to/project'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo 'Examples:'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo '  $devspace ~/Work/my-project'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo '  $devspace .                  # Use current directory'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo 'Other commands:'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo '  $devspace status              # Show current configuration'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo '  $devspace worktree create feature/xyz  # Create a git worktree'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo 'Once initialized, this window will transform into a full development environment'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo 'with claude, nvim, term, and logs windows.'" Enter
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo" Enter
-  
-  # Keep the prompt alive
-  ${tmux}/bin/tmux send-keys -t "$session:1" "echo '💡 Press Enter to refresh this message...'; read" Enter
+  # Run the welcome script to show a nice display
+  ${tmux}/bin/tmux send-keys -t "$session:1" "${devspace-welcome}/bin/devspace-welcome $devspace" Enter
   
   echo "✅ Created minimal devspace '$devspace'"
 ''

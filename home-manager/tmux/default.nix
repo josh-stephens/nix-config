@@ -537,6 +537,9 @@ in {
         set -g set-titles on
         set -g focus-events on
         
+        # 🌍 Update environment to include devspace variables
+        set -ga update-environment " TMUX_DEVSPACE TMUX_DEVSPACE_COLOR TMUX_DEVSPACE_INITIALIZED"
+        
         # 🔔 Bell settings for notifications
         set -g bell-action any
         set -g visual-bell off

@@ -3,7 +3,10 @@
 let
   # Core components
   devspaceContext = pkgs.callPackage ./devspace-context.nix { };
-  devspaceInitSingle = pkgs.callPackage ./devspace-init-single.nix { };
+  devspaceWelcome = pkgs.callPackage ./devspace-welcome.nix { };
+  devspaceInitSingle = pkgs.callPackage ./devspace-init-single.nix { 
+    devspace-welcome = devspaceWelcome;
+  };
   devspaceStatus = pkgs.callPackage ./devspace-status.nix { };
   devspaceWorktree = pkgs.callPackage ./devspace-worktree.nix { };
   devspaceSaveState = pkgs.callPackage ./devspace-save-state.nix { };
@@ -29,7 +32,8 @@ in
 symlinkJoin {
   name = "devspaces";
   paths = [ 
-    devspaceContext 
+    devspaceContext
+    devspaceWelcome
     devspaceInitSingle
     devspaceSetup 
     devspaceStatus 
