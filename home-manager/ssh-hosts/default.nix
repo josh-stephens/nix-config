@@ -51,6 +51,32 @@
       local hostname="$1"
       shift
       local extra_args=("$@")
+      local use_autossh=false
+      local use_et=false
+      
+      # Check for connection type flags
+      while [[ "$1" =~ ^- ]]; do
+        case "$1" in
+          -a|--auto)
+            use_autossh=true
+            shift
+            ;;
+          -e|--et)
+            use_et=true
+            shift
+            ;;
+          --ssh)
+            # Force SSH even if ET is available
+            use_et=false
+            use_autossh=false
+            shift
+            ;;
+          *)
+            break
+            ;;
+        esac
+      done
+      extra_args=("$@")
       
       # Check if host is configured
       if [ -z "''${HOST_IPS[$hostname]}" ]; then
@@ -99,11 +125,32 @@
       # Handle command execution vs interactive connection
       if [ ''${#extra_args[@]} -gt 0 ]; then
         # Run command via SSH with proper TTY allocation
-        # Note: kitten ssh doesn't support command execution, so always use regular ssh for commands
-        ssh -t "$target_host" "''${extra_args[@]}"
+        if [ "$use_et" = true ]; then
+          # ET doesn't support direct command execution, fall back to SSH
+          echo "⚠️  ET doesn't support command execution, using SSH instead..."
+          ssh -t "$target_host" "''${extra_args[@]}"
+        elif [ "$use_autossh" = true ]; then
+          # Use autossh for persistent connection with command
+          AUTOSSH_GATETIME=0 autossh -M 0 -t "$target_host" "''${extra_args[@]}"
+        else
+          ssh -t "$target_host" "''${extra_args[@]}"
+        fi
       else
-        # Just connect interactively - use kitten if available for better integration
-        if command -v kitten &> /dev/null && [ -t 0 ]; then
+        # Just connect interactively
+        # Default to ET if available for better latency (unless explicitly disabled)
+        if [ "$use_et" != false ] && command -v et &> /dev/null && [ "$use_autossh" = false ]; then
+          # Use Eternal Terminal for persistent low-latency connection
+          echo "⚡ Using Eternal Terminal for low-latency persistent connection..."
+          et "$target_host:2022"
+        elif [ "$use_et" = true ] && ! command -v et &> /dev/null; then
+          # Explicitly requested ET but not available
+          echo "❌ Eternal Terminal not available, falling back to SSH..."
+          ssh "$target_host"
+        elif [ "$use_autossh" = true ]; then
+          # Use autossh for persistent interactive connection
+          echo "🔄 Using autossh for persistent connection..."
+          AUTOSSH_GATETIME=0 autossh -M 0 "$target_host"
+        elif command -v kitten &> /dev/null && [ -t 0 ]; then
           # STDIN is a terminal, safe to use kitten
           kitten ssh "$target_host"
         else
@@ -193,6 +240,7 @@
       echo "Legend: 🏠 local | 🔒 tailscale | 🌐 local network | ❌ unreachable"
       echo
       echo "Connection: Uses optimized SSH with connection reuse"
+      echo "For persistent connections: use -a flag (e.g., 'ultraviolet -a')"
     }
     
     # Convenient aliases

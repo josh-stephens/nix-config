@@ -5,6 +5,7 @@
     ./tmux
     ./devspaces
     ./claude-wrapper
+    ./clipboard-sync
   ];
 
   home = {
@@ -35,6 +36,11 @@
 
   # Enable Claude wrapper
   programs.claude-wrapper = {
+    enable = true;
+  };
+
+  # Enable clipboard sync for remote development
+  programs.clipboard-sync = {
     enable = true;
   };
 

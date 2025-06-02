@@ -14,4 +14,13 @@
     };
   };
 
+  # Enable Eternal Terminal for low-latency persistent connections
+  services.eternal-terminal = {
+    enable = true;
+    port = 2022;
+  };
+
+  # Open firewall for ET
+  networking.firewall.allowedTCPPorts = [ 2022 ];
+
 }

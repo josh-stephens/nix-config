@@ -38,6 +38,8 @@
       wireguard-tools
       k9s
       starlark-lsp
+      autossh
+      eternal-terminal
       
       # LSP servers
       lua-language-server
