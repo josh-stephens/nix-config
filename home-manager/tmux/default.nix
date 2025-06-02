@@ -21,7 +21,7 @@ let
     owner = "erikw";
     repo = "tmux-powerline";
     rev = "ad98fe32b1c96ebe4872bbb9e20ceeb0fd9b24ad";
-    sha256 = lib.fakeSha256; # IMPORTANT: Replace with actual SHA256 hash
+    sha256 = "sha256-WGLNjvvBBmS9dIHV08QJuiEBjv+6uubKlTnMITBdnXo="; # IMPORTANT: Replace with actual SHA256 hash
   };
 
   # Fetch kjnsn/catppuccin-tmux-powerline theme
