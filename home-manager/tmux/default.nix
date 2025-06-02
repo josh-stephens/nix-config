@@ -548,7 +548,7 @@ in {
         set -g renumber-windows on     # Renumber windows when one is closed
         set -g set-titles on           # Set terminal titles
         set -g focus-events on         # For better editor integration (e.g., Neovim)
-        set -g status-position top     # Display status bar at the top like Kitty tabs
+        set -g status-position bottom  # Status bar at bottom (default)
 
         # 🌍 Update environment to include devspace variables
         set -ga update-environment " TMUX_DEVSPACE TMUX_DEVSPACE_COLOR TMUX_DEVSPACE_ICON TMUX_DEVSPACE_INITIALIZED"
@@ -571,28 +571,28 @@ in {
         ''}
 
         # 🎨 Status Bar Styling - To match Kitty Powerline
-        set -g status-style "fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_base}" # Overall bar colors
+        # Subtle grey background like kitty tab bar
+        set -g status-style "fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_surface0}"
 
         set -g status-left-length 0
         set -g status-left "" # No content on the far left
 
-        # Right side of status bar: * tmux session_name | current_path
-        set -g status-right-length 120 # Increased length for path
-        set -g status-right "#[fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_base}] * tmux #S | #{pane_current_path} "
+        # No right status - clean minimal look
+        set -g status-right-length 0
+        set -g status-right ""
 
         set -g status-justify left # Tabs align to the left
 
-        # Inactive window format: Muted text on base background. Add spaces for padding.
-        set -g window-status-format "#[fg=#{@catppuccin_mocha_overlay0},bg=#{@catppuccin_mocha_base}] #W "
+        # Inactive window format: Darker grey text on grey background
+        set -g window-status-format "#[fg=#{@catppuccin_mocha_overlay0},bg=#{@catppuccin_mocha_surface0}] #W "
 
-        # Active window format: Powerline shape, blue background, dark text. Add spaces for padding.
-        # Using #W for just window name, like Kitty tabs. Use #I:#W for index:name.
+        # Active window format: Powerline shape with chevrons, blue background, light text
         set -g window-status-current-format "\
-#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_blue}]#{@powerline_left_arrow}\
+#[fg=#{@catppuccin_mocha_surface0},bg=#{@catppuccin_mocha_blue}]#{@powerline_left_arrow}\
 #[fg=#{@catppuccin_mocha_crust},bg=#{@catppuccin_mocha_blue},bold] #W \
-#[fg=#{@catppuccin_mocha_blue},bg=#{@catppuccin_mocha_base}]#{@powerline_right_arrow}"
+#[fg=#{@catppuccin_mocha_blue},bg=#{@catppuccin_mocha_surface0}]#{@powerline_right_arrow}"
 
-        set -g window-status-separator "" # No separator characters between windows, powerline glyphs handle transitions
+        set -g window-status-separator "" # No separator characters between windows
 
         # 🎯 Pane borders
         # Inactive pane border (using surface0 as in original, could be base for darker match)
