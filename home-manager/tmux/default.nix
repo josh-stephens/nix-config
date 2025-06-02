@@ -564,29 +564,28 @@ in {
         ''}
         
         # 🎨 Status Bar Styling - Match kitty tabs exactly
-        # Transparent background
+        # Transparent background for the whole bar
         set -g status-style "fg=#{@catppuccin_mocha_text},bg=default"
-        set -g status-left-length 30
+        set -g status-left-length 0
         set -g status-right-length 0
         
-        # Left status - show devspace icon and name
-        ${if cfg.devspaceMode then ''
-          # Show devspace name with icon on the left, no background
-          set -g status-left "#[fg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}}]#{TMUX_DEVSPACE_ICON} #{TMUX_DEVSPACE} "
-        '' else ''
-          set -g status-left ""
-        ''}
+        # No left status - tabs start immediately at the left edge
+        set -g status-left ""
         
         # No right status - clean look
         set -g status-right ""
         
-        # 🪟 Window status - match kitty tabs with chevrons
-        # Inactive tabs - subtle text with chevron separator
-        set -g window-status-format "#[fg=#{@catppuccin_mocha_subtext0}]#W #[fg=#{@catppuccin_mocha_surface0}]❯ "
-        # Active tab - blue text, bold, with chevron
-        set -g window-status-current-format "#[fg=#{@catppuccin_mocha_blue},bold]#W #[fg=#{@catppuccin_mocha_surface0}]❯ "
+        # 🪟 Window status - match kitty tabs exactly
+        # Inactive tabs - grey text, no background, no chevron, minimal padding
+        set -g window-status-format "#[fg=#{@catppuccin_mocha_overlay0},bg=default] #W "
         
-        # Left justify like kitty
+        # Active tab - white text on blue background with chevron
+        set -g window-status-current-format "#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_blue},bold] #W #[fg=#{@catppuccin_mocha_blue},bg=default]"
+        
+        # Window separator - no separator between windows
+        set -g window-status-separator ""
+        
+        # Left justify - tabs flush against left edge
         set -g status-justify left
         
         # 🎯 Pane borders
