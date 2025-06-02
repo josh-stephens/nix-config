@@ -510,30 +510,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # Set up tmux-powerline configuration files
-    home.file.".config/tmux-powerline/config.sh".text = ''
-      # Main configuration file for tmux-powerline
-      export TMUX_POWERLINE_THEME="catppuccin-minimal"
-      export TMUX_POWERLINE_DIR_HOME="${tmuxPowerlinePackage}"
-      export TMUX_POWERLINE_DIR_THEMES="$HOME/.config/tmux-powerline/themes"
-    '';
-    
-    # Create a minimal theme based on catppuccin that only shows window tabs
-    home.file.".config/tmux-powerline/themes/catppuccin-minimal.sh".text = ''
-      # Minimal Catppuccin theme - only window tabs
-      # Based on catppuccin_mocha_theme.sh but with only window segments
-      
-      # Source the original catppuccin theme for colors
-      source "${tmuxPowerlineCatppuccinThemePackage}/catppuccin_mocha_theme.sh"
-      
-      # Override segments to show only window list
-      TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
-        "tmux_window_list 89b4fa 1e1e2e"
-      )
-      
-      TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=()
-    '';
-
     programs.tmux = {
       enable = true;
       clock24 = true;
@@ -641,14 +617,43 @@ in {
     ]);
 
     # 📁 Create devspace directories if devspace mode is enabled
-    home.file = mkIf cfg.devspaceMode (
-      listToAttrs (map (devspace: {
-        name = "devspaces/${devspace.name}/.keep";
-        value = {
-          text = "";
-        };
-      }) devspaceConfig.devspaces)
-    );
+    home.file = mkMerge [
+      # tmux-powerline configuration files
+      {
+        ".config/tmux-powerline/config.sh".text = ''
+          # Main configuration file for tmux-powerline
+          export TMUX_POWERLINE_THEME="catppuccin-minimal"
+          export TMUX_POWERLINE_DIR_HOME="${tmuxPowerlinePackage}"
+          export TMUX_POWERLINE_DIR_THEMES="$HOME/.config/tmux-powerline/themes"
+        '';
+        
+        # Create a minimal theme based on catppuccin that only shows window tabs
+        ".config/tmux-powerline/themes/catppuccin-minimal.sh".text = ''
+          # Minimal Catppuccin theme - only window tabs
+          # Based on catppuccin_mocha_theme.sh but with only window segments
+          
+          # Source the original catppuccin theme for colors
+          source "${tmuxPowerlineCatppuccinThemePackage}/catppuccin_mocha_theme.sh"
+          
+          # Override segments to show only window list
+          TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
+            "tmux_window_list 89b4fa 1e1e2e"
+          )
+          
+          TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=()
+        '';
+      }
+      
+      # Devspace directories (if enabled)
+      (mkIf cfg.devspaceMode (
+        listToAttrs (map (devspace: {
+          name = "devspaces/${devspace.name}/.keep";
+          value = {
+            text = "";
+          };
+        }) devspaceConfig.devspaces)
+      ))
+    ];
 
     # 🌐 Set up environment for remote link opening
     home.sessionVariables = mkIf cfg.remoteOpener {
