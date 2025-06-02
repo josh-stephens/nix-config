@@ -1,4 +1,4 @@
-{ lib, writeScriptBin, bash, figlet, cowsay, coreutils }:
+{ lib, writeScriptBin, bash, toilet, lolcat, coreutils }:
 
 let
   theme = import ./theme.nix;
@@ -34,14 +34,45 @@ writeScriptBin "devspace-welcome" ''
   # Clear screen for a clean display
   clear
   
-  # Display ASCII art banner
-  ${figlet}/bin/figlet -f slant "$DEVSPACE" | ${cowsay}/bin/cowsay -n -f tux
+  # Display colorful space-themed banner
+  # Using toilet for colored ASCII art
+  ${toilet}/bin/toilet -f pagga -F border --gay "$DEVSPACE"
+  
+  # Display planet ASCII art based on devspace
+  case "$DEVSPACE" in
+    mercury)
+      echo "    ·   "
+      echo "   ⚪   "
+      echo "    ·   "
+      ;;
+    venus)
+      echo "   ✧･ﾟ  "
+      echo "  🟡   "
+      echo "   ･ﾟ✧  "
+      ;;
+    earth)
+      echo "   ✦   "
+      echo "  🌍   "
+      echo "   ✦   "
+      ;;
+    mars)
+      echo "   ∘   "
+      echo "  🔴   "
+      echo "   ∘   "
+      ;;
+    jupiter)
+      echo "  ･ﾟ✧*:･ﾟ"
+      echo "   🟠   "
+      echo "  ･ﾟ✧*:･ﾟ"
+      ;;
+  esac
   
   echo
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  # Colorful divider
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | ${lolcat}/bin/lolcat -f
   echo "$icon Devspace: $DEVSPACE"
   echo "📝 Purpose: $description"
-  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
+  echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━" | ${lolcat}/bin/lolcat -f
   echo
   
   # Check if project is linked
