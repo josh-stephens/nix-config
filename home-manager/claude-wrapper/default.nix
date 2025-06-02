@@ -30,12 +30,30 @@ let
       echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
     }
     
+    # 🔍 Check if session is attached
+    is_session_attached() {
+      if [ -n "$TMUX" ]; then
+        # Get session name from TMUX environment
+        local session_name=$(${pkgs.tmux}/bin/tmux display-message -p '#S' 2>/dev/null)
+        # Check if any client is attached to this session
+        ${pkgs.tmux}/bin/tmux list-clients -t "$session_name" 2>/dev/null | grep -q . && return 0
+      fi
+      return 1
+    }
+    
     # 📨 Send notification
     send_notification() {
       local title="$1"
       local message="$2"
       local priority="''${3:-default}"
       local tags="''${4:-}"
+      
+      # Skip notifications if session is attached (user is actively present)
+      # unless CLAUDE_FORCE_NOTIFY is set
+      if [ -z "''${CLAUDE_FORCE_NOTIFY:-}" ] && is_session_attached; then
+        log "Notification suppressed (session attached): $title"
+        return
+      fi
       
       ${pkgs.curl}/bin/curl -s \
         -H "Title: $title" \
