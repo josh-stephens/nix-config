@@ -57,14 +57,14 @@ let
         ${pkgs.tmux}/bin/tmux new-window -t "$session:4" -n logs
         
         # Set working directory if it exists
-        if [ -d "$HOME/devspaces/$devspace" ]; then
-          ${pkgs.tmux}/bin/tmux send-keys -t "$session:1" "cd ~/devspaces/$devspace" Enter
-          ${pkgs.tmux}/bin/tmux send-keys -t "$session:2" "cd ~/devspaces/$devspace" Enter
-          ${pkgs.tmux}/bin/tmux send-keys -t "$session:3" "cd ~/devspaces/$devspace" Enter
+        if [ -d "$HOME/devspaces/$name" ]; then
+          ${pkgs.tmux}/bin/tmux send-keys -t "$session:1" "cd ~/devspaces/$name" Enter
+          ${pkgs.tmux}/bin/tmux send-keys -t "$session:2" "cd ~/devspaces/$name" Enter
+          ${pkgs.tmux}/bin/tmux send-keys -t "$session:3" "cd ~/devspaces/$name" Enter
         fi
         
         # Start log monitoring in window 4
-        ${pkgs.tmux}/bin/tmux send-keys -t "$session:4" "tail -f ~/.claude-code-$devspace.log 2>/dev/null || echo '📋 Log file will appear when Claude starts...'" Enter
+        ${pkgs.tmux}/bin/tmux send-keys -t "$session:4" "tail -f ~/.claude-code-$name.log 2>/dev/null || echo '📋 Log file will appear when Claude starts...'" Enter
       else
         echo "✅ $devspace already exists"
       fi
@@ -103,8 +103,8 @@ let
         current_window=$(${pkgs.tmux}/bin/tmux display-message -t "$session" -p '#W' 2>/dev/null || echo "unknown")
         
         # Check for linked project
-        if [ -L "$HOME/devspaces/$devspace/project" ]; then
-          project=$(readlink "$HOME/devspaces/$devspace/project" | xargs basename)
+        if [ -L "$HOME/devspaces/$name/project" ]; then
+          project=$(readlink "$HOME/devspaces/$name/project" | xargs basename)
           echo "  📁 Project: $project"
         else
           echo "  📁 Project: none"
@@ -518,12 +518,10 @@ in {
       
       # 🎨 Catppuccin theme plugin and monitoring plugins
       plugins = with pkgs.tmuxPlugins; [
-        # System monitoring plugins (must be loaded before catppuccin)
+        # System monitoring plugins
         cpu
-        sysstat
-        net-speed
         
-        # Catppuccin theme
+        # Catppuccin theme (must be loaded after dependencies)
         {
           plugin = catppuccin;
           extraConfig = ''
@@ -543,28 +541,6 @@ in {
             set -g @catppuccin_window_current_fill "number"
             set -g @catppuccin_window_current_text "#W"
             
-            # Status line configuration
-            set -g status-right-length 100
-            set -g status-left-length 100
-            
-            ${optionalString cfg.devspaceMode ''
-              # Devspace icon and name on the left - dynamically built from theme
-              set -g status-left "${concatStringsSep "" (map (d: 
-                "#{?#{==:#{session_name},devspace-${toString d.id}},${d.icon} ${d.name} ,"
-              ) devspaceConfig.devspaces)}}"
-            ''}
-            ${optionalString (!cfg.devspaceMode) ''
-              set -g status-left ""
-            ''}
-            
-            # Right side status - system monitoring
-            set -g status-right "#{E:@catppuccin_status_cpu}"
-            set -ag status-right "#{E:@catppuccin_status_load}"
-            
-            # Configure sysstat plugin format (for load average)
-            set -g @sysstat_mem_view_tmpl '#[fg=#{mem.color}]#{mem.pused}'
-            set -g @sysstat_cpu_view_tmpl '#[fg=#{cpu.color}]#{cpu.pused}'
-            set -g @sysstat_loadavg_view_tmpl '#[fg=#{load.color}]#{load.load1}'
           '';
         }
       ];
@@ -576,6 +552,24 @@ in {
         set -g set-titles on           # Set terminal titles
         set -g focus-events on         # For better editor integration (e.g., Neovim)
         set -g status-position bottom  # Display status bar at the bottom
+        
+        # 📊 Status line configuration (must be after plugins load)
+        set -g status-right-length 100
+        set -g status-left-length 100
+        
+        ${optionalString cfg.devspaceMode ''
+          # Devspace icon and name on the left - dynamically built from theme
+          set -g status-left "${concatStringsSep "" (map (d: 
+            "#{?#{==:#{session_name},devspace-${toString d.id}},${d.icon} ${d.name} ,"
+          ) devspaceConfig.devspaces)}}"
+        ''}
+        ${optionalString (!cfg.devspaceMode) ''
+          set -g status-left ""
+        ''}
+        
+        # Right side status - system monitoring modules
+        set -g status-right "#{E:@catppuccin_status_cpu}"
+        set -ag status-right "#{E:@catppuccin_status_load}"
 
         # 🎯 Pane borders - Catppuccin Mocha colors
         set -g pane-border-style "fg=#313244"
