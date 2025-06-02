@@ -96,19 +96,19 @@
         fi
       fi
       
-      # Use SSH with kitten for better clipboard integration if available
-      local ssh_cmd="ssh"
-      if command -v kitten &> /dev/null; then
-        ssh_cmd="kitten ssh"
-      fi
-      
       # Handle command execution vs interactive connection
       if [ ''${#extra_args[@]} -gt 0 ]; then
         # Run command via SSH with proper TTY allocation
-        $ssh_cmd -t "$target_host" "''${extra_args[@]}"
+        # Note: kitten ssh doesn't support command execution, so always use regular ssh for commands
+        ssh -t "$target_host" "''${extra_args[@]}"
       else
-        # Just connect interactively
-        $ssh_cmd "$target_host"
+        # Just connect interactively - use kitten if available for better integration
+        if command -v kitten &> /dev/null && [ -t 0 ]; then
+          # STDIN is a terminal, safe to use kitten
+          kitten ssh "$target_host"
+        else
+          ssh "$target_host"
+        fi
       fi
     }
     
