@@ -521,7 +521,6 @@ in {
       terminal = "tmux-256color"; # Ensure your terminal supports 256 colors
       mouse = true;
       baseIndex = 1; # Windows start at 1
-      paneBaseIndex = 1; # Panes start at 1
 
       extraConfig = ''
         # 🔧 General Tmux Settings
