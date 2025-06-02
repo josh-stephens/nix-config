@@ -75,7 +75,7 @@ writeScriptBin "devspace-setup" ''
     
     # Check if we're inside this session
     local current_session=""
-    if [ -n "$TMUX" ]; then
+    if [ -n "''${TMUX:-}" ]; then
       current_session=$(${tmux}/bin/tmux display-message -p '#S' 2>/dev/null || echo "")
     fi
     
@@ -102,17 +102,80 @@ writeScriptBin "devspace-setup" ''
       # Stay in current window (which is now term)
       echo -e "''${GREEN}✨ Devspace expanded! Windows: claude, nvim, term, logs''${NC}"
     else
-      # We're outside - can kill setup window
-      ${tmux}/bin/tmux kill-window -t "$session:setup" 2>/dev/null || true
+      # We're outside - recreate the session with full windows
+      # Get project path
+      local project_path=""
+      if [ -L "$HOME/devspaces/$devspace/project" ]; then
+        project_path=$(readlink "$HOME/devspaces/$devspace/project")
+      fi
       
-      # Create the full environment windows
-      ${tmux}/bin/tmux new-window -t "$session:1" -n claude
-      ${tmux}/bin/tmux new-window -t "$session:2" -n nvim
-      ${tmux}/bin/tmux new-window -t "$session:3" -n term
-      ${tmux}/bin/tmux new-window -t "$session:4" -n logs
+      # Kill and recreate the session properly
+      ${tmux}/bin/tmux kill-session -t "$session" 2>/dev/null || true
       
-      # Select first window
-      ${tmux}/bin/tmux select-window -t "$session:1"
+      # Get icon from theme
+      local icon=""
+      case "$devspace" in
+        ${lib.concatStringsSep "\n        " (map (s: ''
+        ${s.name}) icon="${s.icon}" ;;'') theme.spaces)}
+      esac
+      
+      # Set environment variables in tmux session (will be inherited by new windows)
+      ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE "$devspace" 2>/dev/null || true
+      ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_COLOR "$color" 2>/dev/null || true
+      ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_ICON "$icon" 2>/dev/null || true
+      
+      # Create new session with all windows
+      # Use -e to set environment variables for each window at creation time
+      if [ -n "$project_path" ]; then
+        ${tmux}/bin/tmux new-session -d -s "$session" -n claude -c "$project_path" \
+          -e TMUX_DEVSPACE="$devspace" -e TMUX_DEVSPACE_COLOR="$color" -e TMUX_DEVSPACE_ICON="$icon"
+        ${tmux}/bin/tmux new-window -t "$session:2" -n nvim -c "$project_path" \
+          -e TMUX_DEVSPACE="$devspace" -e TMUX_DEVSPACE_COLOR="$color" -e TMUX_DEVSPACE_ICON="$icon"
+        ${tmux}/bin/tmux new-window -t "$session:3" -n term -c "$project_path" \
+          -e TMUX_DEVSPACE="$devspace" -e TMUX_DEVSPACE_COLOR="$color" -e TMUX_DEVSPACE_ICON="$icon"
+        ${tmux}/bin/tmux new-window -t "$session:4" -n logs -c "$project_path" \
+          -e TMUX_DEVSPACE="$devspace" -e TMUX_DEVSPACE_COLOR="$color" -e TMUX_DEVSPACE_ICON="$icon"
+      else
+        ${tmux}/bin/tmux new-session -d -s "$session" -n claude \
+          -e TMUX_DEVSPACE="$devspace" -e TMUX_DEVSPACE_COLOR="$color" -e TMUX_DEVSPACE_ICON="$icon"
+        ${tmux}/bin/tmux new-window -t "$session:2" -n nvim \
+          -e TMUX_DEVSPACE="$devspace" -e TMUX_DEVSPACE_COLOR="$color" -e TMUX_DEVSPACE_ICON="$icon"
+        ${tmux}/bin/tmux new-window -t "$session:3" -n term \
+          -e TMUX_DEVSPACE="$devspace" -e TMUX_DEVSPACE_COLOR="$color" -e TMUX_DEVSPACE_ICON="$icon"
+        ${tmux}/bin/tmux new-window -t "$session:4" -n logs \
+          -e TMUX_DEVSPACE="$devspace" -e TMUX_DEVSPACE_COLOR="$color" -e TMUX_DEVSPACE_ICON="$icon"
+      fi
+      
+      # Re-set environment variables in session for consistency
+      ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE "$devspace"
+      ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_COLOR "$color"
+      ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_ICON "$icon"
+      
+      # Wait a moment for shells to initialize
+      sleep 0.5
+      
+      # Show welcome banner in all windows
+      for window in 1 2 3 4; do
+        ${tmux}/bin/tmux send-keys -t "$session:$window" "clear && devspace-welcome $devspace" Enter
+      done
+      
+      # After a brief pause, start applications
+      sleep 0.2
+      
+      # If we have a project path, cd to it first
+      if [ -n "$project_path" ] && [ -d "$project_path" ]; then
+        # Start claude wrapper in window 1
+        ${tmux}/bin/tmux send-keys -t "$session:1" "cd '$project_path' && claude" Enter
+        
+        # Start nvim in window 2 with current directory
+        ${tmux}/bin/tmux send-keys -t "$session:2" "cd '$project_path' && nvim ." Enter
+      else
+        # No project path, just start the applications
+        ${tmux}/bin/tmux send-keys -t "$session:1" "claude" Enter
+        ${tmux}/bin/tmux send-keys -t "$session:2" "nvim" Enter
+      fi
+      
+      echo -e "''${GREEN}✨ Devspace recreated with full environment!''${NC}"
     fi
     
     # Mark as initialized

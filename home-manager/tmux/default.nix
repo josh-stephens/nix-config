@@ -127,6 +127,22 @@ in {
         set -g focus-events on         # For better editor integration (e.g., Neovim)
         set -g status-position bottom  # Display status bar at the bottom
         
+        ${optionalString cfg.devspaceMode (let
+          # Generate the set-titles-string with proper nested conditionals for devspace names
+          titleParts = map (d: 
+            "#{?#{==:#{session_name},devspace-${toString d.id}},${d.name}:#I:#W,"
+          ) devspaceConfig.devspaces;
+          # Add the correct number of closing braces and default format
+          closingBraces = concatStrings (map (x: "}") devspaceConfig.devspaces);
+        in ''
+          # Set terminal title to show friendly devspace names
+          set -g set-titles-string "${concatStrings titleParts}#S:#I:#W${closingBraces}"
+        '')}
+        ${optionalString (!cfg.devspaceMode) ''
+          # Default terminal title format
+          set -g set-titles-string "#S:#I:#W"
+        ''}
+        
         # 📊 Status line configuration (must be after plugins load)
         set -g status-right-length 100
         set -g status-left-length 100
