@@ -4,14 +4,17 @@
 
 ### 1. Generate Encryption Key (One Time Only)
 ```bash
-# Generate a secure key
+# Generate secure keys
 piknik -genkeys
 
-# Save ONLY the key line to a file
-piknik -genkeys | grep '^key =' > ~/.piknik.toml.key
+# Save ONLY the key lines to a file (4 lines)
+piknik -genkeys | grep -E '^(Psk|SignPk|SignSk|EncryptSk)' | head -4 > ~/.piknik.toml.key
 
-# Example output:
-# key = "BN+NTfxuAINw5ga+mPisRuQpLrBvMqPdJbIy8WTLdbYTGF6f"
+# This extracts lines like:
+# Psk       = "a9f5e433e41813bb5de2679d8e9759dc976618074e3c015ea18535f4b533c277"
+# SignPk    = "b8bf5ec7b79b1ce19854e2e2c796c31be47d3141257d335dde6665bbd4170411"
+# SignSk    = "cf1d400a27159dc722b29995fff6e24c9ffc9924557692baaf34c6a3eee9e8fe"
+# EncryptSk = "a94f4dbc2b38e716c095f5ee1f3201cd78ee48f8592664614d4d5849fe0d1376"
 ```
 
 ### 2. Rebuild Your Mac Configuration

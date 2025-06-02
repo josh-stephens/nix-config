@@ -5,19 +5,10 @@ with lib;
 let
   cfg = config.programs.clipboard-sync;
   
-  # Piknik configuration - reads key from ~/.piknik.toml.key
+  # Piknik configuration - this machine runs as SERVER
   piknikConfig = ''
-    # Server address - will be set to Mac's Tailscale address
-    server = "cloudbank:8075"
-    
-    # Connection timeout
-    connect_timeout = 3
-    
-    # Clipboard timeout (5 minutes)
-    timeout = 300
-    
-    # Max clipboard size (10MB)
-    max_size = 10485760
+    # This Linux server hosts the clipboard
+    Listen = "0.0.0.0:8075"
   '';
   
 in {
@@ -29,8 +20,7 @@ in {
     # Install piknik
     home.packages = [ pkgs.piknik ];
     
-    # Piknik configuration
-    home.file.".piknik.toml".text = piknikConfig;
+    # Don't manage piknik config - let user set it up manually
     
     # Script to merge key file with config
     home.activation.piknikConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
@@ -133,5 +123,22 @@ in {
     
     # Note: Neovim clipboard integration is handled in the nvim module
     # to avoid conflicts with the managed config directory
+    
+    # Systemd service to run piknik server
+    systemd.user.services.piknik-server = mkIf (pkgs.stdenv.isLinux) {
+      Unit = {
+        Description = "Piknik clipboard server";
+        After = [ "network.target" ];
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "${pkgs.piknik}/bin/piknik -server";
+        Restart = "always";
+        RestartSec = 10;
+      };
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+    };
   };
 }

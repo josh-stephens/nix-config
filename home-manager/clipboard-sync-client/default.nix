@@ -5,67 +5,42 @@ with lib;
 let
   cfg = config.programs.clipboard-sync-client;
   
-  # Piknik server configuration for macOS - reads key from ~/.piknik.toml.key
+  # Piknik client configuration for macOS
   piknikConfig = ''
-    # Listen on all interfaces for Tailscale connections
-    listen = "0.0.0.0:8075"
-    
-    # Connection timeout
-    connect_timeout = 3
-    
-    # Clipboard timeout (5 minutes)
-    timeout = 300
-    
-    # Max clipboard size (10MB)
-    max_size = 10485760
+    # Connect to the Linux server
+    Connect = "ultraviolet:8075"
   '';
   
 in {
   options.programs.clipboard-sync-client = {
-    enable = mkEnableOption "clipboard synchronization server (for macOS)";
+    enable = mkEnableOption "clipboard synchronization client (for macOS)";
   };
 
   config = mkIf cfg.enable {
     # Install piknik
     home.packages = [ pkgs.piknik ];
     
-    # Piknik configuration
-    home.file.".piknik.toml".text = piknikConfig;
+    # Don't manage piknik config - let user set it up manually
     
-    # Script to merge key file with config
+    # Just use the generated piknik config directly
+    # User should run: piknik -genkeys > ~/.piknik.toml
     home.activation.piknikConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      if [ -f "$HOME/.piknik.toml.key" ]; then
-        # Merge the key file with the generated config
-        $DRY_RUN_CMD cat ${pkgs.writeText "piknik-base.toml" piknikConfig} > $HOME/.piknik.toml.tmp
-        $DRY_RUN_CMD echo "" >> $HOME/.piknik.toml.tmp
-        $DRY_RUN_CMD cat $HOME/.piknik.toml.key >> $HOME/.piknik.toml.tmp
-        $DRY_RUN_CMD mv $HOME/.piknik.toml.tmp $HOME/.piknik.toml
-      else
-        $VERBOSE_ECHO "Warning: ~/.piknik.toml.key not found. First run:"
-        $VERBOSE_ECHO "  piknik -genkeys | grep '^key =' > ~/.piknik.toml.key"
-        $VERBOSE_ECHO "Then copy ~/.piknik.toml.key to all your machines."
+      if [ ! -f "$HOME/.piknik.toml" ]; then
+        $VERBOSE_ECHO "Warning: ~/.piknik.toml not found."
+        $VERBOSE_ECHO "To set up piknik, run:"
+        $VERBOSE_ECHO "  piknik -genkeys > ~/.piknik.toml"
+        $VERBOSE_ECHO ""
+        $VERBOSE_ECHO "Then edit ~/.piknik.toml:"
+        $VERBOSE_ECHO "  - On Mac (server): Keep the 'Configuration for a server' section"
+        $VERBOSE_ECHO "  - On Linux (client): Keep the 'Configuration for a client' section"
+        $VERBOSE_ECHO "  - Delete the other section"
+        $VERBOSE_ECHO "  - Change Connect = line to point to your server (e.g., cloudbank:8075)"
+        $VERBOSE_ECHO ""
+        $VERBOSE_ECHO "Finally, copy the SAME keys to all machines (just the key values)."
       fi
     '';
     
-    # Create launchd service for piknik server on macOS
-    launchd.agents.piknik = {
-      enable = true;
-      config = {
-        Label = "com.piknik.server";
-        ProgramArguments = [
-          "${pkgs.piknik}/bin/piknik"
-          "-server"
-        ];
-        RunAtLoad = true;
-        KeepAlive = true;
-        StandardOutPath = "${config.home.homeDirectory}/Library/Logs/piknik.log";
-        StandardErrorPath = "${config.home.homeDirectory}/Library/Logs/piknik.error.log";
-        EnvironmentVariables = {
-          PATH = "${pkgs.piknik}/bin:/usr/bin:/bin:/usr/sbin:/sbin";
-          HOME = config.home.homeDirectory;
-        };
-      };
-    };
+    # No server needed on Mac - it's a client
     
     # Shell configuration for local clipboard testing and management
     programs.zsh = {
