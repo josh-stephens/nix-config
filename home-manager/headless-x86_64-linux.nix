@@ -3,6 +3,8 @@
     ./common.nix
     # ./media.nix
     ./tmux
+    ./devspaces
+    ./claude-wrapper
   ];
 
   home = {
@@ -23,7 +25,17 @@
     enable = true;
     devspaceMode = true;
     remoteOpener = true;  # Enable remote link opening
-    claudeNotifications = true;  # Enable Claude notification wrapper
+  };
+
+  # Enable devspaces management
+  programs.devspaces = {
+    enable = true;
+    claudeNotifications = true;
+  };
+
+  # Enable Claude wrapper
+  programs.claude-wrapper = {
+    enable = true;
   };
 
   # Nicely reload system units when changing configs
