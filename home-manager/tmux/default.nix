@@ -16,36 +16,6 @@ let
     }) theme.spaces;
   };
 
-  # 🎨 Catppuccin Mocha theme colors
-  catppuccinColors = ''
-    # 🎨 Catppuccin Mocha Color Palette
-    set -g @catppuccin_mocha_rosewater "#f5e0dc"
-    set -g @catppuccin_mocha_flamingo "#f2cdcd"
-    set -g @catppuccin_mocha_pink "#f5c2e7"
-    set -g @catppuccin_mocha_mauve "#cba6f7"
-    set -g @catppuccin_mocha_red "#f38ba8"
-    set -g @catppuccin_mocha_maroon "#eba0ac"
-    set -g @catppuccin_mocha_peach "#fab387"
-    set -g @catppuccin_mocha_yellow "#f9e2af"
-    set -g @catppuccin_mocha_green "#a6e3a1"
-    set -g @catppuccin_mocha_teal "#94e2d5"
-    set -g @catppuccin_mocha_sky "#89dceb"
-    set -g @catppuccin_mocha_sapphire "#74c7ec"
-    set -g @catppuccin_mocha_blue "#89b4fa" # Used for active tab background
-    set -g @catppuccin_mocha_lavender "#b4befe"
-    set -g @catppuccin_mocha_text "#cdd6f4"    # General text color
-    set -g @catppuccin_mocha_subtext1 "#bac2de"
-    set -g @catppuccin_mocha_subtext0 "#a6adc8"
-    set -g @catppuccin_mocha_overlay2 "#9399b2"
-    set -g @catppuccin_mocha_overlay1 "#7f849c"
-    set -g @catppuccin_mocha_overlay0 "#6c7086" # Used for inactive tab text
-    set -g @catppuccin_mocha_surface2 "#585b70"
-    set -g @catppuccin_mocha_surface1 "#45475a"
-    set -g @catppuccin_mocha_surface0 "#313244" # Used for inactive pane borders in original
-    set -g @catppuccin_mocha_base "#1e1e2e"    # Overall status bar background
-    set -g @catppuccin_mocha_mantle "#181825"
-    set -g @catppuccin_mocha_crust "#11111b"   # Used for active tab text (dark on blue)
-  '';  
 
   # 🚀 Devspace management scripts
   devspaceInitScript = pkgs.writeScriptBin "devspace-init" ''
@@ -535,9 +505,39 @@ in {
       terminal = "tmux-256color"; # Ensure your terminal supports 256 colors
       mouse = true;
       baseIndex = 1; # Windows start at 1
+      
+      plugins = with pkgs.tmuxPlugins; [
+        # Use the official catppuccin tmux theme which provides powerline-style window tabs
+        {
+          plugin = catppuccin;
+          extraConfig = ''
+            # Catppuccin configuration for minimal powerline tabs
+            set -g @catppuccin_flavour 'mocha'
+            
+            # Window configuration - powerline style
+            set -g @catppuccin_window_left_separator ""
+            set -g @catppuccin_window_right_separator " "
+            set -g @catppuccin_window_middle_separator " █"
+            set -g @catppuccin_window_number_position "right"
+            
+            # Minimal window format - just show name
+            set -g @catppuccin_window_default_fill "number"
+            set -g @catppuccin_window_default_text "#W"
+            set -g @catppuccin_window_current_fill "number"
+            set -g @catppuccin_window_current_text "#W"
+            
+            # Disable all status modules - we only want tabs
+            set -g @catppuccin_status_modules_right ""
+            set -g @catppuccin_status_modules_left ""
+            set -g @catppuccin_status_left_separator  ""
+            set -g @catppuccin_status_right_separator ""
+            set -g @catppuccin_status_fill "none"
+            set -g @catppuccin_status_connect_separator "no"
+          '';
+        }
+      ];
 
       extraConfig = ''
-        ${catppuccinColors}
 
         #  Nerd Font Powerline Symbols (ensure your font supports these)
         set -g @powerline_left_arrow ""  # U+E0B2
@@ -570,38 +570,14 @@ in {
           set-hook -g session-created 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
         ''}
 
-        # 🎨 Status Bar Styling - To match Kitty Powerline
-        # Subtle grey background like kitty tab bar
-        set -g status-style "fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_surface0}"
 
-        set -g status-left-length 0
-        set -g status-left "" # No content on the far left
-
-        # No right status - clean minimal look
-        set -g status-right-length 0
-        set -g status-right ""
-
-        set -g status-justify left # Tabs align to the left
-
-        # Inactive window format: Darker grey text on grey background
-        set -g window-status-format "#[fg=#{@catppuccin_mocha_overlay0},bg=#{@catppuccin_mocha_surface0}] #W "
-
-        # Active window format: Powerline shape with chevrons, blue background, light text
-        set -g window-status-current-format "\
-#[fg=#{@catppuccin_mocha_surface0},bg=#{@catppuccin_mocha_blue}]#{@powerline_left_arrow}\
-#[fg=#{@catppuccin_mocha_crust},bg=#{@catppuccin_mocha_blue},bold] #W \
-#[fg=#{@catppuccin_mocha_blue},bg=#{@catppuccin_mocha_surface0}]#{@powerline_right_arrow}"
-
-        set -g window-status-separator "" # No separator characters between windows
-
-        # 🎯 Pane borders
-        # Inactive pane border (using surface0 as in original, could be base for darker match)
-        set -g pane-border-style "fg=#{@catppuccin_mocha_surface0}"
-        # Active pane border (uses devspace color if in devspaceMode, otherwise blue)
+        # 🎯 Pane borders - tmux-powerline theme handles colors
+        set -g pane-border-style "fg=#313244"
         ${if cfg.devspaceMode then ''
-          set -g pane-active-border-style "fg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}}"
+          # Active pane border uses devspace-specific color
+          set -g pane-active-border-style "fg=#89b4fa"
         '' else ''
-          set -g pane-active-border-style "fg=#{@catppuccin_mocha_blue}"
+          set -g pane-active-border-style "fg=#89b4fa"
         ''}
 
         # ⌨️ Key bindings (Copied from your original config)
