@@ -564,23 +564,24 @@ in {
         ''}
         
         # 🎨 Status Bar Styling - Match kitty tabs exactly
-        # Transparent background for the whole bar
-        set -g status-style "fg=#{@catppuccin_mocha_text},bg=default"
+        # Subtle grey background that extends across entire bar
+        set -g status-style "fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_surface0}"
         set -g status-left-length 0
-        set -g status-right-length 0
+        set -g status-right-length 50
         
         # No left status - tabs start immediately at the left edge
         set -g status-left ""
         
-        # No right status - clean look
-        set -g status-right ""
+        # Right status fills remaining space with grey background
+        set -g status-right "#[bg=#{@catppuccin_mocha_surface0}]"
         
         # 🪟 Window status - match kitty tabs exactly
-        # Inactive tabs - grey text, no background, no chevron, minimal padding
-        set -g window-status-format "#[fg=#{@catppuccin_mocha_overlay0},bg=default] #W "
+        # Inactive tabs - darker grey text on grey background
+        set -g window-status-format "#[fg=#{@catppuccin_mocha_overlay0},bg=#{@catppuccin_mocha_surface0}] #W "
         
-        # Active tab - white text on blue background with chevron
-        set -g window-status-current-format "#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_blue},bold] #W #[fg=#{@catppuccin_mocha_blue},bg=default]"
+        # Active tab - white text on blue background with chevrons on both sides
+        # Left chevron transitions from grey to blue, right chevron from blue to grey
+        set -g window-status-current-format "#[fg=#{@catppuccin_mocha_surface0},bg=#{@catppuccin_mocha_blue}]#[fg=#{@catppuccin_mocha_crust},bg=#{@catppuccin_mocha_blue},bold] #W #[fg=#{@catppuccin_mocha_blue},bg=#{@catppuccin_mocha_surface0}]"
         
         # Window separator - no separator between windows
         set -g window-status-separator ""
