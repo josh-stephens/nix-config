@@ -6,7 +6,7 @@ let
   cfg = config.programs.tmux-devspace;
 
   # 🪐 Import devspace theme configuration
-  theme = import ../../pkgs/devspaces/theme.nix; # Assuming this path is correct relative to this file
+  theme = import ../../pkgs/devspaces/theme.nix;
   devspaceConfig = {
     devspaces = map (s: {
       name = s.name;
@@ -14,22 +14,6 @@ let
       description = "${s.icon} ${s.name} - ${s.description}";
       hotkey = s.hotkey;
     }) theme.spaces;
-  };
-
-  # Fetch erikw/tmux-powerline
-  tmuxPowerlinePackage = pkgs.fetchFromGitHub {
-    owner = "erikw";
-    repo = "tmux-powerline";
-    rev = "ad98fe32b1c96ebe4872bbb9e20ceeb0fd9b24ad";
-    sha256 = "sha256-WGLNjvvBBmS9dIHV08QJuiEBjv+6uubKlTnMITBdnXo=";
-  };
-
-  # Fetch kjnsn/catppuccin-tmux-powerline theme
-  tmuxPowerlineCatppuccinThemePackage = pkgs.fetchFromGitHub {
-    owner = "kjnsn";
-    repo = "catppuccin-tmux-powerline";
-    rev = "015ae53948495ad18897c15fdad7ba6445d3709f"; # Latest commit as of checking
-    sha256 = "sha256-vablRo9Dqs97CRF7dO1swFi2vKg6rdTCfLU0wyERaCA=";
   };
 
   # 🚀 Devspace management scripts
@@ -516,9 +500,48 @@ in {
       escapeTime = 0;
       historyLimit = 50000;
       keyMode = "vi";
-      terminal = "tmux-256color"; # Ensure your terminal supports 256 colors
+      terminal = "tmux-256color"; # Required for proper color support
       mouse = true;
       baseIndex = 1; # Windows start at 1
+      
+      # 🎨 Catppuccin theme plugin
+      plugins = with pkgs.tmuxPlugins; [
+        {
+          plugin = catppuccin;
+          extraConfig = ''
+            # Catppuccin settings
+            set -g @catppuccin_flavour 'mocha' # latte, frappe, macchiato, mocha
+            
+            # Window settings
+            set -g @catppuccin_window_left_separator ""
+            set -g @catppuccin_window_right_separator " "
+            set -g @catppuccin_window_middle_separator " █"
+            set -g @catppuccin_window_number_position "right"
+            
+            set -g @catppuccin_window_default_fill "number"
+            set -g @catppuccin_window_default_text "#W"
+            
+            set -g @catppuccin_window_current_fill "number"
+            set -g @catppuccin_window_current_text "#W"
+            
+            # Status bar modules
+            set -g @catppuccin_status_modules_right "directory user host session"
+            set -g @catppuccin_status_modules_left ""
+            set -g @catppuccin_status_left_separator  " "
+            set -g @catppuccin_status_right_separator ""
+            set -g @catppuccin_status_fill "icon"
+            set -g @catppuccin_status_connect_separator "no"
+            
+            # Directory settings
+            set -g @catppuccin_directory_text "#{b:pane_current_path}"
+            
+            ${optionalString cfg.devspaceMode ''
+              # Devspace-specific status
+              set -g @catppuccin_session_text "#{?#{==:#{session_name},devspace-mercury},🚀 mercury,#{?#{==:#{session_name},devspace-venus},💫 venus,#{?#{==:#{session_name},devspace-earth},🌍 earth,#{?#{==:#{session_name},devspace-mars},🔴 mars,#{?#{==:#{session_name},devspace-jupiter},🪐 jupiter,#{session_name}}}}}}"
+            ''}
+          '';
+        }
+      ];
 
       extraConfig = ''
         # 🔧 General Tmux Settings
@@ -528,12 +551,23 @@ in {
         set -g focus-events on         # For better editor integration (e.g., Neovim)
         set -g status-position bottom  # Display status bar at the bottom
 
-        # 🎯 Pane borders
+        # 🎯 Pane borders - Catppuccin Mocha colors
         set -g pane-border-style "fg=#313244"
-        ${if cfg.devspaceMode then ''
-          set -g pane-active-border-style "fg=#89b4fa"
-        '' else ''
-          set -g pane-active-border-style "fg=#89b4fa"
+        set -g pane-active-border-style "fg=#89b4fa"
+        
+        ${optionalString cfg.devspaceMode ''
+          # Devspace-specific pane colors based on current session
+          # These colors are from the Catppuccin Mocha palette
+          if-shell '[ "#{session_name}" = "devspace-mercury" ]' \
+            'set -g pane-active-border-style "fg=#f5c2e7"' # Pink (Flamingo)
+          if-shell '[ "#{session_name}" = "devspace-venus" ]' \
+            'set -g pane-active-border-style "fg=#f38ba8"' # Red (Red)  
+          if-shell '[ "#{session_name}" = "devspace-earth" ]' \
+            'set -g pane-active-border-style "fg=#a6e3a1"' # Green (Green)
+          if-shell '[ "#{session_name}" = "devspace-mars" ]' \
+            'set -g pane-active-border-style "fg=#fab387"' # Orange (Peach)
+          if-shell '[ "#{session_name}" = "devspace-jupiter" ]' \
+            'set -g pane-active-border-style "fg=#cba6f7"' # Purple (Mauve)
         ''}
 
         # 🌍 Update environment to include devspace variables
@@ -591,12 +625,6 @@ in {
           ) devspaceConfig.devspaces)}
         ''}
 
-        # 🎨 Configure tmux-powerline
-        # tmux-powerline reads from config files, not environment variables in tmux
-        # The config files are created via home.file above
-        # Now set the status line to use tmux-powerline
-        set -g status-left "#(${tmuxPowerlinePackage}/powerline.sh left)"
-        set -g status-right "#(${tmuxPowerlinePackage}/powerline.sh right)"
       ''; # End of extraConfig
     }; # End of programs.tmux
 
@@ -612,50 +640,14 @@ in {
     ]);
 
     # 📁 Create devspace directories if devspace mode is enabled
-    home.file = mkMerge [
-      # tmux-powerline configuration files
-      {
-        ".config/tmux-powerline/config.sh".text = ''
-          # Main configuration file for tmux-powerline
-          export TMUX_POWERLINE_THEME="catppuccin-minimal"
-          export TMUX_POWERLINE_DIR_HOME="${tmuxPowerlinePackage}"
-          export TMUX_POWERLINE_DIR_THEMES="$HOME/.config/tmux-powerline/themes"
-          export TMUX_POWERLINE_DIR_SEGMENTS="${tmuxPowerlinePackage}/segments"
-          
-          # Disable all default segments - we only want window tabs
-          export TMUX_POWERLINE_DEBUG_MODE_ENABLED="false"
-          export TMUX_POWERLINE_PATCHED_FONT_IN_USE="true"
-          export TMUX_POWERLINE_COMPACT_ACTIVE="false"
-          export TMUX_POWERLINE_COMPACT_INACTIVE="false"
-        '';
-        
-        # Create a minimal theme based on catppuccin that only shows window tabs
-        ".config/tmux-powerline/themes/catppuccin-minimal.sh".text = ''
-          # Minimal Catppuccin theme - only window tabs
-          # Based on catppuccin_mocha_theme.sh but with only window segments
-          
-          # Source the original catppuccin theme for colors
-          source "${tmuxPowerlineCatppuccinThemePackage}/catppuccin_mocha_theme.sh"
-          
-          # Override segments to show only window list
-          TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
-            "tmux_window_list 89b4fa 1e1e2e"
-          )
-          
-          TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=()
-        '';
-      }
-      
-      # Devspace directories (if enabled)
-      (mkIf cfg.devspaceMode (
-        listToAttrs (map (devspace: {
-          name = "devspaces/${devspace.name}/.keep";
-          value = {
-            text = "";
-          };
-        }) devspaceConfig.devspaces)
-      ))
-    ];
+    home.file = mkIf cfg.devspaceMode (
+      listToAttrs (map (devspace: {
+        name = "devspaces/${devspace.name}/.keep";
+        value = {
+          text = "";
+        };
+      }) devspaceConfig.devspaces)
+    );
 
     # 🌐 Set up environment for remote link opening
     home.sessionVariables = mkIf cfg.remoteOpener {
