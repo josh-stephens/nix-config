@@ -53,12 +53,23 @@ in {
       initExtra = ''
         # Copy function that works with pipes or arguments
         copy() {
+          # Try piknik first with timeout
           if [ -t 0 ]; then
             # If no stdin, copy arguments
-            echo -n "$*" | piknik -copy
+            if echo -n "$*" | timeout 0.5 piknik -copy 2>/dev/null; then
+              return 0
+            else
+              # Fallback to OSC52
+              printf "\033]52;c;$(echo -n "$*" | base64)\a"
+            fi
           else
             # Copy from stdin
-            piknik -copy
+            if timeout 0.5 piknik -copy 2>/dev/null; then
+              return 0
+            else
+              # Fallback to OSC52
+              printf "\033]52;c;$(base64)\a"
+            fi
           fi
         }
         

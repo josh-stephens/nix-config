@@ -22,13 +22,16 @@ let
       
       # Check if clipboard has changed
       if [ "$current_clipboard" != "$last_clipboard" ] && [ -n "$current_clipboard" ]; then
-        # Sync to piknik
-        echo "$current_clipboard" | ${pkgs.piknik}/bin/piknik -copy 2>/dev/null
-        if [ $? -eq 0 ]; then
-          echo "✅ Synced clipboard to piknik ($(echo "$current_clipboard" | wc -c) bytes)"
-        else
-          echo "❌ Failed to sync clipboard to piknik"
-        fi
+        # Try to sync to piknik with timeout (non-blocking)
+        (
+          echo "$current_clipboard" | timeout 0.5 ${pkgs.piknik}/bin/piknik -copy 2>/dev/null
+          if [ $? -eq 0 ]; then
+            echo "✅ Synced clipboard to piknik ($(echo "$current_clipboard" | wc -c) bytes)"
+          else
+            echo "⚠️  Piknik sync failed (server unreachable?)"
+          fi
+        ) &
+        # Update last known clipboard immediately (don't wait for piknik)
         last_clipboard="$current_clipboard"
       fi
       
