@@ -131,25 +131,7 @@ in {
       bind-key p run-shell "piknik -paste | tmux load-buffer -" \; paste-buffer
     '';
     
-    # Configure neovim to use piknik
-    home.file.".config/nvim/after/plugin/clipboard-sync.lua" = mkIf config.programs.neovim.enable {
-      text = ''
-        -- Use piknik for clipboard if available
-        if vim.fn.executable('piknik') == 1 then
-          vim.g.clipboard = {
-            name = 'piknik',
-            copy = {
-              ['+'] = {'piknik', '-copy'},
-              ['*'] = {'piknik', '-copy'},
-            },
-            paste = {
-              ['+'] = {'piknik', '-paste'},
-              ['*'] = {'piknik', '-paste'},
-            },
-            cache_enabled = true,
-          }
-        end
-      '';
-    };
+    # Note: Neovim clipboard integration is handled in the nvim module
+    # to avoid conflicts with the managed config directory
   };
 }
