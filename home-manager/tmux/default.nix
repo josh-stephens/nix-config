@@ -21,7 +21,7 @@ let
     owner = "erikw";
     repo = "tmux-powerline";
     rev = "ad98fe32b1c96ebe4872bbb9e20ceeb0fd9b24ad";
-    sha256 = "sha256-WGLNjvvBBmS9dIHV08QJuiEBjv+6uubKlTnMITBdnXo="; # IMPORTANT: Replace with actual SHA256 hash
+    sha256 = "sha256-WGLNjvvBBmS9dIHV08QJuiEBjv+6uubKlTnMITBdnXo=";
   };
 
   # Fetch kjnsn/catppuccin-tmux-powerline theme
@@ -29,7 +29,7 @@ let
     owner = "kjnsn";
     repo = "catppuccin-tmux-powerline";
     rev = "015ae53948495ad18897c15fdad7ba6445d3709f"; # Latest commit as of checking
-    sha256 = lib.fakeSha256; # IMPORTANT: Replace with actual SHA256 hash
+    sha256 = "sha256-vablRo9Dqs97CRF7dO1swFi2vKg6rdTCfLU0wyERaCA=";
   };
 
   # 🚀 Devspace management scripts
