@@ -4,18 +4,18 @@ with lib;
 
 let
   cfg = config.programs.tmux-devspace;
-  
+
   # 🪐 Import devspace theme configuration
-  theme = import ../../pkgs/devspaces/theme.nix;
+  theme = import ../../pkgs/devspaces/theme.nix; # Assuming this path is correct relative to this file
   devspaceConfig = {
     devspaces = map (s: {
       name = s.name;
-      color = s.color;
+      color = s.color; # Used for devspace-specific active pane border
       description = "${s.icon} ${s.name} - ${s.description}";
       hotkey = s.hotkey;
     }) theme.spaces;
   };
-  
+
   # 🎨 Catppuccin Mocha theme colors
   catppuccinColors = ''
     # 🎨 Catppuccin Mocha Color Palette
@@ -31,14 +31,22 @@ let
     set -g @catppuccin_mocha_teal "#94e2d5"
     set -g @catppuccin_mocha_sky "#89dceb"
     set -g @catppuccin_mocha_sapphire "#74c7ec"
-    set -g @catppuccin_mocha_blue "#89b4fa"
+    set -g @catppuccin_mocha_blue "#89b4fa" # Used for active tab background
     set -g @catppuccin_mocha_lavender "#b4befe"
-    set -g @catppuccin_mocha_text "#cdd6f4"
-    set -g @catppuccin_mocha_base "#1e1e2e"
+    set -g @catppuccin_mocha_text "#cdd6f4"    # General text color
+    set -g @catppuccin_mocha_subtext1 "#bac2de"
+    set -g @catppuccin_mocha_subtext0 "#a6adc8"
+    set -g @catppuccin_mocha_overlay2 "#9399b2"
+    set -g @catppuccin_mocha_overlay1 "#7f849c"
+    set -g @catppuccin_mocha_overlay0 "#6c7086" # Used for inactive tab text
+    set -g @catppuccin_mocha_surface2 "#585b70"
+    set -g @catppuccin_mocha_surface1 "#45475a"
+    set -g @catppuccin_mocha_surface0 "#313244" # Used for inactive pane borders in original
+    set -g @catppuccin_mocha_base "#1e1e2e"    # Overall status bar background
     set -g @catppuccin_mocha_mantle "#181825"
-    set -g @catppuccin_mocha_crust "#11111b"
-  '';
-  
+    set -g @catppuccin_mocha_crust "#11111b"   # Used for active tab text (dark on blue)
+  '';  
+
   # 🚀 Devspace management scripts
   devspaceInitScript = pkgs.writeScriptBin "devspace-init" ''
     #!${pkgs.bash}/bin/bash
@@ -490,25 +498,25 @@ let
 in {
   options.programs.tmux-devspace = {
     enable = mkEnableOption "tmux devspace development environment";
-    
+
     devspaceMode = mkOption {
       type = types.bool;
       default = false;
       description = "Enable devspace development environment mode";
     };
-    
+
     remoteOpener = mkOption {
       type = types.bool;
       default = false;
       description = "Enable remote link opening (server-side)";
     };
-    
+
     claudeNotifications = mkOption {
       type = types.bool;
       default = false;
       description = "Enable Claude Code notification wrapper";
     };
-    
+
     enableSystemdService = mkOption {
       type = types.bool;
       default = false;
@@ -524,117 +532,116 @@ in {
       escapeTime = 0;
       historyLimit = 50000;
       keyMode = "vi";
-      terminal = "tmux-256color";
+      terminal = "tmux-256color"; # Ensure your terminal supports 256 colors
       mouse = true;
-      baseIndex = 1;
-      
+      baseIndex = 1; # Windows start at 1
+      paneBaseIndex = 1; # Panes start at 1
+
       extraConfig = ''
         ${catppuccinColors}
-        
+
+        #  Nerd Font Powerline Symbols (ensure your font supports these)
+        set -g @powerline_left_arrow ""  # U+E0B2
+        set -g @powerline_right_arrow "" # U+E0B0
+
         # 🔧 General Settings
-        setw -g pane-base-index 1
-        set -g renumber-windows on
-        set -g set-titles on
-        set -g focus-events on
-        
+        setw -g pane-base-index 1      # Already set by paneBaseIndex option
+        set -g renumber-windows on     # Renumber windows when one is closed
+        set -g set-titles on           # Set terminal titles
+        set -g focus-events on         # For better editor integration (e.g., Neovim)
+        set -g status-position top     # Display status bar at the top like Kitty tabs
+
         # 🌍 Update environment to include devspace variables
         set -ga update-environment " TMUX_DEVSPACE TMUX_DEVSPACE_COLOR TMUX_DEVSPACE_ICON TMUX_DEVSPACE_INITIALIZED"
-        
+
         # 🔔 Bell settings for notifications
         set -g bell-action any
         set -g visual-bell off
         set -g visual-activity off
         setw -g monitor-activity on
-        
+
         # 📋 Terminal integration
-        # Allow OSC52 sequences to pass through for clipboard operations
-        set -g allow-passthrough on
-        
+        set -g allow-passthrough on # Allow OSC52 sequences for clipboard
+
         ${optionalString cfg.devspaceMode ''
-          # 🪝 Devspace state saving hooks
-          # Save state when windows are created/destroyed in devspace sessions
+          # 🪝 Devspace state saving hooks (if devspaceMode is enabled)
           set-hook -g window-linked 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
           set-hook -g window-unlinked 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
-          
-          # Save state when client detaches (good time to save)
           set-hook -g client-detached 'run-shell -b "devspace-save-hook 2>/dev/null || true"'
-          
-          # Save state on session changes
           set-hook -g session-created 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
         ''}
-        
-        # 🎨 Status Bar Styling - Match kitty tabs exactly
-        # Subtle grey background that extends across entire bar
-        set -g status-style "fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_surface0}"
+
+        # 🎨 Status Bar Styling - To match Kitty Powerline
+        set -g status-style "fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_base}" # Overall bar colors
+
         set -g status-left-length 0
-        set -g status-right-length 50
-        
-        # No left status - tabs start immediately at the left edge
-        set -g status-left ""
-        
-        # Right status fills remaining space with grey background
-        set -g status-right "#[bg=#{@catppuccin_mocha_surface0}]"
-        
-        # 🪟 Window status - match kitty tabs exactly
-        # Inactive tabs - darker grey text on grey background
-        set -g window-status-format "#[fg=#{@catppuccin_mocha_overlay0},bg=#{@catppuccin_mocha_surface0}] #W "
-        
-        # Active tab - white text on blue background with chevrons on both sides
-        # Left chevron transitions from grey to blue, right chevron from blue to grey
-        set -g window-status-current-format "#[fg=#{@catppuccin_mocha_surface0},bg=#{@catppuccin_mocha_blue}]#[fg=#{@catppuccin_mocha_crust},bg=#{@catppuccin_mocha_blue},bold] #W #[fg=#{@catppuccin_mocha_blue},bg=#{@catppuccin_mocha_surface0}]"
-        
-        # Window separator - no separator between windows
-        set -g window-status-separator ""
-        
-        # Left justify - tabs flush against left edge
-        set -g status-justify left
-        
+        set -g status-left "" # No content on the far left
+
+        # Right side of status bar: * tmux session_name | current_path
+        set -g status-right-length 120 # Increased length for path
+        set -g status-right "#[fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_base}] * tmux #S | #{pane_current_path} "
+
+        set -g status-justify left # Tabs align to the left
+
+        # Inactive window format: Muted text on base background. Add spaces for padding.
+        set -g window-status-format "#[fg=#{@catppuccin_mocha_overlay0},bg=#{@catppuccin_mocha_base}] #W "
+
+        # Active window format: Powerline shape, blue background, dark text. Add spaces for padding.
+        # Using #W for just window name, like Kitty tabs. Use #I:#W for index:name.
+        set -g window-status-current-format "\
+#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_blue}]#{@powerline_left_arrow}\
+#[fg=#{@catppuccin_mocha_crust},bg=#{@catppuccin_mocha_blue},bold] #W \
+#[fg=#{@catppuccin_mocha_blue},bg=#{@catppuccin_mocha_base}]#{@powerline_right_arrow}"
+
+        set -g window-status-separator "" # No separator characters between windows, powerline glyphs handle transitions
+
         # 🎯 Pane borders
+        # Inactive pane border (using surface0 as in original, could be base for darker match)
         set -g pane-border-style "fg=#{@catppuccin_mocha_surface0}"
+        # Active pane border (uses devspace color if in devspaceMode, otherwise blue)
         ${if cfg.devspaceMode then ''
           set -g pane-active-border-style "fg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}}"
         '' else ''
           set -g pane-active-border-style "fg=#{@catppuccin_mocha_blue}"
         ''}
-        
-        # ⌨️ Key bindings
-        
+
+        # ⌨️ Key bindings (Copied from your original config)
         # 📋 Better copy mode
         bind-key v copy-mode
         bind-key -T copy-mode-vi v send-keys -X begin-selection
         bind-key -T copy-mode-vi y send-keys -X copy-selection-and-cancel
-        
+
         # 🔄 Reload config
         bind-key r source-file ~/.tmux.conf \; display-message "⚡ Config reloaded!"
-        
+
         # 🚪 Better pane management
         bind-key | split-window -h -c "#{pane_current_path}"
         bind-key - split-window -v -c "#{pane_current_path}"
         bind-key x kill-pane
         bind-key X kill-window
-        
+
         # 📍 Navigate panes with vim keys
         bind-key h select-pane -L
         bind-key j select-pane -D
         bind-key k select-pane -U
         bind-key l select-pane -R
-        
+
         ${optionalString cfg.devspaceMode ''
           # ⌨️ Devspace-specific keybindings
           # Quick window switching with memorable keys
-          bind-key c select-window -t :1   # Claude
-          bind-key n select-window -t :2   # Neovim
-          bind-key t select-window -t :3   # Terminal
-          bind-key l select-window -t :4   # Logs
-          
+          bind-key c select-window -t :1  # Claude
+          bind-key n select-window -t :2  # Neovim
+          bind-key t select-window -t :3  # Terminal
+          bind-key l select-window -t :4  # Logs
+
           # 🚀 Quick session switching (theme-based hotkeys)
-          ${concatStringsSep "\n          " (map (d: 
+          ${concatStringsSep "\n          " (map (d:
             "bind-key -n M-${d.hotkey} switch-client -t devspace-${d.name}"
           ) devspaceConfig.devspaces)}
         ''}
       '';
     };
-    
+
     home.packages = with pkgs; (optionals cfg.devspaceMode [
       devspaceInitScript
       devspaceStatusScript
@@ -645,7 +652,7 @@ in {
       claudeNotifyScript
       claudeDevspaceScript
     ]);
-    
+
     # 📁 Create devspace directories if devspace mode is enabled
     home.file = mkIf cfg.devspaceMode (
       listToAttrs (map (devspace: {
@@ -655,13 +662,13 @@ in {
         };
       }) devspaceConfig.devspaces)
     );
-    
+
     # 🌐 Set up environment for remote link opening
     home.sessionVariables = mkIf cfg.remoteOpener {
       BROWSER = "remote-link-open";
       DEFAULT_BROWSER = "remote-link-open";
     };
-    
+
     # 🔧 Shell aliases for Claude commands
     programs.zsh.shellAliases = mkIf (cfg.devspaceMode && cfg.claudeNotifications) {
       claude = "claude-devspace";
