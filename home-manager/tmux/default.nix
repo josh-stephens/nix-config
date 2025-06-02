@@ -16,6 +16,23 @@ let
     }) theme.spaces;
   };
 
+  # Fetch erikw/tmux-powerline
+  tmuxPowerlinePackage = pkgs.fetchFromGitHub {
+    owner = "erikw";
+    repo = "tmux-powerline";
+    rev = "2581103f7092f295a29e5e400634822787a90648"; # A commit from master branch
+    sha256 = lib.fakeSha256; # IMPORTANT: Replace with actual SHA256 hash
+                             # Obtain with: nix-prefetch-github erikw tmux-powerline --rev 2581103f7092f295a29e5e400634822787a90648
+  };
+
+  # Fetch kjnsn/catppuccin-tmux-powerline theme
+  tmuxPowerlineCatppuccinThemePackage = pkgs.fetchFromGitHub {
+    owner = "kjnsn";
+    repo = "catppuccin-tmux-powerline";
+    rev = "e28f62a11ef010192889747003181350e498ce6d"; # Latest commit as of checking
+    sha256 = lib.fakeSha256; # IMPORTANT: Replace with actual SHA256 hash
+                             # Obtain with: nix-prefetch-github kjnsn catppuccin-tmux-powerline --rev e28f62a11ef010192889747003181350e498ce6d
+  };
 
   # 🚀 Devspace management scripts
   devspaceInitScript = pkgs.writeScriptBin "devspace-init" ''
@@ -495,7 +512,6 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # Enable the base tmux module
     programs.tmux = {
       enable = true;
       clock24 = true;
@@ -505,50 +521,40 @@ in {
       terminal = "tmux-256color"; # Ensure your terminal supports 256 colors
       mouse = true;
       baseIndex = 1; # Windows start at 1
-      
-      plugins = with pkgs.tmuxPlugins; [
-        # Use the official catppuccin tmux theme which provides powerline-style window tabs
-        {
-          plugin = catppuccin;
-          extraConfig = ''
-            # Catppuccin configuration for minimal powerline tabs
-            set -g @catppuccin_flavour 'mocha'
-            
-            # Window configuration - powerline style
-            set -g @catppuccin_window_left_separator ""
-            set -g @catppuccin_window_right_separator " "
-            set -g @catppuccin_window_middle_separator " █"
-            set -g @catppuccin_window_number_position "right"
-            
-            # Minimal window format - just show name
-            set -g @catppuccin_window_default_fill "number"
-            set -g @catppuccin_window_default_text "#W"
-            set -g @catppuccin_window_current_fill "number"
-            set -g @catppuccin_window_current_text "#W"
-            
-            # Disable all status modules - we only want tabs
-            set -g @catppuccin_status_modules_right ""
-            set -g @catppuccin_status_modules_left ""
-            set -g @catppuccin_status_left_separator  ""
-            set -g @catppuccin_status_right_separator ""
-            set -g @catppuccin_status_fill "none"
-            set -g @catppuccin_status_connect_separator "no"
-          '';
-        }
-      ];
+      paneBaseIndex = 1; # Panes start at 1
 
       extraConfig = ''
-
-        #  Nerd Font Powerline Symbols (ensure your font supports these)
-        set -g @powerline_left_arrow ""  # U+E0B2
-        set -g @powerline_right_arrow "" # U+E0B0
-
-        # 🔧 General Settings
-        setw -g pane-base-index 1      # Already set by paneBaseIndex option
+        # 🔧 General Tmux Settings
+        setw -g pane-base-index 1
         set -g renumber-windows on     # Renumber windows when one is closed
         set -g set-titles on           # Set terminal titles
         set -g focus-events on         # For better editor integration (e.g., Neovim)
-        set -g status-position bottom  # Status bar at bottom (default)
+        set -g status-position bottom  # Display status bar at the bottom
+
+        # 🎨 tmux-powerline (erikw/tmux-powerline) Configuration
+        # These settings must be defined/sourced BEFORE sourcing powerline.sh
+
+        # 1. Source the Catppuccin Mocha theme for tmux-powerline.
+        #    This theme file sets global @catppuccin_mocha_* color variables
+        #    and @powerline_color_* variables for tmux-powerline segments.
+        source "${tmuxPowerlineCatppuccinThemePackage}/themes/catppuccin_mocha.tmux"
+
+        # 2. Configure segments: only "windows" (tabs) on the left, nothing on the right.
+        set -g @powerline_segments_left "windows"
+        set -g @powerline_segments_right ""
+
+        # 3. Configure window segment format to show only window name with padding.
+        #    This overrides any default format (like icons/indices) set by the theme.
+        set -g @powerline_window_status_current_format " #W " # Padded window name for current window
+        set -g @powerline_window_status_format " #W "       # Padded window name for other windows
+
+        # 🎯 Pane borders (uses global @catppuccin_mocha_* vars set by the sourced theme)
+        set -g pane-border-style "fg=#{@catppuccin_mocha_surface0}"
+        ${if cfg.devspaceMode then ''
+          set -g pane-active-border-style "fg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}}"
+        '' else ''
+          set -g pane-active-border-style "fg=#{@catppuccin_mocha_blue}"
+        ''}
 
         # 🌍 Update environment to include devspace variables
         set -ga update-environment " TMUX_DEVSPACE TMUX_DEVSPACE_COLOR TMUX_DEVSPACE_ICON TMUX_DEVSPACE_INITIALIZED"
@@ -557,7 +563,7 @@ in {
         set -g bell-action any
         set -g visual-bell off
         set -g visual-activity off
-        setw -g monitor-activity on
+        setw -g monitor-activity on # tmux-powerline uses this for activity indicators
 
         # 📋 Terminal integration
         set -g allow-passthrough on # Allow OSC52 sequences for clipboard
@@ -568,16 +574,6 @@ in {
           set-hook -g window-unlinked 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
           set-hook -g client-detached 'run-shell -b "devspace-save-hook 2>/dev/null || true"'
           set-hook -g session-created 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
-        ''}
-
-
-        # 🎯 Pane borders - tmux-powerline theme handles colors
-        set -g pane-border-style "fg=#313244"
-        ${if cfg.devspaceMode then ''
-          # Active pane border uses devspace-specific color
-          set -g pane-active-border-style "fg=#89b4fa"
-        '' else ''
-          set -g pane-active-border-style "fg=#89b4fa"
         ''}
 
         # ⌨️ Key bindings (Copied from your original config)
@@ -614,8 +610,13 @@ in {
             "bind-key -n M-${d.hotkey} switch-client -t devspace-${d.name}"
           ) devspaceConfig.devspaces)}
         ''}
-      '';
-    };
+
+        # 4. Source tmux-powerline's main script to generate the status bar.
+        #    This MUST be one of the last lines related to tmux-powerline.
+        source "${tmuxPowerlinePackage}/powerline.sh"
+        # End of tmux-powerline Configuration
+      ''; # End of extraConfig
+    }; # End of programs.tmux
 
     home.packages = with pkgs; (optionals cfg.devspaceMode [
       devspaceInitScript
@@ -649,5 +650,5 @@ in {
       claude = "claude-devspace";
       cn = "claude-notify";
     };
-  };
-}
+  }; # End of config = mkIf cfg.enable
+} # End of file
