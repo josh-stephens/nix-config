@@ -37,7 +37,9 @@ writeScriptBin "devspace-restore" ''
     # Check each devspace session
     for i in "''${!DEVSPACES[@]}"; do
       devspace="''${DEVSPACES[$i]}"
-      session="devspace-$devspace"
+      # Use numeric ID for session name (IDs start at 1)
+      session_id=$((i + 1))
+      session="devspace-$session_id"
       
       if echo "$existing_sessions" | grep -q "^$session$"; then
         echo "✅ Devspace '$devspace' session already exists"
@@ -68,28 +70,29 @@ writeScriptBin "devspace-restore" ''
         done
       else
         while IFS='|' read -r session_name window_count initialized project_path; do
-          if [[ "$session_name" =~ ^devspace-(.+)$ ]]; then
-            devspace="''${BASH_REMATCH[1]}"
-          
-          # Validate it's a known devspace
-          if [[ " ''${DEVSPACES[@]} " =~ " $devspace " ]]; then
-            echo "🔄 Restoring devspace '$devspace' (was initialized: $initialized)"
-            
-            if [ "$initialized" = "true" ] && [ -n "$project_path" ] && [ -d "$project_path" ]; then
-              # Restore as initialized devspace
-              echo "  📁 Restoring with project: $project_path"
+          if [[ "$session_name" =~ ^devspace-([0-9]+)$ ]]; then
+            session_id="''${BASH_REMATCH[1]}"
+            # Convert session ID to devspace name (array is 0-indexed, IDs are 1-indexed)
+            devspace_idx=$((session_id - 1))
+            if [ $devspace_idx -ge 0 ] && [ $devspace_idx -lt ''${#DEVSPACES[@]} ]; then
+              devspace="''${DEVSPACES[$devspace_idx]}"
+              echo "🔄 Restoring devspace '$devspace' (was initialized: $initialized)"
               
-              # First create minimal session
-              ${devspace-init-single}/bin/devspace-init-single "$devspace"
-              
-              # Then set up the project (which will expand it)
-              ${devspace-setup}/bin/devspace-setup "$devspace" "$project_path" >/dev/null 2>&1 || echo "  ⚠️  Could not restore project link"
-            else
-              # Just create minimal session
-              ${devspace-init-single}/bin/devspace-init-single "$devspace"
+              if [ "$initialized" = "true" ] && [ -n "$project_path" ] && [ -d "$project_path" ]; then
+                # Restore as initialized devspace
+                echo "  📁 Restoring with project: $project_path"
+                
+                # First create minimal session
+                ${devspace-init-single}/bin/devspace-init-single "$devspace"
+                
+                # Then set up the project (which will expand it)
+                ${devspace-setup}/bin/devspace-setup "$devspace" "$project_path" >/dev/null 2>&1 || echo "  ⚠️  Could not restore project link"
+              else
+                # Just create minimal session
+                ${devspace-init-single}/bin/devspace-init-single "$devspace"
+              fi
             fi
           fi
-        fi
       done < "$STATE_DIR/sessions.txt"
       fi
       
@@ -114,23 +117,28 @@ writeScriptBin "devspace-restore" ''
   # Save each session (if any exist)
   if ${tmux}/bin/tmux list-sessions -F '#S' 2>/dev/null; then
     ${tmux}/bin/tmux list-sessions -F '#S' 2>/dev/null | while read -r session; do
-    if [[ "$session" =~ ^devspace-(.+)$ ]]; then
-      devspace="''${BASH_REMATCH[1]}"
+    if [[ "$session" =~ ^devspace-([0-9]+)$ ]]; then
+      session_id="''${BASH_REMATCH[1]}"
+      # Convert session ID to devspace name
+      devspace_idx=$((session_id - 1))
+      if [ $devspace_idx -ge 0 ] && [ $devspace_idx -lt ''${#DEVSPACES[@]} ]; then
+        devspace="''${DEVSPACES[$devspace_idx]}"
       
-      # Get window count
-      window_count=$(${tmux}/bin/tmux list-windows -t "$session" -F '#I' 2>/dev/null | wc -l)
-      
-      # Check if initialized
-      initialized=$(${tmux}/bin/tmux show-environment -t "$session" TMUX_DEVSPACE_INITIALIZED 2>/dev/null | cut -d= -f2 || echo "false")
-      
-      # Get project path if linked
-      project_path=""
-      if [ -L "$HOME/devspaces/$devspace/project" ]; then
-        project_path=$(readlink "$HOME/devspaces/$devspace/project")
+        # Get window count
+        window_count=$(${tmux}/bin/tmux list-windows -t "$session" -F '#I' 2>/dev/null | wc -l)
+        
+        # Check if initialized
+        initialized=$(${tmux}/bin/tmux show-environment -t "$session" TMUX_DEVSPACE_INITIALIZED 2>/dev/null | cut -d= -f2 || echo "false")
+        
+        # Get project path if linked
+        project_path=""
+        if [ -L "$HOME/devspaces/$devspace/project" ]; then
+          project_path=$(readlink "$HOME/devspaces/$devspace/project")
+        fi
+        
+        # Save state
+        echo "$session|$window_count|$initialized|$project_path" >> "$STATE_DIR/sessions.txt.tmp"
       fi
-      
-      # Save state
-      echo "$session|$window_count|$initialized|$project_path" >> "$STATE_DIR/sessions.txt.tmp"
     fi
     done
   fi
