@@ -78,6 +78,16 @@
       export PATH=''${PATH}:''${PATH}:''$NPM_CONFIG_PREFIX/bin:/Applications/Windsurf.app/Contents/Resources/app/bin:''${HOME}/go/bin:''${HOME}/.local/share/../bin
 
       cd ~
+      
+      # Auto-connect to devspace if marker file exists
+      if [ -f ~/.devspace_autoconnect ] && [ -z "$TMUX" ]; then
+        local devspace=$(cat ~/.devspace_autoconnect)
+        rm -f ~/.devspace_autoconnect
+        if command -v $devspace &>/dev/null; then
+          echo "🚀 Auto-connecting to $devspace..."
+          exec $devspace
+        fi
+      fi
     '';
   };
 }
