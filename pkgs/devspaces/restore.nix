@@ -78,15 +78,16 @@ writeScriptBin "devspace-restore" ''
               devspace="''${DEVSPACES[$devspace_idx]}"
               echo "🔄 Restoring devspace '$devspace' (was initialized: $initialized)"
               
-              if [ "$initialized" = "true" ] && [ -n "$project_path" ] && [ -d "$project_path" ]; then
-                # Restore as initialized devspace
+              if [ -n "$project_path" ] && [ -d "$project_path" ]; then
+                # Restore with project - this will expand it automatically
                 echo "  📁 Restoring with project: $project_path"
                 
                 # First create minimal session
                 ${devspace-init-single}/bin/devspace-init-single "$devspace"
                 
                 # Then set up the project (which will expand it)
-                ${devspace-setup}/bin/devspace-setup "$devspace" "$project_path" >/dev/null 2>&1 || echo "  ⚠️  Could not restore project link"
+                echo "  🔧 Setting up project link and expanding session..."
+                ${devspace-setup}/bin/devspace-setup "$devspace" "$project_path" || echo "  ⚠️  Could not fully restore project link"
               else
                 # Just create minimal session
                 ${devspace-init-single}/bin/devspace-init-single "$devspace"
