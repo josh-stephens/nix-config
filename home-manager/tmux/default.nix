@@ -93,6 +93,7 @@ in {
       plugins = with pkgs.tmuxPlugins; [
         # System monitoring plugins
         cpu
+        net-speed
         
         # Catppuccin theme (must be loaded after dependencies)
         {
@@ -132,17 +133,31 @@ in {
         
         ${optionalString cfg.devspaceMode ''
           # Devspace icon and name on the left - dynamically built from theme
-          set -g status-left "${concatStringsSep "" (map (d: 
+          set -gF status-left "${concatStringsSep "" (map (d: 
             "#{?#{==:#{session_name},devspace-${toString d.id}},${d.icon} ${d.name} ,"
-          ) devspaceConfig.devspaces)}}"
+          ) devspaceConfig.devspaces)}"
         ''}
         ${optionalString (!cfg.devspaceMode) ''
           set -g status-left ""
         ''}
         
-        # Right side status - system monitoring modules
-        set -g status-right "#{E:@catppuccin_status_cpu}"
-        set -ag status-right "#{E:@catppuccin_status_load}"
+        # Right side status - Custom modules using Catppuccin's separators and style
+        # We can reference the Catppuccin variables directly since the plugin is loaded
+        
+        # Network module (using teal color from Catppuccin)  
+        set -gF @catppuccin_status_network \
+          "#[fg=#94e2d5]#{E:@catppuccin_status_left_separator}#[fg=#11111b,bg=#94e2d5]󰈀 #{E:@catppuccin_status_middle_separator}#[fg=#cdd6f4,bg=#313244] #(${pkgs.tmuxPlugins.net-speed}/share/tmux-plugins/net-speed/scripts/net_speed.sh)#[fg=#313244]#{E:@catppuccin_status_right_separator}"
+        
+        # CPU module (using yellow color from Catppuccin)
+        set -gF @catppuccin_status_cpu_custom \
+          "#[fg=#f9e2af]#{E:@catppuccin_status_left_separator}#[fg=#11111b,bg=#f9e2af]#{E:@catppuccin_cpu_icon}#{E:@catppuccin_status_middle_separator}#[fg=#cdd6f4,bg=#313244] #(${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/scripts/cpu_percentage.sh)#[fg=#313244]#{E:@catppuccin_status_right_separator}"
+        
+        # RAM module (using mauve color from Catppuccin) - using direct script call
+        set -gF @catppuccin_status_ram_custom \
+          "#[fg=#cba6f7]#{E:@catppuccin_status_left_separator}#[fg=#11111b,bg=#cba6f7]#(${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/scripts/ram_icon.sh)#{E:@catppuccin_status_middle_separator}#[fg=#cdd6f4,bg=#313244] #(${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/scripts/ram_percentage.sh)#[fg=#313244]#{E:@catppuccin_status_right_separator}"
+        
+        # Use the modules with expansion
+        set -gF status-right "#{E:@catppuccin_status_network}#{E:@catppuccin_status_cpu_custom}#{E:@catppuccin_status_ram_custom}"
 
         # 🎯 Pane borders - Catppuccin Mocha colors
         set -g pane-border-style "fg=#313244"
