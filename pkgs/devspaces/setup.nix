@@ -29,15 +29,21 @@ writeScriptBin "devspace-setup" ''
   DEVSPACE="$1"
   PROJECT_PATH="''${2:-}"
   
-  # Validate devspace name
-  if [[ ! "$DEVSPACE" =~ ^(${validNames})$ ]]; then
-    echo -e "''${RED}❌ Invalid devspace: $DEVSPACE''${NC}"
-    echo "Valid devspaces: ${lib.concatStringsSep ", " (map (s: s.name) theme.spaces)}"
-    exit 1
-  fi
+  # Validate devspace name and get ID
+  case "$DEVSPACE" in
+    ${lib.concatStringsSep "\n    " (map (s: ''
+    ${s.name})
+      SESSION_ID="${toString s.id}"
+      ;;'') theme.spaces)}
+    *)
+      echo -e "''${RED}❌ Invalid devspace: $DEVSPACE''${NC}"
+      echo "Valid devspaces: ${lib.concatStringsSep ", " (map (s: s.name) theme.spaces)}"
+      exit 1
+      ;;
+  esac
   
   DEVSPACE_DIR="$HOME/devspaces/$DEVSPACE"
-  SESSION="devspace-$DEVSPACE"
+  SESSION="devspace-$SESSION_ID"
   
   # Create devspace directory if needed
   mkdir -p "$DEVSPACE_DIR"
@@ -45,7 +51,15 @@ writeScriptBin "devspace-setup" ''
   # Helper function to expand minimal session to full environment
   expand_devspace() {
     local devspace="$1"
-    local session="devspace-$devspace"
+    # Get session ID from devspace name
+    local session_id=""
+    case "$devspace" in
+      ${lib.concatStringsSep "\n      " (map (s: ''
+      ${s.name})
+        session_id="${toString s.id}"
+        ;;'') theme.spaces)}
+    esac
+    local session="devspace-$session_id"
     
     # Check if already initialized
     local initialized=$(${tmux}/bin/tmux show-environment -t "$session" TMUX_DEVSPACE_INITIALIZED 2>/dev/null | cut -d= -f2 || echo "false")
@@ -59,20 +73,50 @@ writeScriptBin "devspace-setup" ''
     # Get the color from environment
     local color=$(${tmux}/bin/tmux show-environment -t "$session" TMUX_DEVSPACE_COLOR 2>/dev/null | cut -d= -f2 || echo "blue")
     
-    # Kill the setup window
-    ${tmux}/bin/tmux kill-window -t "$session:setup" 2>/dev/null || true
+    # Check if we're inside this session
+    local current_session=""
+    if [ -n "$TMUX" ]; then
+      current_session=$(${tmux}/bin/tmux display-message -p '#S' 2>/dev/null || echo "")
+    fi
     
-    # Create the full environment windows
-    ${tmux}/bin/tmux new-window -t "$session:1" -n claude
-    ${tmux}/bin/tmux new-window -t "$session:2" -n nvim
-    ${tmux}/bin/tmux new-window -t "$session:3" -n term
-    ${tmux}/bin/tmux new-window -t "$session:4" -n logs
+    if [ "$current_session" = "$session" ]; then
+      # We're inside - rename current window to term
+      echo -e "''${GREEN}🔄 Transforming current session...''${NC}"
+      ${tmux}/bin/tmux rename-window -t "$session:1" term
+      
+      # Create the other windows
+      ${tmux}/bin/tmux new-window -t "$session:2" -n claude
+      ${tmux}/bin/tmux new-window -t "$session:3" -n nvim
+      ${tmux}/bin/tmux new-window -t "$session:4" -n logs
+      
+      # Move term to position 3 and claude to position 1
+      ${tmux}/bin/tmux swap-window -s "$session:1" -t "$session:3"
+      
+      # Now claude is at 1, nvim at 2, term at 3, logs at 4
+      # Let's make sure they're in the right order
+      ${tmux}/bin/tmux move-window -s "$session:claude" -t "$session:1" 2>/dev/null || true
+      ${tmux}/bin/tmux move-window -s "$session:nvim" -t "$session:2" 2>/dev/null || true
+      ${tmux}/bin/tmux move-window -s "$session:term" -t "$session:3" 2>/dev/null || true
+      ${tmux}/bin/tmux move-window -s "$session:logs" -t "$session:4" 2>/dev/null || true
+      
+      # Stay in current window (which is now term)
+      echo -e "''${GREEN}✨ Devspace expanded! Windows: claude, nvim, term, logs''${NC}"
+    else
+      # We're outside - can kill setup window
+      ${tmux}/bin/tmux kill-window -t "$session:setup" 2>/dev/null || true
+      
+      # Create the full environment windows
+      ${tmux}/bin/tmux new-window -t "$session:1" -n claude
+      ${tmux}/bin/tmux new-window -t "$session:2" -n nvim
+      ${tmux}/bin/tmux new-window -t "$session:3" -n term
+      ${tmux}/bin/tmux new-window -t "$session:4" -n logs
+      
+      # Select first window
+      ${tmux}/bin/tmux select-window -t "$session:1"
+    fi
     
     # Mark as initialized
     ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_INITIALIZED "true"
-    
-    # Select first window
-    ${tmux}/bin/tmux select-window -t "$session:1"
   }
   
   # Helper function to get the main repository from a path

@@ -538,7 +538,7 @@ in {
         set -g focus-events on
         
         # 🌍 Update environment to include devspace variables
-        set -ga update-environment " TMUX_DEVSPACE TMUX_DEVSPACE_COLOR TMUX_DEVSPACE_INITIALIZED"
+        set -ga update-environment " TMUX_DEVSPACE TMUX_DEVSPACE_COLOR TMUX_DEVSPACE_ICON TMUX_DEVSPACE_INITIALIZED"
         
         # 🔔 Bell settings for notifications
         set -g bell-action any
@@ -563,24 +563,29 @@ in {
           set-hook -g session-created 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
         ''}
         
-        # 🎨 Status Bar Styling
+        # 🎨 Status Bar Styling - Clean minimal design like kitty tabs
         set -g status-style "fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_base}"
-        set -g status-left-length 50
-        set -g status-right-length 100
+        set -g status-left-length 20
+        set -g status-right-length 0
         
+        # Left status - show devspace icon and name with theme color
         ${if cfg.devspaceMode then ''
-          # 🪐 Dynamic devspace coloring based on session name
-          set -g status-left "#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}},bold] 🪐 #S #[fg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}},bg=#{@catppuccin_mocha_base}]"
+          set -g status-left "#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}},bold] #{TMUX_DEVSPACE_ICON} #{TMUX_DEVSPACE} #[fg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}},bg=#{@catppuccin_mocha_base}]"
         '' else ''
-          set -g status-left "#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_blue},bold] #S #[fg=#{@catppuccin_mocha_blue},bg=#{@catppuccin_mocha_base}]"
+          set -g status-left ""
         ''}
         
-        # 📊 Right status with system info
-        set -g status-right "#[fg=#{@catppuccin_mocha_surface0}]#[fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_surface0}] %Y-%m-%d #[fg=#{@catppuccin_mocha_surface1},bg=#{@catppuccin_mocha_surface0}]#[fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_surface1}] %H:%M #[fg=#{@catppuccin_mocha_peach},bg=#{@catppuccin_mocha_surface1}]#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_peach},bold] #h "
+        # No right status - clean look
+        set -g status-right ""
         
-        # 🪟 Window status
-        set -g window-status-format "#[fg=#{@catppuccin_mocha_text},bg=#{@catppuccin_mocha_base}] #I:#W "
-        set -g window-status-current-format "#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_blue}]#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_blue},bold] #I:#W #[fg=#{@catppuccin_mocha_blue},bg=#{@catppuccin_mocha_base}]"
+        # 🪟 Window status - minimal like kitty tabs
+        # Inactive tabs - subtle text on dark background
+        set -g window-status-format "#[fg=#{@catppuccin_mocha_subtext0},bg=#{@catppuccin_mocha_base}] #W "
+        # Active tab - blue background with white text
+        set -g window-status-current-format "#[fg=#{@catppuccin_mocha_base},bg=#{@catppuccin_mocha_blue}]#[fg=#{@catppuccin_mocha_crust},bg=#{@catppuccin_mocha_blue},bold] #W #[fg=#{@catppuccin_mocha_blue},bg=#{@catppuccin_mocha_base}]"
+        
+        # Center the window list
+        set -g status-justify centre
         
         # 🎯 Pane borders
         set -g pane-border-style "fg=#{@catppuccin_mocha_surface0}"

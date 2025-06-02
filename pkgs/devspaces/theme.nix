@@ -3,6 +3,7 @@
 {
   spaces = [
     { 
+      id = 1;
       name = "mercury"; 
       color = "flamingo"; 
       icon = "☿"; 
@@ -11,6 +12,7 @@
       hotkey = "1";  # M-1 (Alt-1)
     }
     { 
+      id = 2;
       name = "venus"; 
       color = "pink"; 
       icon = "♀"; 
@@ -19,6 +21,7 @@
       hotkey = "2";  # M-2 (Alt-2)
     }
     { 
+      id = 3;
       name = "earth"; 
       color = "green"; 
       icon = "⊕"; 
@@ -27,6 +30,7 @@
       hotkey = "3";  # M-3 (Alt-3)
     }
     { 
+      id = 4;
       name = "mars"; 
       color = "red"; 
       icon = "♂"; 
@@ -35,6 +39,7 @@
       hotkey = "4";  # M-4 (Alt-4)
     }
     { 
+      id = 5;
       name = "jupiter"; 
       color = "peach"; 
       icon = "♃"; 

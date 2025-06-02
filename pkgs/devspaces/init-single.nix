@@ -21,6 +21,7 @@ writeScriptBin "devspace-init-single" ''
   case "$devspace" in
     ${lib.concatStringsSep "\n    " (map (s: ''
     ${s.name})
+      session_id="${toString s.id}"
       color="${s.color}"
       icon="${s.icon}"
       description="${s.description}"
@@ -32,7 +33,7 @@ writeScriptBin "devspace-init-single" ''
       ;;
   esac
   
-  session="devspace-$devspace"
+  session="devspace-$session_id"
   
   if ${tmux}/bin/tmux has-session -t "$session" 2>/dev/null; then
     echo "✅ Devspace '$devspace' already exists"
@@ -41,23 +42,25 @@ writeScriptBin "devspace-init-single" ''
   
   echo "🪐 Creating minimal devspace '$devspace'..."
   
-  # Create session and start user's default shell
+  # Create minimal session - always start with just setup window
   ${tmux}/bin/tmux new-session -d -s "$session" -n setup
   
-  # Set environment for the session - these need to be available to shells
+  # Set environment for the session
   ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE "$devspace"
   ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_COLOR "$color"
+  ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_ICON "$icon"
   ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_INITIALIZED "false"
   
   # Send commands to export the variables in the shell
   ${tmux}/bin/tmux send-keys -t "$session:1" "export TMUX_DEVSPACE='$devspace'" Enter
   ${tmux}/bin/tmux send-keys -t "$session:1" "export TMUX_DEVSPACE_COLOR='$color'" Enter
+  ${tmux}/bin/tmux send-keys -t "$session:1" "export TMUX_DEVSPACE_ICON='$icon'" Enter
   ${tmux}/bin/tmux send-keys -t "$session:1" "export TMUX_DEVSPACE_INITIALIZED='false'" Enter
   
   # Wait a moment for shell to start
   sleep 0.1
   
-  # Run the welcome script to show a nice display
+  # Run the welcome script to show current state
   ${tmux}/bin/tmux send-keys -t "$session:1" "${devspace-welcome}/bin/devspace-welcome $devspace" Enter
   
   echo "✅ Created minimal devspace '$devspace'"

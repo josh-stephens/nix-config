@@ -21,7 +21,8 @@ writeScriptBin "devspace-status" ''
     devspace="''${DEVSPACES[$i]}"
     desc="''${DESCRIPTIONS[$i]}"
     hotkey="''${HOTKEYS[$i]}"
-    session="devspace-$devspace"
+    session_id=$((i + 1))  # IDs start at 1
+    session="devspace-$session_id"
     
     echo "$desc (Alt-$hotkey)"
     

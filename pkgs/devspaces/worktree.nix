@@ -1,4 +1,4 @@
-{ lib, writeScriptBin, bash, git }:
+{ lib, writeScriptBin, bash, git, tmux }:
 
 let
   theme = import ./theme.nix;
@@ -8,6 +8,22 @@ in
 writeScriptBin "devspace-worktree" ''
   #!${bash}/bin/bash
   # 🌳 Manage git worktrees for devspaces
+  
+  # Helper to get session ID from devspace name
+  get_session_id() {
+    local devspace="$1"
+    case "$devspace" in
+      ${lib.concatStringsSep "\n      " (map (s: ''
+      ${s.name})
+        echo "${toString s.id}"
+        return 0
+        ;;'') theme.spaces)}
+      *)
+        echo "Unknown devspace: $devspace" >&2
+        return 1
+        ;;
+    esac
+  }
   
   set -euo pipefail
   
@@ -147,10 +163,11 @@ writeScriptBin "devspace-worktree" ''
     echo "Path: $worktree_dir"
     
     # Update tmux session if it exists
-    local session="devspace-$devspace"
-    if tmux has-session -t "$session" 2>/dev/null; then
+    local session_id=$(get_session_id "$devspace")
+    local session="devspace-$session_id"
+    if ${tmux}/bin/tmux has-session -t "$session" 2>/dev/null; then
       for window in 1 2 3; do
-        tmux send-keys -t "$session:$window" C-c "cd $worktree_dir" Enter
+        ${tmux}/bin/tmux send-keys -t "$session:$window" C-c "cd $worktree_dir" Enter
       done
       echo -e "''${GREEN}📍 Updated tmux session working directory''${NC}"
     fi
@@ -226,10 +243,11 @@ writeScriptBin "devspace-worktree" ''
         echo -e "''${GREEN}✅ Relinked $devspace to main repository''${NC}"
         
         # Update tmux session
-        local session="devspace-$devspace"
-        if tmux has-session -t "$session" 2>/dev/null; then
+        local session_id=$(get_session_id "$devspace")
+        local session="devspace-$session_id"
+        if ${tmux}/bin/tmux has-session -t "$session" 2>/dev/null; then
           for window in 1 2 3; do
-            tmux send-keys -t "$session:$window" C-c "cd $main_repo" Enter
+            ${tmux}/bin/tmux send-keys -t "$session:$window" C-c "cd $main_repo" Enter
           done
         fi
       fi

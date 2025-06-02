@@ -34,13 +34,13 @@ let
         tmux start-server 2>/dev/null || true
         
         # If session doesn't exist, try to restore first
-        if ! tmux has-session -t devspace-${space.name} 2>/dev/null; then
+        if ! tmux has-session -t devspace-${toString space.id} 2>/dev/null; then
           echo "🔄 Session not found, attempting to restore..."
           ${devspace-restore}/bin/devspace-restore 2>&1 || echo "❌ Restore failed: $?"
         fi
         
-        if tmux has-session -t devspace-${space.name} 2>/dev/null; then
-          exec tmux attach-session -t devspace-${space.name}
+        if tmux has-session -t devspace-${toString space.id} 2>/dev/null; then
+          exec tmux attach-session -t devspace-${toString space.id}
         else
           echo "${space.icon} ${space.name} could not be initialized."
           exit 1
@@ -55,13 +55,13 @@ let
           tmux start-server 2>/dev/null || true
           
           # If session doesn't exist, try to restore first
-          if ! tmux has-session -t devspace-${space.name} 2>/dev/null; then
+          if ! tmux has-session -t devspace-${toString space.id} 2>/dev/null; then
             echo "🔄 Session not found, attempting to restore..."
             ${devspace-restore}/bin/devspace-restore 2>&1 || echo "❌ Restore failed: $?"
           fi
           
-          if tmux has-session -t devspace-${space.name} 2>/dev/null; then
-            exec tmux attach-session -t devspace-${space.name}
+          if tmux has-session -t devspace-${toString space.id} 2>/dev/null; then
+            exec tmux attach-session -t devspace-${toString space.id}
           else
             echo "${space.icon} ${space.name} could not be initialized."
             exit 1

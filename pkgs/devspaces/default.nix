@@ -2,21 +2,21 @@
 
 let
   # Core components
-  devspaceContext = pkgs.callPackage ./devspace-context.nix { };
-  devspaceWelcome = pkgs.callPackage ./devspace-welcome.nix { };
-  devspaceInitSingle = pkgs.callPackage ./devspace-init-single.nix { 
+  devspaceContext = pkgs.callPackage ./context.nix { };
+  devspaceWelcome = pkgs.callPackage ./welcome.nix { };
+  devspaceInitSingle = pkgs.callPackage ./init-single.nix { 
     devspace-welcome = devspaceWelcome;
   };
-  devspaceStatus = pkgs.callPackage ./devspace-status.nix { };
-  devspaceWorktree = pkgs.callPackage ./devspace-worktree.nix { };
-  devspaceSaveState = pkgs.callPackage ./devspace-save-state.nix { };
-  devspaceSaveHook = pkgs.callPackage ./devspace-save-hook.nix { 
+  devspaceStatus = pkgs.callPackage ./status.nix { };
+  devspaceWorktree = pkgs.callPackage ./worktree.nix { };
+  devspaceSaveState = pkgs.callPackage ./save-state.nix { };
+  devspaceSaveHook = pkgs.callPackage ./save-hook.nix { 
     devspace-save-state = devspaceSaveState;
   };
-  devspaceSetup = pkgs.callPackage ./devspace-setup-enhanced.nix { 
+  devspaceSetup = pkgs.callPackage ./setup.nix { 
     devspace-save-hook = devspaceSaveHook;
   };
-  devspaceRestore = pkgs.callPackage ./devspace-restore.nix { 
+  devspaceRestore = pkgs.callPackage ./restore.nix { 
     devspace-init-single = devspaceInitSingle;
     devspace-setup = devspaceSetup;
   };
