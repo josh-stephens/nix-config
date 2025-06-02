@@ -20,18 +20,16 @@ let
   tmuxPowerlinePackage = pkgs.fetchFromGitHub {
     owner = "erikw";
     repo = "tmux-powerline";
-    rev = "2581103f7092f295a29e5e400634822787a90648"; # A commit from master branch
+    rev = "ad98fe32b1c96ebe4872bbb9e20ceeb0fd9b24ad";
     sha256 = lib.fakeSha256; # IMPORTANT: Replace with actual SHA256 hash
-                             # Obtain with: nix-prefetch-github erikw tmux-powerline --rev 2581103f7092f295a29e5e400634822787a90648
   };
 
   # Fetch kjnsn/catppuccin-tmux-powerline theme
   tmuxPowerlineCatppuccinThemePackage = pkgs.fetchFromGitHub {
     owner = "kjnsn";
     repo = "catppuccin-tmux-powerline";
-    rev = "e28f62a11ef010192889747003181350e498ce6d"; # Latest commit as of checking
+    rev = "015ae53948495ad18897c15fdad7ba6445d3709f"; # Latest commit as of checking
     sha256 = lib.fakeSha256; # IMPORTANT: Replace with actual SHA256 hash
-                             # Obtain with: nix-prefetch-github kjnsn catppuccin-tmux-powerline --rev e28f62a11ef010192889747003181350e498ce6d
   };
 
   # 🚀 Devspace management scripts
