@@ -131,12 +131,17 @@ in {
         set -g status-right-length 100
         set -g status-left-length 100
         
-        ${optionalString cfg.devspaceMode ''
-          # Devspace icon and name on the left - dynamically built from theme
-          set -gF status-left "${concatStringsSep "" (map (d: 
+        ${optionalString cfg.devspaceMode (let
+          # Generate the status-left string with proper nested conditionals
+          statusLeftParts = map (d: 
             "#{?#{==:#{session_name},devspace-${toString d.id}},${d.icon} ${d.name} ,"
-          ) devspaceConfig.devspaces)}"
-        ''}
+          ) devspaceConfig.devspaces;
+          # Add the correct number of closing braces
+          closingBraces = concatStrings (map (x: "}") devspaceConfig.devspaces);
+        in ''
+          # Devspace icon and name on the left - dynamically built from theme
+          set -g status-left "${concatStrings statusLeftParts}${closingBraces}"
+        '')}
         ${optionalString (!cfg.devspaceMode) ''
           set -g status-left ""
         ''}
@@ -150,8 +155,11 @@ in {
         set -ag status-right \
           "#[fg=#f9e2af]#{E:@catppuccin_status_left_separator}#[fg=#11111b,bg=#f9e2af]#{E:@catppuccin_cpu_icon}#{E:@catppuccin_status_middle_separator}#[fg=#cdd6f4,bg=#313244] #(${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/scripts/cpu_percentage.sh)#[fg=#313244]#{E:@catppuccin_status_right_separator}"
         
+        # Set a better RAM icon (memory chip icon)
+        set -g @catppuccin_ram_icon " "
+        
         set -ag status-right \
-          "#[fg=#cba6f7]#{E:@catppuccin_status_left_separator}#[fg=#11111b,bg=#cba6f7]#(${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/scripts/ram_icon.sh)#{E:@catppuccin_status_middle_separator}#[fg=#cdd6f4,bg=#313244] #(${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/scripts/ram_percentage.sh)#[fg=#313244]#{E:@catppuccin_status_right_separator}"
+          "#[fg=#cba6f7]#{E:@catppuccin_status_left_separator}#[fg=#11111b,bg=#cba6f7]#{E:@catppuccin_ram_icon}#{E:@catppuccin_status_middle_separator}#[fg=#cdd6f4,bg=#313244] #(${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/scripts/ram_percentage.sh)#[fg=#313244]#{E:@catppuccin_status_right_separator}"
 
         # 🎯 Pane borders - Catppuccin Mocha colors
         set -g pane-border-style "fg=#313244"
