@@ -50,7 +50,7 @@ let
       # Default behavior
       "")
         # If no arguments and we're in a remote session, connect to tmux
-        if [ -z "$TMUX" ] && { [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ] || [ -n "$ET_VERSION" ]; }; then
+        if [ -z "$TMUX" ] && { [ -n "$SSH_TTY" ] || [ -n "$SSH_CONNECTION" ]; }; then
           # Ensure tmux server is started
           tmux start-server 2>/dev/null || true
           

@@ -93,8 +93,7 @@ in
         config.services.tailscale.port
       ];
       allowedTCPPorts = [ 
-        22 80 443 
-        2022  # Eternal Terminal
+        22 80 443
       ];
     };
     defaultGateway = "172.31.0.1";
@@ -179,11 +178,6 @@ in
   };
   programs.ssh.startAgent = true;
   
-  # Enable Eternal Terminal service
-  services.eternal-terminal = {
-    enable = true;
-    port = 2022;
-  };
 
   services.tailscale = {
     enable = true;
@@ -523,7 +517,6 @@ in
       unar
       podman-tui
       jellyfin-ffmpeg
-      eternal-terminal  # ET - Low-latency SSH replacement
     ];
 
     loginShellInit = ''

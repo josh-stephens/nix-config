@@ -1,7 +1,7 @@
 { inputs, lib, config, pkgs, ... }:
 
 {
-  # 🌐 Smart SSH Host Commands for Mac
+  # 🌐 Smart SSH Host Commands for Mac - SSH only, no ET
   programs.zsh.initContent = ''
     # Configuration for all hosts
     declare -A HOST_IPS
@@ -46,26 +46,11 @@
       return 1
     }
     
-    # Smart host connection function - ET by default, SSH fallback
+    # Smart host connection function - SSH with optimal settings
     _smart_connect() {
       local hostname="$1"
       shift
-      local use_ssh=0
-      local extra_args=()
-      
-      # Parse arguments
-      while [[ $# -gt 0 ]]; do
-        case "$1" in
-          --ssh)
-            use_ssh=1
-            shift
-            ;;
-          *)
-            extra_args+=("$1")
-            shift
-            ;;
-        esac
-      done
+      local extra_args=("$@")
       
       # Check if host is configured
       if [ -z "''${HOST_IPS[$hostname]}" ]; then
@@ -92,11 +77,7 @@
             # Quick ping test with very short timeout
             if ping -c 1 -W 1 "$tailscale_name" &> /dev/null; then
               target_host="$tailscale_name"
-              if [ $use_ssh -eq 1 ]; then
-                echo "🔒 Connecting to $hostname via Tailscale (SSH)..."
-              else
-                echo "⚡ Connecting to $hostname via Tailscale (ET)..."
-              fi
+              echo "🔒 Connecting to $hostname via Tailscale..."
             fi
           fi
         fi
@@ -107,11 +88,7 @@
         # Quick ping test for local network
         if ping -c 1 -W 1 "$local_ip" &> /dev/null; then
           target_host="$local_ip"
-          if [ $use_ssh -eq 1 ]; then
-            echo "🏠 Connecting to $hostname via local network (SSH)..."
-          else
-            echo "⚡ Connecting to $hostname via local network (ET)..."
-          fi
+          echo "🏠 Connecting to $hostname via local network..."
         else
           echo "❌ Cannot reach $hostname via Tailscale or local network ($local_ip)"
           echo "💡 Make sure you're on the local network or connected to Tailscale"
@@ -119,66 +96,57 @@
         fi
       fi
       
-      # Try ET first, fall back to SSH if it fails
-      if [ $use_ssh -eq 0 ]; then
-        if command -v et &> /dev/null; then
-          # If there are extra args, we need to use SSH since ET doesn't support command execution
-          if [ ''${#extra_args[@]} -gt 0 ]; then
-            # Force SSH for command execution
-            use_ssh=1
-          else
-            # Just connect with ET
-            et "$target_host:2022" 2>/dev/null && return 0
-            echo "⚠️  ET connection failed, falling back to SSH..."
-          fi
-        fi
+      # Use SSH with kitten for better clipboard integration if available
+      local ssh_cmd="ssh"
+      if command -v kitten &> /dev/null; then
+        ssh_cmd="kitten ssh"
       fi
       
-      # Use SSH (with kitten for clipboard integration)
+      # Handle command execution vs interactive connection
       if [ ''${#extra_args[@]} -gt 0 ]; then
-        # Run command via SSH
-        kitten ssh "$target_host" "''${extra_args[*]}"
+        # Run command via SSH with proper TTY allocation
+        $ssh_cmd -t "$target_host" "''${extra_args[@]}"
       else
-        # Just connect
-        kitten ssh "$target_host"
+        # Just connect interactively
+        $ssh_cmd "$target_host"
       fi
     }
     
-    # Create command for each host (ET by default, SSH with --ssh flag)
+    # Create command for each host
     ultraviolet() {
       _smart_connect ultraviolet "$@"
-    }
-    
-    ultraviolet-ssh() {
-      _smart_connect ultraviolet --ssh "$@"
     }
     
     bluedesert() {
       _smart_connect bluedesert "$@"
     }
     
-    bluedesert-ssh() {
-      _smart_connect bluedesert --ssh "$@"
-    }
-    
     echelon() {
       _smart_connect echelon "$@"
-    }
-    
-    echelon-ssh() {
-      _smart_connect echelon --ssh "$@"
     }
     
     cloudbank() {
       _smart_connect cloudbank "$@"
     }
     
+    # Legacy aliases for compatibility
+    ultraviolet-ssh() {
+      ultraviolet "$@"
+    }
+    
+    bluedesert-ssh() {
+      bluedesert "$@"
+    }
+    
+    echelon-ssh() {
+      echelon "$@"
+    }
+    
     # Universal 'ssh-to' command
     ssh-to() {
       if [ $# -lt 1 ]; then
-        echo "Usage: ssh-to <hostname> [args]"
+        echo "Usage: ssh-to <hostname> [command]"
         echo "Available hosts: ''${(k)HOST_IPS[@]}"
-        echo "Note: Uses ET by default, add --ssh for regular SSH"
         return 1
       fi
       _smart_connect "$@"
@@ -224,15 +192,11 @@
       echo
       echo "Legend: 🏠 local | 🔒 tailscale | 🌐 local network | ❌ unreachable"
       echo
-      echo "Connection types:"
-      echo "  host         - ET with SSH fallback"
-      echo "  host-ssh     - Force SSH"
+      echo "Connection: Uses optimized SSH with connection reuse"
     }
     
     # Convenient aliases
     alias uv="ultraviolet"
-    alias uv-ssh="ultraviolet-ssh"
     alias bd="bluedesert"
-    alias bd-ssh="bluedesert-ssh"
   '';
 }
