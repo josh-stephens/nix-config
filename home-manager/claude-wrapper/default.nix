@@ -264,7 +264,7 @@ in {
     # Shell aliases
     programs.zsh.shellAliases = {
       cn = "claude-notify";
-      cd = "claude-devspace";  # Explicit devspace claude
+      cld = "claude-devspace";  # Explicit devspace claude
     };
   };
 }
