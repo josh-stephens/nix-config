@@ -510,7 +510,8 @@ in {
           plugin = catppuccin;
           extraConfig = ''
             # Catppuccin settings
-            set -g @catppuccin_flavour 'mocha' # latte, frappe, macchiato, mocha
+            set -g @catppuccin_flavor 'mocha' # latte, frappe, macchiato, mocha
+            set -g @catppuccin_window_status_style "rounded" # Enable rounded windows
             
             # Window settings
             set -g @catppuccin_window_left_separator ""
@@ -524,21 +525,25 @@ in {
             set -g @catppuccin_window_current_fill "number"
             set -g @catppuccin_window_current_text "#W"
             
-            # Status bar modules
-            set -g @catppuccin_status_modules_right "directory user host session"
-            set -g @catppuccin_status_modules_left ""
-            set -g @catppuccin_status_left_separator  " "
-            set -g @catppuccin_status_right_separator ""
-            set -g @catppuccin_status_fill "icon"
-            set -g @catppuccin_status_connect_separator "no"
+            # Status line configuration
+            set -g status-right-length 100
+            set -g status-left-length 100
+            set -g status-left ""
+            set -g status-right "#{E:@catppuccin_status_directory}"
+            set -ag status-right "#{E:@catppuccin_status_user}"
+            set -ag status-right "#{E:@catppuccin_status_host}"
+            
+            ${optionalString cfg.devspaceMode ''
+              # Devspace-specific session module
+              set -g @catppuccin_session_text "#{?#{==:#{session_name},devspace-mercury},🚀 mercury,#{?#{==:#{session_name},devspace-venus},💫 venus,#{?#{==:#{session_name},devspace-earth},🌍 earth,#{?#{==:#{session_name},devspace-mars},🔴 mars,#{?#{==:#{session_name},devspace-jupiter},🪐 jupiter,#{session_name}}}}}}"
+              set -ag status-right "#{E:@catppuccin_status_session}"
+            ''}
+            ${optionalString (!cfg.devspaceMode) ''
+              set -ag status-right "#{E:@catppuccin_status_session}"
+            ''}
             
             # Directory settings
             set -g @catppuccin_directory_text "#{b:pane_current_path}"
-            
-            ${optionalString cfg.devspaceMode ''
-              # Devspace-specific status
-              set -g @catppuccin_session_text "#{?#{==:#{session_name},devspace-mercury},🚀 mercury,#{?#{==:#{session_name},devspace-venus},💫 venus,#{?#{==:#{session_name},devspace-earth},🌍 earth,#{?#{==:#{session_name},devspace-mars},🔴 mars,#{?#{==:#{session_name},devspace-jupiter},🪐 jupiter,#{session_name}}}}}}"
-            ''}
           '';
         }
       ];
