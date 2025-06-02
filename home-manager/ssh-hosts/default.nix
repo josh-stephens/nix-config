@@ -122,15 +122,15 @@
       # Try ET first, fall back to SSH if it fails
       if [ $use_ssh -eq 0 ]; then
         if command -v et &> /dev/null; then
-          # If there are extra args, assume they're a command to run
+          # If there are extra args, we need to use SSH since ET doesn't support command execution
           if [ ''${#extra_args[@]} -gt 0 ]; then
-            # Run command via ET - ET takes command as trailing arguments
-            et "$target_host:2022" "''${extra_args[@]}" 2>/dev/null && return 0
+            # Force SSH for command execution
+            use_ssh=1
           else
-            # Just connect
+            # Just connect with ET
             et "$target_host:2022" 2>/dev/null && return 0
+            echo "⚠️  ET connection failed, falling back to SSH..."
           fi
-          echo "⚠️  ET connection failed, falling back to SSH..."
         fi
       fi
       

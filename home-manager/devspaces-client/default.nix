@@ -29,9 +29,9 @@ in
         ${lib.concatStringsSep "\n        " (map (s: ''${s.name}) echo "${s.connectMessage}" ;;'') theme.spaces)}
         *) echo "🚀 Connecting to devspace $devspace..." ;;
       esac
-      # Use SSH with optimal settings for low latency
-      # The SSH connection will be reused via ControlMaster
-      ssh -t ultraviolet "$devspace"
+      # Use the smart ultraviolet connection function
+      # It will use SSH (with optimal settings) for command execution
+      ultraviolet "$devspace"
     }
     
     # 🔧 Setup a devspace with a project
