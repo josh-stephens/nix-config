@@ -510,6 +510,30 @@ in {
   };
 
   config = mkIf cfg.enable {
+    # Set up tmux-powerline configuration files
+    home.file.".config/tmux-powerline/config.sh".text = ''
+      # Main configuration file for tmux-powerline
+      export TMUX_POWERLINE_THEME="catppuccin-minimal"
+      export TMUX_POWERLINE_DIR_HOME="${tmuxPowerlinePackage}"
+      export TMUX_POWERLINE_DIR_THEMES="$HOME/.config/tmux-powerline/themes"
+    '';
+    
+    # Create a minimal theme based on catppuccin that only shows window tabs
+    home.file.".config/tmux-powerline/themes/catppuccin-minimal.sh".text = ''
+      # Minimal Catppuccin theme - only window tabs
+      # Based on catppuccin_mocha_theme.sh but with only window segments
+      
+      # Source the original catppuccin theme for colors
+      source "${tmuxPowerlineCatppuccinThemePackage}/catppuccin_mocha_theme.sh"
+      
+      # Override segments to show only window list
+      TMUX_POWERLINE_LEFT_STATUS_SEGMENTS=(
+        "tmux_window_list 89b4fa 1e1e2e"
+      )
+      
+      TMUX_POWERLINE_RIGHT_STATUS_SEGMENTS=()
+    '';
+
     programs.tmux = {
       enable = true;
       clock24 = true;
@@ -528,29 +552,12 @@ in {
         set -g focus-events on         # For better editor integration (e.g., Neovim)
         set -g status-position bottom  # Display status bar at the bottom
 
-        # 🎨 tmux-powerline (erikw/tmux-powerline) Configuration
-        # These settings must be defined/sourced BEFORE sourcing powerline.sh
-
-        # 1. Source the Catppuccin Mocha theme for tmux-powerline.
-        #    This theme file sets global @catppuccin_mocha_* color variables
-        #    and @powerline_color_* variables for tmux-powerline segments.
-        source "${tmuxPowerlineCatppuccinThemePackage}/themes/catppuccin_mocha.tmux"
-
-        # 2. Configure segments: only "windows" (tabs) on the left, nothing on the right.
-        set -g @powerline_segments_left "windows"
-        set -g @powerline_segments_right ""
-
-        # 3. Configure window segment format to show only window name with padding.
-        #    This overrides any default format (like icons/indices) set by the theme.
-        set -g @powerline_window_status_current_format " #W " # Padded window name for current window
-        set -g @powerline_window_status_format " #W "       # Padded window name for other windows
-
-        # 🎯 Pane borders (uses global @catppuccin_mocha_* vars set by the sourced theme)
-        set -g pane-border-style "fg=#{@catppuccin_mocha_surface0}"
+        # 🎯 Pane borders
+        set -g pane-border-style "fg=#313244"
         ${if cfg.devspaceMode then ''
-          set -g pane-active-border-style "fg=#{@catppuccin_mocha_#{TMUX_DEVSPACE_COLOR}}"
+          set -g pane-active-border-style "fg=#89b4fa"
         '' else ''
-          set -g pane-active-border-style "fg=#{@catppuccin_mocha_blue}"
+          set -g pane-active-border-style "fg=#89b4fa"
         ''}
 
         # 🌍 Update environment to include devspace variables
@@ -560,7 +567,7 @@ in {
         set -g bell-action any
         set -g visual-bell off
         set -g visual-activity off
-        setw -g monitor-activity on # tmux-powerline uses this for activity indicators
+        setw -g monitor-activity on
 
         # 📋 Terminal integration
         set -g allow-passthrough on # Allow OSC52 sequences for clipboard
@@ -572,6 +579,13 @@ in {
           set-hook -g client-detached 'run-shell -b "devspace-save-hook 2>/dev/null || true"'
           set-hook -g session-created 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
         ''}
+
+        # 🎨 tmux-powerline configuration
+        # Set environment variables for tmux-powerline BEFORE sourcing it
+        set-environment -g TMUX_POWERLINE_THEME "catppuccin-minimal"
+        set-environment -g TMUX_POWERLINE_DIR_HOME "${tmuxPowerlinePackage}"
+        set-environment -g TMUX_POWERLINE_DIR_THEMES "$HOME/.config/tmux-powerline/themes"
+        set-environment -g TMUX_POWERLINE_DIR_SEGMENTS "${tmuxPowerlinePackage}/segments"
 
         # ⌨️ Key bindings (Copied from your original config)
         # 📋 Better copy mode
