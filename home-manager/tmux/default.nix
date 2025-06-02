@@ -556,13 +556,6 @@ in {
           set-hook -g session-created 'if -F "#{m:devspace-*,#{session_name}}" "run-shell -b \"devspace-save-hook 2>/dev/null || true\""'
         ''}
 
-        # 🎨 tmux-powerline configuration
-        # Set environment variables for tmux-powerline BEFORE sourcing it
-        set-environment -g TMUX_POWERLINE_THEME "catppuccin-minimal"
-        set-environment -g TMUX_POWERLINE_DIR_HOME "${tmuxPowerlinePackage}"
-        set-environment -g TMUX_POWERLINE_DIR_THEMES "$HOME/.config/tmux-powerline/themes"
-        set-environment -g TMUX_POWERLINE_DIR_SEGMENTS "${tmuxPowerlinePackage}/segments"
-
         # ⌨️ Key bindings (Copied from your original config)
         # 📋 Better copy mode
         bind-key v copy-mode
@@ -598,10 +591,12 @@ in {
           ) devspaceConfig.devspaces)}
         ''}
 
-        # 4. Source tmux-powerline's main script to generate the status bar.
-        #    This MUST be one of the last lines related to tmux-powerline.
-        source "${tmuxPowerlinePackage}/powerline.sh"
-        # End of tmux-powerline Configuration
+        # 🎨 Configure tmux-powerline
+        # tmux-powerline reads from config files, not environment variables in tmux
+        # The config files are created via home.file above
+        # Now set the status line to use tmux-powerline
+        set -g status-left "#(${tmuxPowerlinePackage}/powerline.sh left)"
+        set -g status-right "#(${tmuxPowerlinePackage}/powerline.sh right)"
       ''; # End of extraConfig
     }; # End of programs.tmux
 
@@ -625,6 +620,13 @@ in {
           export TMUX_POWERLINE_THEME="catppuccin-minimal"
           export TMUX_POWERLINE_DIR_HOME="${tmuxPowerlinePackage}"
           export TMUX_POWERLINE_DIR_THEMES="$HOME/.config/tmux-powerline/themes"
+          export TMUX_POWERLINE_DIR_SEGMENTS="${tmuxPowerlinePackage}/segments"
+          
+          # Disable all default segments - we only want window tabs
+          export TMUX_POWERLINE_DEBUG_MODE_ENABLED="false"
+          export TMUX_POWERLINE_PATCHED_FONT_IN_USE="true"
+          export TMUX_POWERLINE_COMPACT_ACTIVE="false"
+          export TMUX_POWERLINE_COMPACT_INACTIVE="false"
         '';
         
         # Create a minimal theme based on catppuccin that only shows window tabs
