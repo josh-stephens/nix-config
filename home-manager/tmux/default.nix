@@ -9,7 +9,9 @@ let
   theme = import ../../pkgs/devspaces/theme.nix;
   devspaceConfig = {
     devspaces = map (s: {
+      id = s.id;
       name = s.name;
+      icon = s.icon;
       color = s.color; # Used for devspace-specific active pane border
       description = "${s.icon} ${s.name} - ${s.description}";
       hotkey = s.hotkey;
@@ -23,27 +25,33 @@ let
     
     set -euo pipefail
     
-    DEVSPACES=(${concatStringsSep " " (map (p: ''"${p.name}"'') devspaceConfig.devspaces)})
+    DEVSPACE_IDS=(${concatStringsSep " " (map (p: ''"${toString p.id}"'') devspaceConfig.devspaces)})
+    DEVSPACE_NAMES=(${concatStringsSep " " (map (p: ''"${p.name}"'') devspaceConfig.devspaces)})
+    DEVSPACE_ICONS=(${concatStringsSep " " (map (p: ''"${p.icon}"'') devspaceConfig.devspaces)})
     COLORS=(${concatStringsSep " " (map (p: ''"${p.color}"'') devspaceConfig.devspaces)})
     
     echo "🌌 Initializing devspace development environments..."
     
-    for i in "''${!DEVSPACES[@]}"; do
-      devspace="''${DEVSPACES[$i]}"
+    for i in "''${!DEVSPACE_IDS[@]}"; do
+      id="''${DEVSPACE_IDS[$i]}"
+      name="''${DEVSPACE_NAMES[$i]}"
+      icon="''${DEVSPACE_ICONS[$i]}"
       color="''${COLORS[$i]}"
-      session="devspace-$devspace"
+      session="devspace-$id"
       
       if ! ${pkgs.tmux}/bin/tmux has-session -t "$session" 2>/dev/null; then
-        echo "🪐 Creating $devspace (color: $color)..."
+        echo "$icon Creating $name (color: $color)..."
         
         # Create session with environment variables
-        TMUX_DEVSPACE="$devspace" TMUX_DEVSPACE_COLOR="$color" ${pkgs.tmux}/bin/tmux new-session -d -s "$session" -n claude
+        TMUX_DEVSPACE="$name" TMUX_DEVSPACE_COLOR="$color" TMUX_DEVSPACE_ICON="$icon" TMUX_DEVSPACE_ID="$id" ${pkgs.tmux}/bin/tmux new-session -d -s "$session" -n claude
         
         # Set environment for the session
-        ${pkgs.tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE "$devspace"
+        ${pkgs.tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE "$name"
         ${pkgs.tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_COLOR "$color"
+        ${pkgs.tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_ICON "$icon"
+        ${pkgs.tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_ID "$id"
         
-        # Create default windows
+        # Create default windows with proper names
         ${pkgs.tmux}/bin/tmux new-window -t "$session:2" -n nvim
         ${pkgs.tmux}/bin/tmux new-window -t "$session:3" -n term
         ${pkgs.tmux}/bin/tmux new-window -t "$session:4" -n logs
@@ -79,10 +87,14 @@ let
       ${concatStringsSep "\n      " (map (p: ''"${p.description}"'') devspaceConfig.devspaces)}
     )
     
-    for i in "''${!DEVSPACES[@]}"; do
-      devspace="''${DEVSPACES[$i]}"
+    DEVSPACE_IDS=(${concatStringsSep " " (map (p: ''"${toString p.id}"'') devspaceConfig.devspaces)})
+    DEVSPACE_NAMES=(${concatStringsSep " " (map (p: ''"${p.name}"'') devspaceConfig.devspaces)})
+    
+    for i in "''${!DEVSPACE_IDS[@]}"; do
+      id="''${DEVSPACE_IDS[$i]}"
+      name="''${DEVSPACE_NAMES[$i]}"
       desc="''${DESCRIPTIONS[$i]}"
-      session="devspace-$devspace"
+      session="devspace-$id"
       
       echo "$desc"
       
@@ -504,8 +516,14 @@ in {
       mouse = true;
       baseIndex = 1; # Windows start at 1
       
-      # 🎨 Catppuccin theme plugin
+      # 🎨 Catppuccin theme plugin and monitoring plugins
       plugins = with pkgs.tmuxPlugins; [
+        # System monitoring plugins (must be loaded before catppuccin)
+        cpu
+        sysstat
+        net-speed
+        
+        # Catppuccin theme
         {
           plugin = catppuccin;
           extraConfig = ''
@@ -528,22 +546,25 @@ in {
             # Status line configuration
             set -g status-right-length 100
             set -g status-left-length 100
-            set -g status-left ""
-            set -g status-right "#{E:@catppuccin_status_directory}"
-            set -ag status-right "#{E:@catppuccin_status_user}"
-            set -ag status-right "#{E:@catppuccin_status_host}"
             
             ${optionalString cfg.devspaceMode ''
-              # Devspace-specific session module
-              set -g @catppuccin_session_text "#{?#{==:#{session_name},devspace-mercury},🚀 mercury,#{?#{==:#{session_name},devspace-venus},💫 venus,#{?#{==:#{session_name},devspace-earth},🌍 earth,#{?#{==:#{session_name},devspace-mars},🔴 mars,#{?#{==:#{session_name},devspace-jupiter},🪐 jupiter,#{session_name}}}}}}"
-              set -ag status-right "#{E:@catppuccin_status_session}"
+              # Devspace icon and name on the left - dynamically built from theme
+              set -g status-left "${concatStringsSep "" (map (d: 
+                "#{?#{==:#{session_name},devspace-${toString d.id}},${d.icon} ${d.name} ,"
+              ) devspaceConfig.devspaces)}}"
             ''}
             ${optionalString (!cfg.devspaceMode) ''
-              set -ag status-right "#{E:@catppuccin_status_session}"
+              set -g status-left ""
             ''}
             
-            # Directory settings
-            set -g @catppuccin_directory_text "#{b:pane_current_path}"
+            # Right side status - system monitoring
+            set -g status-right "#{E:@catppuccin_status_cpu}"
+            set -ag status-right "#{E:@catppuccin_status_load}"
+            
+            # Configure sysstat plugin format (for load average)
+            set -g @sysstat_mem_view_tmpl '#[fg=#{mem.color}]#{mem.pused}'
+            set -g @sysstat_cpu_view_tmpl '#[fg=#{cpu.color}]#{cpu.pused}'
+            set -g @sysstat_loadavg_view_tmpl '#[fg=#{load.color}]#{load.load1}'
           '';
         }
       ];
@@ -563,16 +584,18 @@ in {
         ${optionalString cfg.devspaceMode ''
           # Devspace-specific pane colors based on current session
           # These colors are from the Catppuccin Mocha palette
-          if-shell '[ "#{session_name}" = "devspace-mercury" ]' \
-            'set -g pane-active-border-style "fg=#f5c2e7"' # Pink (Flamingo)
-          if-shell '[ "#{session_name}" = "devspace-venus" ]' \
-            'set -g pane-active-border-style "fg=#f38ba8"' # Red (Red)  
-          if-shell '[ "#{session_name}" = "devspace-earth" ]' \
-            'set -g pane-active-border-style "fg=#a6e3a1"' # Green (Green)
-          if-shell '[ "#{session_name}" = "devspace-mars" ]' \
-            'set -g pane-active-border-style "fg=#fab387"' # Orange (Peach)
-          if-shell '[ "#{session_name}" = "devspace-jupiter" ]' \
-            'set -g pane-active-border-style "fg=#cba6f7"' # Purple (Mauve)
+          ${let
+            colorMap = {
+              flamingo = "#f5c2e7";
+              pink = "#f5c2e7";
+              red = "#f38ba8";
+              green = "#a6e3a1";
+              peach = "#fab387";
+              mauve = "#cba6f7";
+            };
+          in concatStringsSep "\n          " (map (d: 
+            "if-shell '[ \"#{session_name}\" = \"devspace-${toString d.id}\" ]' \\\n            'set -g pane-active-border-style \"fg=${colorMap.${d.color}}\"'"
+          ) devspaceConfig.devspaces)}
         ''}
 
         # 🌍 Update environment to include devspace variables
@@ -626,7 +649,7 @@ in {
 
           # 🚀 Quick session switching (theme-based hotkeys)
           ${concatStringsSep "\n          " (map (d:
-            "bind-key -n M-${d.hotkey} switch-client -t devspace-${d.name}"
+            "bind-key -n M-${d.hotkey} switch-client -t devspace-${toString d.id}"
           ) devspaceConfig.devspaces)}
         ''}
 
