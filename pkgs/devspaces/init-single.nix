@@ -45,10 +45,6 @@ writeScriptBin "devspace-init-single" ''
   # Create minimal session - always start with just setup window
   ${tmux}/bin/tmux new-session -d -s "$session" -n setup
   
-  # Disable automatic rename for the setup window
-  ${tmux}/bin/tmux set-window-option -t "$session:1" automatic-rename off
-  ${tmux}/bin/tmux set-window-option -t "$session:1" allow-rename off
-  
   # Set environment for the session
   ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE "$devspace"
   ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_COLOR "$color"

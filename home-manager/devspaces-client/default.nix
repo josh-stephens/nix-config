@@ -40,8 +40,13 @@ in
       
       # Single ET connection that handles everything
       echo "⚡ Connecting with Eternal Terminal..."
-      # Run a command that ensures the session exists and attaches to it
-      et ultraviolet:2022 -e -c "$devspace"
+      # First, let's test if tmux works at all through ET
+      echo "🔍 Testing tmux through ET..."
+      et ultraviolet:2022 -c "tmux -V && tmux list-sessions 2>&1 || echo 'tmux check failed'"
+      
+      # Now try the actual connection
+      echo "🚀 Connecting to devspace..."
+      et ultraviolet:2022 -e -c "$devspace connect"
     }
     
     # 🔧 Setup a devspace with a project

@@ -126,8 +126,6 @@ in {
         set -g set-titles on           # Set terminal titles
         set -g focus-events on         # For better editor integration (e.g., Neovim)
         set -g status-position bottom  # Display status bar at the bottom
-        setw -g automatic-rename off   # Don't rename windows based on running command
-        setw -g allow-rename off       # Don't let applications rename windows
         
         ${optionalString cfg.devspaceMode (let
           # Generate the set-titles-string with proper nested conditionals for devspace names
