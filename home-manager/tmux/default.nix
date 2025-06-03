@@ -85,7 +85,7 @@ in {
         set -g set-titles on
         set -g focus-events on
         set -g status-position bottom
-        setw -g automatic-rename off
+        setw -g automatic-rename on
         setw -g allow-rename on
         
         # Simple terminal title

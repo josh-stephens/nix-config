@@ -88,7 +88,17 @@ let
       local completion_detected=false
       
       while IFS= read -r line; do
-        # Echo to terminal
+        # Check for terminal title escape sequences and pass them through
+        if [[ "$line" =~ $'\e]'[0-2]';'(.*)$'\a' ]]; then
+          # Extract the title from the escape sequence
+          local title="''${BASH_REMATCH[1]}"
+          # If in tmux, set the window name
+          if [ -n "$TMUX" ]; then
+            ${pkgs.tmux}/bin/tmux rename-window "$title" 2>/dev/null || true
+          fi
+        fi
+        
+        # Echo to terminal (preserves escape sequences)
         echo "$line"
         
         # Add to buffer for context
@@ -191,6 +201,11 @@ let
     
     # Get claude path from npm
     CLAUDE_PATH="$HOME/.npm-global/bin/claude"
+    
+    # Set initial window name for tmux
+    if [ -n "$TMUX" ]; then
+      ${pkgs.tmux}/bin/tmux rename-window "claude"
+    fi
     
     # Run claude with all arguments passed through
     "$CLAUDE_PATH" "$@" > "$STDOUT_FIFO" 2> "$STDERR_FIFO" &
