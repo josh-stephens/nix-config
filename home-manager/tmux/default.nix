@@ -110,10 +110,10 @@ in {
             set -g @catppuccin_window_number_position "right"
             
             set -g @catppuccin_window_default_fill "number"
-            set -g @catppuccin_window_default_text "#{window_name}"
+            set -g @catppuccin_window_default_text "#W"
             
             set -g @catppuccin_window_current_fill "number"
-            set -g @catppuccin_window_current_text "#{window_name}"
+            set -g @catppuccin_window_current_text "#W"
             
           '';
         }
