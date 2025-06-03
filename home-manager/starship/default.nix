@@ -72,12 +72,12 @@
           when = ''test -n "$TMUX_DEVSPACE"'';
           command = ''
             case "$TMUX_DEVSPACE" in
-              mercury) echo "☿ mercury" ;;
-              venus)   echo "♀ venus" ;;
-              earth)   echo "🜨 earth" ;;
-              mars)    echo "♂ mars" ;;
-              jupiter) echo "♃ jupiter" ;;
-              *)       echo "● $TMUX_DEVSPACE" ;;
+              mercury) echo " ☿ mercury" ;;
+              venus)   echo " ♀ venus" ;;
+              earth)   echo " 🜨 earth" ;;
+              mars)    echo " ♂ mars" ;;
+              jupiter) echo " ♃ jupiter" ;;
+              *)       echo " ● $TMUX_DEVSPACE" ;;
             esac
           '';
           format = "[ $output ]($style)";
