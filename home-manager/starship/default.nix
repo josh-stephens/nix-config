@@ -74,7 +74,7 @@
             case "$TMUX_DEVSPACE" in
               mercury) echo " ☿ mercury" ;;
               venus)   echo " ♀ venus" ;;
-              earth)   echo " 🜨 earth" ;;
+              earth)   echo " ♁ earth" ;;
               mars)    echo " ♂ mars" ;;
               jupiter) echo " ♃ jupiter" ;;
               *)       echo " ● $TMUX_DEVSPACE" ;;
