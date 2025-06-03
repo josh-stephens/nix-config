@@ -19,7 +19,7 @@
   };
   
   # Helper function for devspace information
-  programs.zsh.initExtra = ''
+  programs.zsh.initContent = ''
     devspaces() {
       echo "🌌 Development Spaces"
       echo "━━━━━━━━━━━━━━━━━━━"
