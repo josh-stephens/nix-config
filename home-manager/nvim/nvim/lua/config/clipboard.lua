@@ -1,22 +1,32 @@
--- Clipboard configuration for remote/local compatibility
+-- Force Neovim to use system clipboard commands instead of OSC52
+-- This ensures our piknik wrappers are used
 
--- For SSH/ET sessions, use OSC52 for copying to local clipboard
-if (vim.env.SSH_CLIENT or vim.env.SSH_CONNECTION or vim.env.ET_VERSION) and vim.fn.has('nvim-0.10') == 1 then
-  -- Use OSC52 for copy operations only
-  -- Paste will use the default clipboard behavior (Cmd-V in terminal)
+if vim.fn.executable('xsel') == 1 then
+  -- Use xsel (which is our wrapper that uses piknik)
   vim.g.clipboard = {
-    name = 'OSC52',
+    name = 'xsel-piknik',
     copy = {
-      ['+'] = require('vim.ui.clipboard.osc52').copy('+'),
-      ['*'] = require('vim.ui.clipboard.osc52').copy('*'),
+      ['+'] = {'xsel', '--clipboard', '--input'},
+      ['*'] = {'xsel', '--primary', '--input'},
     },
     paste = {
-      -- Return false to use Neovim's built-in paste behavior
-      ['+'] = function() return false end,
-      ['*'] = function() return false end,
+      ['+'] = {'xsel', '--clipboard', '--output'},
+      ['*'] = {'xsel', '--primary', '--output'},
     },
+    cache_enabled = false,
+  }
+elseif vim.fn.executable('pbcopy') == 1 then
+  -- Fallback to pbcopy/pbpaste if available
+  vim.g.clipboard = {
+    name = 'pbcopy-piknik',
+    copy = {
+      ['+'] = {'pbcopy'},
+      ['*'] = {'pbcopy'},
+    },
+    paste = {
+      ['+'] = {'pbpaste'},
+      ['*'] = {'pbpaste'},
+    },
+    cache_enabled = false,
   }
 end
-
--- Always use system clipboard
-vim.opt.clipboard = "unnamedplus"
