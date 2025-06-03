@@ -190,8 +190,11 @@ writeScriptBin "devspace-setup" ''
       echo -e "''${GREEN}✨ Devspace recreated with full environment!''${NC}"
     fi
     
-    # Mark as initialized
+    # Mark as initialized and store the project path
     ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_INITIALIZED "true"
+    if [ -n "$project_path" ]; then
+      ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_PROJECT "$project_path"
+    fi
   }
   
   # Helper function to get the main repository from a path
@@ -407,6 +410,9 @@ writeScriptBin "devspace-setup" ''
   
   # Handle tmux session
   if ${tmux}/bin/tmux has-session -t "$SESSION" 2>/dev/null; then
+    # Update the project path in session environment
+    ${tmux}/bin/tmux set-environment -t "$SESSION" TMUX_DEVSPACE_PROJECT "$PROJECT_PATH"
+    
     # Expand minimal session to full environment if needed
     expand_devspace "$DEVSPACE"
     
