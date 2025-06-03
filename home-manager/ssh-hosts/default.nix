@@ -52,13 +52,14 @@
       shift
       local extra_args=("$@")
       local use_autossh=false
-      local use_et=false
+      local use_et=true  # Default to ET
       
       # Check for connection type flags
       while [[ "$1" =~ ^- ]]; do
         case "$1" in
           -a|--auto)
             use_autossh=true
+            use_et=false  # AutoSSH implies SSH
             shift
             ;;
           -e|--et)
@@ -66,7 +67,7 @@
             shift
             ;;
           --ssh)
-            # Force SSH even if ET is available
+            # Force SSH instead of ET
             use_et=false
             use_autossh=false
             shift
@@ -137,13 +138,13 @@
         fi
       else
         # Just connect interactively
-        # Default to ET if available for better latency (unless explicitly disabled)
-        if [ "$use_et" != false ] && command -v et &> /dev/null && [ "$use_autossh" = false ]; then
+        # Default to ET if available and not explicitly disabled
+        if [ "$use_et" = true ] && command -v et &> /dev/null; then
           # Use Eternal Terminal for persistent low-latency connection
           echo "⚡ Using Eternal Terminal for low-latency persistent connection..."
           et "$target_host:2022"
         elif [ "$use_et" = true ] && ! command -v et &> /dev/null; then
-          # Explicitly requested ET but not available
+          # ET requested (default) but not available
           echo "❌ Eternal Terminal not available, falling back to SSH..."
           ssh "$target_host"
         elif [ "$use_autossh" = true ]; then
@@ -239,8 +240,9 @@
       echo
       echo "Legend: 🏠 local | 🔒 tailscale | 🌐 local network | ❌ unreachable"
       echo
-      echo "Connection: Uses optimized SSH with connection reuse"
-      echo "For persistent connections: use -a flag (e.g., 'ultraviolet -a')"
+      echo "Connection: Uses Eternal Terminal (ET) by default for low-latency persistent connections"
+      echo "For SSH: use --ssh flag (e.g., 'ultraviolet --ssh')"
+      echo "For autossh: use -a flag (e.g., 'ultraviolet -a')"
     }
     
     # Convenient aliases
