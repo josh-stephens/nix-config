@@ -6,7 +6,6 @@
     # Import custom packages from the 'pkgs' directory
     inherit (import ../pkgs { pkgs = final; })
       myCaddy
-      devspaces
       starlark-lsp;
     
     # Package modifications

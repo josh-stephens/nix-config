@@ -3,6 +3,5 @@
 
 { pkgs ? (import ../nixpkgs.nix) { } }: {
   myCaddy = pkgs.callPackage ./caddy { };
-  devspaces = pkgs.callPackage ./devspaces { };
   starlark-lsp = pkgs.callPackage ./starlark-lsp { };
 }

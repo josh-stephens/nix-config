@@ -229,7 +229,7 @@ let
   
   claudeDevspaceScript = pkgs.writeScriptBin "claude-devspace" ''
     #!${pkgs.bash}/bin/bash
-    # 🪐 Start Claude in the current devspace's project directory
+    # 🪐 Start Claude in the current directory with devspace notifications
     
     DEVSPACE="''${TMUX_DEVSPACE:-}"
     
@@ -239,15 +239,7 @@ let
       exit 1
     fi
     
-    # Check for linked project
-    if [ -L "$HOME/devspaces/$DEVSPACE/project" ]; then
-      cd "$HOME/devspaces/$DEVSPACE/project"
-      echo "📁 Starting Claude in $(pwd)"
-    else
-      echo "⚠️  No project linked to $DEVSPACE"
-      echo "Use: devspace-setup $DEVSPACE /path/to/project"
-      exit 1
-    fi
+    echo "📁 Starting Claude in $(pwd)"
     
     # Start Claude with notifications
     exec claude-notify "$@"

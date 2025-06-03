@@ -2,10 +2,8 @@
   imports = [
     ./common.nix
     # ./media.nix
-    ./tmux
-    ./devspaces-host
+    ./tmux-simplified
     ./claude-wrapper
-    ./clipboard-sync
   ];
 
   home = {
@@ -15,35 +13,20 @@
       file
       unzip
       dmidecode
-      gcc  # C compiler for Neovim plugins (TreeSitter, etc.)
+      gcc
     ];
   };
 
   programs.zsh.shellAliases.update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
   
-  # Enable tmux with devspace mode for servers
-  programs.tmux-devspace = {
+  programs.tmux-simple = {
     enable = true;
-    devspaceMode = true;
-    remoteOpener = true;  # Enable remote link opening
+    remoteOpener = true;
   };
 
-  # Enable devspaces management
-  programs.devspaces = {
-    enable = true;
-    claudeNotifications = true;
-  };
-
-  # Enable Claude wrapper
   programs.claude-wrapper = {
     enable = true;
   };
 
-  # Enable clipboard sync for remote development
-  programs.clipboard-sync = {
-    enable = true;
-  };
-
-  # Nicely reload system units when changing configs
   systemd.user.startServices = "sd-switch";
 }
