@@ -4,6 +4,7 @@
     # ./media.nix
     ./tmux
     ./claude-wrapper
+    ./devspaces-host
   ];
 
   home = {
