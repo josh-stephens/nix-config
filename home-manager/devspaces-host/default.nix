@@ -230,34 +230,5 @@ in {
         text = "";
       };
     }) devspaceConfig.devspaces);
-    
-    # Auto-connect to devspace based on DEVSPACE_ID environment variable (from ET)
-    programs.zsh.initContent = ''
-      # Check if DEVSPACE_ID is set (from ET connection)
-      if [ -n "$DEVSPACE_ID" ] && [ -z "$TMUX" ]; then
-        # Extract numeric ID from format "id-3"
-        devspace_id="''${DEVSPACE_ID#id-}"
-        
-        # Attach to the corresponding tmux session
-        session="devspace-$devspace_id"
-        if tmux has-session -t "$session" 2>/dev/null; then
-          exec tmux attach-session -t "$session"
-        else
-          # Session doesn't exist, create it first
-          # Get devspace name from ID
-          case "$devspace_id" in
-            ${lib.concatStringsSep "\n            " (map (s: ''${toString s.id}) devspace_name="${s.name}" ;;'') devspaceConfig.devspaces)}
-            *) devspace_name="unknown" ;;
-          esac
-          
-          # Run the devspace command to initialize and attach
-          if command -v "$devspace_name" &>/dev/null; then
-            exec "$devspace_name"
-          else
-            echo "⚠️  Devspace $devspace_name (ID: $devspace_id) not found"
-          fi
-        fi
-      fi
-    '';
   };
 }

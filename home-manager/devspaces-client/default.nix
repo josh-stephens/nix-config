@@ -38,10 +38,13 @@ in
         ${lib.concatStringsSep "\n        " (map (s: ''${s.name}) devspace_id="${toString s.id}" ;;'') theme.spaces)}
       esac
       
-      # Use ET with environment variable to specify devspace
-      # The reverse tunnel hack requires both parts to be non-numeric
+      # Two-stage connection: SSH to ensure session exists, then ET for persistent connection
+      echo "🚀 Initializing devspace session..."
+      ssh -o ConnectTimeout=2 ultraviolet "tmux has-session -t devspace-$devspace_id 2>/dev/null || $devspace" </dev/null 2>/dev/null
+      
       echo "⚡ Connecting with Eternal Terminal..."
-      et ultraviolet:2022 -r "DEVSPACE_ID:id-$devspace_id"
+      # Connect with ET using -e flag to prevent exit after command
+      et ultraviolet:2022 -e -c "tmux attach-session -t devspace-$devspace_id"
     }
     
     # 🔧 Setup a devspace with a project
