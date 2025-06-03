@@ -26,26 +26,16 @@ in
       shift
       local extra_args="$@"
       
-      # Use the smart SSH function to connect, then run tmux command
       # Theme-aware connection message from theme configuration
       case "$devspace" in
         ${lib.concatStringsSep "\n        " (map (s: ''${s.name}) echo "${s.connectMessage}" ;;'') theme.spaces)}
         *) echo "🚀 Connecting to devspace $devspace..." ;;
       esac
-      # Get the devspace ID from theme
-      local devspace_id=""
-      case "$devspace" in
-        ${lib.concatStringsSep "\n        " (map (s: ''${s.name}) devspace_id="${toString s.id}" ;;'') theme.spaces)}
-      esac
+      
+      echo "⚡ Connecting with Eternal Terminal..."
       
       # Single ET connection that handles everything
-      echo "⚡ Connecting with Eternal Terminal..."
-      # First, let's test if tmux works at all through ET
-      echo "🔍 Testing tmux through ET..."
-      et ultraviolet:2022 -c "tmux -V && tmux list-sessions 2>&1 || echo 'tmux check failed'"
-      
-      # Now try the actual connection
-      echo "🚀 Connecting to devspace..."
+      # Use -e to prevent exit after command
       et ultraviolet:2022 -e -c "$devspace connect"
     }
     
