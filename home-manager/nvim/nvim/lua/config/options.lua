@@ -40,5 +40,5 @@ require("config.clipboard")
 -- opt.mouse = "nivh"
 -- opt.signcolumn = "yes:1"
 -- opt.ruler = true
--- opt.clipboard = "unnamedplus"
+opt.clipboard = "unnamedplus"
 -- opt.termguicolors = true
