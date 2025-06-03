@@ -54,7 +54,7 @@ in {
         piknik-genkeys = "piknik -genkeys";
       };
       
-      initExtra = ''
+      initContent = ''
         # Start piknik server if not running (backup for launchd)
         start-piknik() {
           if ! lsof -i :8075 >/dev/null 2>&1; then

@@ -33,7 +33,7 @@ in {
       };
       
       # Shell functions for better clipboard integration
-      initExtra = ''
+      initContent = ''
         # Copy function that works with pipes or arguments
         copy() {
           # Try piknik first with timeout
