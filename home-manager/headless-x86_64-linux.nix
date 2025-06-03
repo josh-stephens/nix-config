@@ -21,15 +21,28 @@
 
   programs.zsh.shellAliases.update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
   
-  # Auto-connect to devspace if marker file exists
+  # Auto-connect to devspace based on DEVSPACE_ID environment variable
   programs.zsh.initContent = ''
-    # Check for devspace auto-connect marker
-    if [ -f ~/.devspace-autoconnect ] && [ -z "$TMUX" ]; then
-      devspace=$(cat ~/.devspace-autoconnect)
-      rm -f ~/.devspace-autoconnect
-      if command -v "$devspace" &>/dev/null; then
-        # Run the devspace command to attach to tmux
-        exec "$devspace"
+    # Check if DEVSPACE_ID is set (from ET connection)
+    if [ -n "$DEVSPACE_ID" ] && [ -z "$TMUX" ]; then
+      # Attach to the corresponding tmux session
+      session="devspace-$DEVSPACE_ID"
+      if tmux has-session -t "$session" 2>/dev/null; then
+        exec tmux attach-session -t "$session"
+      else
+        # Session doesn't exist, create it first
+        # Get devspace name from ID
+        case "$DEVSPACE_ID" in
+          ${lib.concatStringsSep "\n          " (map (s: ''${toString s.id}) devspace_name="${s.name}" ;;'') theme.spaces)}
+          *) devspace_name="unknown" ;;
+        esac
+        
+        # Run the devspace command to initialize and attach
+        if command -v "$devspace_name" &>/dev/null; then
+          exec "$devspace_name"
+        else
+          echo "⚠️  Devspace $devspace_name (ID: $DEVSPACE_ID) not found"
+        fi
       fi
     fi
   '';

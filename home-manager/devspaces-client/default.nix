@@ -32,15 +32,15 @@ in
         ${lib.concatStringsSep "\n        " (map (s: ''${s.name}) echo "${s.connectMessage}" ;;'') theme.spaces)}
         *) echo "🚀 Connecting to devspace $devspace..." ;;
       esac
-      # Write devspace name to a file and connect with ET
-      # The shell will pick it up on connection
-      echo "$devspace" > ~/.config/.devspace-autoconnect 2>/dev/null || true
-      scp -q ~/.config/.devspace-autoconnect ultraviolet:.devspace-autoconnect 2>/dev/null || true
-      rm -f ~/.config/.devspace-autoconnect
+      # Get the devspace ID from theme
+      local devspace_id=""
+      case "$devspace" in
+        ${lib.concatStringsSep "\n        " (map (s: ''${s.name}) devspace_id="${toString s.id}" ;;'') theme.spaces)}
+      esac
       
-      # Connect with ET interactively
+      # Use ET with environment variable to specify devspace
       echo "⚡ Connecting with Eternal Terminal..."
-      et ultraviolet:2022
+      et ultraviolet:2022 -r "DEVSPACE_ID:$devspace_id"
     }
     
     # 🔧 Setup a devspace with a project
