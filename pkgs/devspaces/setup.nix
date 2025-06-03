@@ -89,6 +89,12 @@ writeScriptBin "devspace-setup" ''
       ${tmux}/bin/tmux new-window -t "$session:3" -n nvim
       ${tmux}/bin/tmux new-window -t "$session:4" -n logs
       
+      # Disable automatic rename for all windows
+      for window in 1 2 3 4; do
+        ${tmux}/bin/tmux set-window-option -t "$session:$window" automatic-rename off
+        ${tmux}/bin/tmux set-window-option -t "$session:$window" allow-rename off
+      done
+      
       # Move term to position 3 and claude to position 1
       ${tmux}/bin/tmux swap-window -s "$session:1" -t "$session:3"
       
@@ -145,6 +151,12 @@ writeScriptBin "devspace-setup" ''
         ${tmux}/bin/tmux new-window -t "$session:4" -n logs \
           -e TMUX_DEVSPACE="$devspace" -e TMUX_DEVSPACE_COLOR="$color" -e TMUX_DEVSPACE_ICON="$icon"
       fi
+      
+      # Disable automatic rename for all windows
+      for window in 1 2 3 4; do
+        ${tmux}/bin/tmux set-window-option -t "$session:$window" automatic-rename off
+        ${tmux}/bin/tmux set-window-option -t "$session:$window" allow-rename off
+      done
       
       # Re-set environment variables in session for consistency
       ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE "$devspace"

@@ -1,4 +1,4 @@
-{ lib, writeScriptBin, bash, symlinkJoin, devspace-context, devspace-setup, devspace-worktree, devspace-restore }:
+{ lib, writeScriptBin, bash, symlinkJoin, devspace-context, devspace-setup, devspace-worktree, devspace-restore, devspace-welcome }:
 
 let
   theme = import ./theme.nix;
@@ -33,17 +33,18 @@ let
         # Ensure tmux server is started
         tmux start-server 2>/dev/null || true
         
-        # If session doesn't exist, try to restore first
-        if ! tmux has-session -t devspace-${toString space.id} 2>/dev/null; then
-          echo "🔄 Session not found, attempting to restore..."
-          ${devspace-restore}/bin/devspace-restore 2>&1 || echo "❌ Restore failed: $?"
-        fi
-        
+        # Try to attach to existing session first
         if tmux has-session -t devspace-${toString space.id} 2>/dev/null; then
+          # Just attach - session already exists
           exec tmux attach-session -t devspace-${toString space.id}
         else
-          echo "${space.icon} ${space.name} could not be initialized."
-          exit 1
+          # Create a new session that will initialize itself
+          exec tmux new-session -s devspace-${toString space.id} -n setup \
+            -e TMUX_DEVSPACE="${space.name}" \
+            -e TMUX_DEVSPACE_COLOR="${space.color}" \
+            -e TMUX_DEVSPACE_ICON="${space.icon}" \
+            -e TMUX_DEVSPACE_ID="${toString space.id}" \
+            "${devspace-welcome}/bin/devspace-welcome ${space.name}"
         fi
         ;;
       
@@ -54,17 +55,18 @@ let
           # Ensure tmux server is started
           tmux start-server 2>/dev/null || true
           
-          # If session doesn't exist, try to restore first
-          if ! tmux has-session -t devspace-${toString space.id} 2>/dev/null; then
-            echo "🔄 Session not found, attempting to restore..."
-            ${devspace-restore}/bin/devspace-restore 2>&1 || echo "❌ Restore failed: $?"
-          fi
-          
+          # Try to attach to existing session first
           if tmux has-session -t devspace-${toString space.id} 2>/dev/null; then
+            # Just attach - session already exists
             exec tmux attach-session -t devspace-${toString space.id}
           else
-            echo "${space.icon} ${space.name} could not be initialized."
-            exit 1
+            # Create a new session that will initialize itself
+            exec tmux new-session -s devspace-${toString space.id} -n setup \
+              -e TMUX_DEVSPACE="${space.name}" \
+              -e TMUX_DEVSPACE_COLOR="${space.color}" \
+              -e TMUX_DEVSPACE_ICON="${space.icon}" \
+              -e TMUX_DEVSPACE_ID="${toString space.id}" \
+              "${devspace-welcome}/bin/devspace-welcome ${space.name}"
           fi
         else
           # Otherwise show status

@@ -27,6 +27,7 @@ let
     devspace-setup = devspaceSetup;
     devspace-worktree = devspaceWorktree;
     devspace-restore = devspaceRestore;
+    devspace-welcome = devspaceWelcome;
   };
 in
 symlinkJoin {
