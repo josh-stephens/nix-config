@@ -88,6 +88,7 @@ in {
       terminal = "tmux-256color"; # Required for proper color support
       mouse = true;
       baseIndex = 1; # Windows start at 1
+      prefix = "C-a"; # Much easier to reach than C-b!
       
       # 🎨 Catppuccin theme plugin and monitoring plugins
       plugins = with pkgs.tmuxPlugins; [
@@ -126,8 +127,8 @@ in {
         set -g set-titles on           # Set terminal titles
         set -g focus-events on         # For better editor integration (e.g., Neovim)
         set -g status-position bottom  # Display status bar at the bottom
-        setw -g automatic-rename off   # Don't rename windows based on running command
-        setw -g allow-rename off       # Don't let applications rename windows
+        setw -g automatic-rename off
+        setw -g allow-rename on
         
         ${optionalString cfg.devspaceMode (let
           # Generate the set-titles-string with proper nested conditionals for devspace names
@@ -221,6 +222,9 @@ in {
         ''}
 
         # ⌨️ Key bindings
+        # Send the prefix key through to the application
+        bind-key a send-prefix
+        
         # 📋 Better copy mode
         bind-key v copy-mode
         bind-key -T copy-mode-vi v send-keys -X begin-selection
@@ -244,11 +248,6 @@ in {
         ${optionalString cfg.devspaceMode ''
           # ⌨️ Devspace-specific keybindings
           # Quick window switching with memorable keys
-          bind-key c select-window -t :1  # Claude
-          bind-key n select-window -t :2  # Neovim
-          bind-key t select-window -t :3  # Terminal
-          bind-key l select-window -t :4  # Logs
-
           # 🚀 Quick session switching (theme-based hotkeys)
           ${concatStringsSep "\n          " (map (d:
             "bind-key -n M-${d.hotkey} switch-client -t devspace-${toString d.id}"

@@ -43,8 +43,7 @@ let
             -e TMUX_DEVSPACE="${space.name}" \
             -e TMUX_DEVSPACE_COLOR="${space.color}" \
             -e TMUX_DEVSPACE_ICON="${space.icon}" \
-            -e TMUX_DEVSPACE_ID="${toString space.id}" \
-            "${bash}/bin/bash -c '${devspace-welcome}/bin/devspace-welcome ${space.name}; exec \$SHELL'"
+            -e TMUX_DEVSPACE_ID="${toString space.id}"
         fi
         ;;
       
@@ -66,8 +65,7 @@ let
               -e TMUX_DEVSPACE="${space.name}" \
               -e TMUX_DEVSPACE_COLOR="${space.color}" \
               -e TMUX_DEVSPACE_ICON="${space.icon}" \
-              -e TMUX_DEVSPACE_ID="${toString space.id}" \
-              "${bash}/bin/bash -c '${devspace-welcome}/bin/devspace-welcome ${space.name}; exec \$SHELL'"
+              -e TMUX_DEVSPACE_ID="${toString space.id}"
           fi
         else
           # Otherwise show status
