@@ -2,7 +2,7 @@
   imports = [
     ./common.nix
     ./aerospace
-    ./devspaces-client-simplified
+    ./devspaces-client
     ./ssh-hosts
     ./ssh-config
   ];

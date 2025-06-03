@@ -24,7 +24,7 @@ This configuration has been dramatically simplified from the previous 12-file im
 - `hosts/ultraviolet/tmux.nix` - Just installs tmux system-wide
 
 ### Client Configuration (Mac)
-- `home-manager/devspaces-client-simplified/` - Shell aliases for easy connection
+- `home-manager/devspaces-client/` - Shell aliases for easy connection
 
 ### Home Manager
 - `home-manager/tmux-simplified/` - Clean tmux configuration without devspace complexity

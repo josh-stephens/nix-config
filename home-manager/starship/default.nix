@@ -67,17 +67,17 @@
         style = "bg:teal fg:base";
       };
 
-      custom = let
-        theme = import ../../pkgs/devspaces/theme.nix;
-      in {
+      custom = {
         devspace = {
           when = ''test -n "$TMUX_DEVSPACE"'';
           command = ''
-            window=$(tmux display-message -p '#W' 2>/dev/null || echo '?')
             case "$TMUX_DEVSPACE" in
-              ${lib.concatStringsSep "\n              " (map (s: ''
-              ${s.name}) echo "${s.icon} ${s.name} › $window" ;;'') theme.spaces)}
-              *)       echo "● $TMUX_DEVSPACE › $window" ;;
+              mercury) echo "☿ mercury" ;;
+              venus)   echo "♀ venus" ;;
+              earth)   echo "🜨 earth" ;;
+              mars)    echo "♂ mars" ;;
+              jupiter) echo "♃ jupiter" ;;
+              *)       echo "● $TMUX_DEVSPACE" ;;
             esac
           '';
           format = "[ $output ]($style)";
