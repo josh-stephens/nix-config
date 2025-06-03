@@ -38,13 +38,10 @@ in
         ${lib.concatStringsSep "\n        " (map (s: ''${s.name}) devspace_id="${toString s.id}" ;;'') theme.spaces)}
       esac
       
-      # Two-stage connection: SSH to ensure session exists, then ET for persistent connection
-      echo "🚀 Initializing devspace session..."
-      ssh -o ConnectTimeout=2 ultraviolet "tmux has-session -t devspace-$devspace_id 2>/dev/null || $devspace" </dev/null 2>/dev/null
-      
+      # Single ET connection that handles everything
       echo "⚡ Connecting with Eternal Terminal..."
-      # Connect with ET using -e flag to prevent exit after command
-      et ultraviolet:2022 -e -c "tmux attach-session -t devspace-$devspace_id"
+      # Run a command that ensures the session exists and attaches to it
+      et ultraviolet:2022 -e -c "$devspace"
     }
     
     # 🔧 Setup a devspace with a project
