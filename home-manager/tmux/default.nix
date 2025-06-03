@@ -110,10 +110,10 @@ in {
             set -g @catppuccin_window_number_position "right"
             
             set -g @catppuccin_window_default_fill "number"
-            set -g @catppuccin_window_default_text "#W"
+            set -g @catppuccin_window_default_text "#{window_name}"
             
             set -g @catppuccin_window_current_fill "number"
-            set -g @catppuccin_window_current_text "#W"
+            set -g @catppuccin_window_current_text "#{window_name}"
             
           '';
         }
@@ -126,6 +126,8 @@ in {
         set -g set-titles on           # Set terminal titles
         set -g focus-events on         # For better editor integration (e.g., Neovim)
         set -g status-position bottom  # Display status bar at the bottom
+        setw -g automatic-rename off   # Don't rename windows based on running command
+        setw -g allow-rename off       # Don't let applications rename windows
         
         ${optionalString cfg.devspaceMode (let
           # Generate the set-titles-string with proper nested conditionals for devspace names

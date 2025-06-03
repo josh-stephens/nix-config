@@ -152,6 +152,12 @@ writeScriptBin "devspace-setup" ''
           -e TMUX_DEVSPACE="$devspace" -e TMUX_DEVSPACE_COLOR="$color" -e TMUX_DEVSPACE_ICON="$icon"
       fi
       
+      # Disable automatic rename for all windows
+      for window in 1 2 3 4; do
+        ${tmux}/bin/tmux set-window-option -t "$session:$window" automatic-rename off
+        ${tmux}/bin/tmux set-window-option -t "$session:$window" allow-rename off
+      done
+      
       # Re-set environment variables in session for consistency
       ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE "$devspace"
       ${tmux}/bin/tmux set-environment -t "$session" TMUX_DEVSPACE_COLOR "$color"
