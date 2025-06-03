@@ -87,6 +87,7 @@ in {
         set -g status-position bottom
         setw -g automatic-rename on
         setw -g allow-rename on
+        set -g automatic-rename-format '#{pane_title}'
         
         # Simple terminal title
         set -g set-titles-string "#S:#I:#W"
