@@ -1,6 +1,4 @@
 { inputs, lib, config, pkgs, ... }: {
-  xdg.configFile."kitty/macos-launch-services-cmdline".source = ./macos-launch-services-cmdline;
-
   programs.kitty = {
     enable = true;
 
