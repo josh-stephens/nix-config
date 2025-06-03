@@ -26,10 +26,11 @@
 
 ## How It Works
 
-1. **System-Level Wrappers**: Instead of configuring each app, we provide system-wide `pbcopy`, `pbpaste`, `xclip`, and `xsel` commands
-2. **Smart Timeouts**: 200ms timeout ensures no noticeable delay
-3. **Automatic Fallback**: If piknik fails, falls back to OSC52 (terminal clipboard)
-4. **Universal**: ALL applications automatically get clipboard sync
+1. **System-Level Wrappers**: We provide system-wide `pbcopy`, `pbpaste`, `xclip`, and `xsel` wrapper scripts
+2. **Smart Timeouts**: 200ms timeout ensures no noticeable delay  
+3. **Automatic Fallback**: If piknik fails, falls back to OSC52 (terminal clipboard) or native clipboard
+4. **Universal**: ALL applications automatically get clipboard sync - no per-app configuration needed
+5. **Transparent**: Applications don't know about piknik, they just call standard clipboard commands
 
 ## Installation Steps
 
@@ -242,9 +243,16 @@ echo "test" | bash -x $(which pbcopy) 2>&1 | grep -E "piknik|OSC52"
 
 ## Architecture Benefits
 
-1. **System-Wide**: No per-application configuration
-2. **Transparent**: Applications don't know about piknik
-3. **Resilient**: Multiple fallback mechanisms
-4. **Fast**: 200ms timeout prevents delays
-5. **Secure**: End-to-end encryption
-6. **Simple**: Just use normal clipboard commands
+1. **System-Wide**: No per-application configuration needed (no Neovim plugins, no tmux config)
+2. **Transparent**: Applications don't know about piknik - they just call `pbcopy`/`pbpaste`
+3. **Resilient**: Multiple fallback mechanisms ensure clipboard always works
+4. **Fast**: 200ms timeout prevents any noticeable delays
+5. **Secure**: End-to-end encryption for network clipboard
+6. **Simple**: Just use normal clipboard commands - everything else is automatic
+
+## What Changed from Previous Versions
+
+- **Removed**: Complex Neovim clipboard plugin
+- **Removed**: Shell aliases for clipboard commands  
+- **Added**: System-level wrapper scripts that handle everything
+- **Result**: Much simpler, more maintainable, works everywhere automatically

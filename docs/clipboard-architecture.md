@@ -7,6 +7,10 @@
 │                     Ultraviolet (Linux)                       │
 │                    PIKNIK SERVER (8075)                       │
 │                  Always Running, Central Hub                  │
+│                                                               │
+│  System-wide clipboard wrappers:                              │
+│  - pbcopy/pbpaste → piknik → OSC52 fallback                  │
+│  - xclip/xsel → piknik → OSC52 fallback                      │
 └─────────────────────────────────────────────────────────────┘
                               ↑
                               │ Encrypted
@@ -15,8 +19,8 @@
 ┌──────────────────┐    ┌──────────────────┐    ┌──────────────┐
 │   Mac (Client)   │    │  Blink (Client)  │    │ Other Servers │
 │                  │    │                  │    │   (Clients)   │
-│ Clipboard Monitor│    │  Direct piknik   │    │               │
-│   → piknik       │    │     usage        │    │               │
+│ Clipboard Monitor│    │ System wrappers  │    │System wrappers│
+│   → piknik       │    │   → piknik       │    │   → piknik    │
 └──────────────────┘    └──────────────────┘    └──────────────┘
 ```
 
@@ -32,21 +36,26 @@
    - No port forwarding needed
    - Works through NAT
 
-## Fallback Chain
+## System-Level Integration
 
-### On Mac
-1. System clipboard (Cmd+C/Cmd+V) - Always works
-2. Clipboard monitor → Piknik (if running)
-3. Manual sync commands (if monitor stopped)
+### How It Works
+1. **Any application** calls standard clipboard commands (`pbcopy`, `xclip`, etc.)
+2. **Our wrapper scripts** intercept these calls (installed with high priority in PATH)
+3. **Try piknik first** with 200ms timeout
+4. **Automatic fallback** to OSC52 or native clipboard if piknik fails
+5. **Applications are unaware** - they just use normal clipboard commands
 
-### On Linux/Neovim
-1. Piknik (if server reachable)
-2. OSC52 (if piknik down) - Copies to terminal
-3. Internal vim registers - Always works
+### Fallback Chain
+
+**All Platforms:**
+1. Try piknik (200ms timeout) → Network clipboard sync
+2. Fall back to OSC52 → Terminal-local clipboard  
+3. Fall back to native → System clipboard (if available)
 
 ### Key Safety Features
-- **Mac clipboard**: Never depends on piknik
-- **Neovim yanking**: Falls back to OSC52 if piknik fails
+- **Zero configuration per app**: Neovim, tmux, shell scripts all "just work"
+- **Mac clipboard**: Always works, monitor adds sync capability
+- **Fast timeouts**: 200ms prevents any noticeable delay
 - **Everything degrades gracefully**: No hard dependencies
 
 ## Setup Steps
@@ -90,18 +99,19 @@ piknik -paste  # Shows "test"
 ## What Happens When Services Are Down?
 
 ### Piknik Server Down
-- Mac clipboard: ✅ Works normally
-- Clipboard monitor: Logs errors but doesn't break anything
-- Neovim: ✅ Falls back to OSC52
-- Manual sync: ❌ Won't work until server is back
+- Mac clipboard: ✅ Works normally (native)
+- Linux clipboard: ✅ Falls back to OSC52 automatically
+- All applications: ✅ Continue working with local clipboard
+- Network sync: ❌ Disabled until server returns
 
 ### Clipboard Monitor Down (Mac)
 - Mac clipboard: ✅ Works normally
-- Auto-sync: ❌ Disabled
-- Manual sync: ✅ Still works with `mac-to-piknik`
-- Neovim on remote: ✅ Can still paste with piknik
+- Mac → Remote sync: ❌ Automatic sync disabled
+- Manual sync: ✅ Can still use `mac-to-piknik`
+- Remote → Mac: ✅ Still works via `piknik-to-mac`
 
-### Everything Down
-- Mac clipboard: ✅ Always works
-- Neovim: ✅ Uses OSC52 or internal registers
-- Copy/paste: Works locally on each machine
+### Not on Tailnet
+- Wrapper timeout: 200ms then fallback (barely noticeable)
+- Mac clipboard: ✅ Native clipboard unaffected
+- Linux clipboard: ✅ OSC52 fallback works instantly
+- All apps: ✅ Continue working with fallback clipboard
