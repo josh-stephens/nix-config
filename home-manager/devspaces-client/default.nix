@@ -39,8 +39,9 @@ in
       esac
       
       # Use ET with environment variable to specify devspace
+      # The reverse tunnel hack requires both parts to be non-numeric
       echo "⚡ Connecting with Eternal Terminal..."
-      et ultraviolet:2022 -r "DEVSPACE_ID:$devspace_id"
+      et ultraviolet:2022 -r "DEVSPACE_ID:id-$devspace_id"
     }
     
     # 🔧 Setup a devspace with a project
