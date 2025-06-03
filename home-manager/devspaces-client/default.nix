@@ -3,12 +3,12 @@
 {
   # Devspace client configuration
   programs.zsh.shellAliases = {
-    # Direct connection aliases
-    mercury = "et ultraviolet:2022 -c 'tmux attach-session -t mercury || tmux new-session -s mercury'";
-    venus = "et ultraviolet:2022 -c 'tmux attach-session -t venus || tmux new-session -s venus'";
-    earth = "et ultraviolet:2022 -c 'tmux attach-session -t earth || tmux new-session -s earth'";
-    mars = "et ultraviolet:2022 -c 'tmux attach-session -t mars || tmux new-session -s mars'";
-    jupiter = "et ultraviolet:2022 -c 'tmux attach-session -t jupiter || tmux new-session -s jupiter'";
+    # Direct connection aliases - ensure TMUX_DEVSPACE is always set
+    mercury = "et ultraviolet:2022 -c '(tmux set-environment -t mercury -g TMUX_DEVSPACE mercury 2>/dev/null || true) && (tmux attach-session -t mercury || tmux new-session -s mercury -e TMUX_DEVSPACE=mercury)'";
+    venus = "et ultraviolet:2022 -c '(tmux set-environment -t venus -g TMUX_DEVSPACE venus 2>/dev/null || true) && (tmux attach-session -t venus || tmux new-session -s venus -e TMUX_DEVSPACE=venus)'";
+    earth = "et ultraviolet:2022 -c '(tmux set-environment -t earth -g TMUX_DEVSPACE earth 2>/dev/null || true) && (tmux attach-session -t earth || tmux new-session -s earth -e TMUX_DEVSPACE=earth)'";
+    mars = "et ultraviolet:2022 -c '(tmux set-environment -t mars -g TMUX_DEVSPACE mars 2>/dev/null || true) && (tmux attach-session -t mars || tmux new-session -s mars -e TMUX_DEVSPACE=mars)'";
+    jupiter = "et ultraviolet:2022 -c '(tmux set-environment -t jupiter -g TMUX_DEVSPACE jupiter 2>/dev/null || true) && (tmux attach-session -t jupiter || tmux new-session -s jupiter -e TMUX_DEVSPACE=jupiter)'";
     
     # Status command to see what's running
     devspace-status = "ssh ultraviolet 'tmux list-sessions 2>/dev/null || echo \"No active sessions\"'";
