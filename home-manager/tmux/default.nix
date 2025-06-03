@@ -3,8 +3,6 @@
 with lib;
 
 let
-  cfg = config.programs.tmux-simple;
-
   # Remote link opening script for server side
   remoteLinkOpenScript = pkgs.writeScriptBin "remote-link-open" ''
     #!${pkgs.bash}/bin/bash
@@ -43,17 +41,7 @@ let
   '';
 
 in {
-  options.programs.tmux-simple = {
-    enable = mkEnableOption "simplified tmux configuration";
-    
-    remoteOpener = mkOption {
-      type = types.bool;
-      default = false;
-      description = "Enable remote link opening capability";
-    };
-  };
-
-  config = mkIf cfg.enable {
+  config = {
     programs.tmux = {
       enable = true;
       baseIndex = 1;
@@ -118,7 +106,7 @@ in {
         set -g @catppuccin_ram_icon " "
         
         set -ag status-right \
-          "#[fg=#cba6f7]#{E:@catppuccin_status_left_separator}#[fg=#11111b,bg=#cba6f7]#{E:@catppuccin_ram_icon}#{E:@catppuccin_status_middle_separator}#[fg=#cdd6f4,bg=#313244] #(${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/scripts/ram_percentage.sh)#[fg=#313244]#{E:@catppuccin_status_right_separator}"
+          "#[fg=#cba6f7]#{E:@catppuccin_status_left_separator}#[fg=#11111b,bg=#cba6f7] #{E:@catppuccin_status_middle_separator}#[fg=#cdd6f4,bg=#313244] #(${pkgs.tmuxPlugins.cpu}/share/tmux-plugins/cpu/scripts/ram_percentage.sh)#[fg=#313244]#{E:@catppuccin_status_right_separator}"
 
         # Pane borders - Catppuccin Mocha colors
         set -g pane-border-style "fg=#313244"
@@ -149,12 +137,12 @@ in {
       '';
     };
 
-    home.packages = with pkgs; (optionals cfg.remoteOpener [
+    home.packages = with pkgs; [
       remoteLinkOpenScript
-    ]);
+    ];
 
     # Set up environment for remote link opening
-    home.sessionVariables = mkIf cfg.remoteOpener {
+    home.sessionVariables = {
       BROWSER = "remote-link-open";
       DEFAULT_BROWSER = "remote-link-open";
     };

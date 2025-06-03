@@ -18,8 +18,11 @@
       for name in mercury venus earth mars jupiter; do
         if ! ${pkgs.tmux}/bin/tmux has-session -t "$name" 2>/dev/null; then
           echo "Creating devspace: $name"
-          # Create empty session - user will navigate and create windows as needed
-          ${pkgs.tmux}/bin/tmux new-session -d -s "$name"
+          # Create empty session with TMUX_DEVSPACE environment variable
+          ${pkgs.tmux}/bin/tmux new-session -d -s "$name" \
+            -e TMUX_DEVSPACE="$name"
+          # Also set it in the session environment for new windows
+          ${pkgs.tmux}/bin/tmux set-environment -t "$name" TMUX_DEVSPACE "$name"
         else
           echo "Devspace $name already exists"
         fi
@@ -29,10 +32,4 @@
     '';
   };
   
-  # Restart devspaces service on rebuild
-  system.activationScripts.devspaces = {
-    text = ''
-      ${pkgs.systemd}/bin/systemctl restart devspaces.service || true
-    '';
-  };
 }

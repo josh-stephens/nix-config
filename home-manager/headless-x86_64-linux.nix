@@ -2,7 +2,7 @@
   imports = [
     ./common.nix
     # ./media.nix
-    ./tmux-simplified
+    ./tmux
     ./claude-wrapper
   ];
 
@@ -19,11 +19,6 @@
 
   programs.zsh.shellAliases.update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
   
-  programs.tmux-simple = {
-    enable = true;
-    remoteOpener = true;
-  };
-
   programs.claude-wrapper = {
     enable = true;
   };
