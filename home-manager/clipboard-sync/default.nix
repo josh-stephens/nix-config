@@ -4,6 +4,7 @@ with lib;
 
 let
   cfg = config.programs.clipboard-sync;
+  wrappers = import ./clipboard-wrappers.nix { inherit pkgs; };
   
   # Piknik configuration - this machine runs as SERVER
   piknikConfig = ''
@@ -17,8 +18,8 @@ in {
   };
 
   config = mkIf cfg.enable {
-    # Install piknik
-    home.packages = [ pkgs.piknik ];
+    # Install piknik and clipboard wrappers
+    home.packages = [ pkgs.piknik ] ++ wrappers.home.packages;
     
     # Don't manage piknik config - let user set it up manually
     
@@ -73,18 +74,7 @@ in {
           fi
         }
         
-        # Override system clipboard commands if in SSH/tmux
-        if [ -n "$SSH_CONNECTION" ] || [ -n "$SSH_TTY" ] || [ -n "$TMUX" ]; then
-          # Linux clipboard aliases that use piknik
-          alias xclip="piknik -copy"
-          alias xsel="piknik -copy"
-          alias pbcopy="piknik -copy"
-          alias pbpaste="piknik -paste"
-          
-          # Also handle wl-clipboard commands for Wayland
-          alias wl-copy="piknik -copy"
-          alias wl-paste="piknik -paste"
-        fi
+        # No need for aliases - we have proper wrapper scripts in PATH
         
         # Quick copy last command
         copy-last() {
