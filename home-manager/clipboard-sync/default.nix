@@ -6,12 +6,6 @@ let
   cfg = config.programs.clipboard-sync;
   wrappers = import ./clipboard-wrappers.nix { inherit pkgs; };
   
-  # Piknik configuration - this machine runs as SERVER
-  piknikConfig = ''
-    # This Linux server hosts the clipboard
-    Listen = "0.0.0.0:8075"
-  '';
-  
 in {
   options.programs.clipboard-sync = {
     enable = mkEnableOption "clipboard synchronization for remote development";
@@ -22,19 +16,7 @@ in {
     home.packages = [ pkgs.piknik ] ++ wrappers.home.packages;
     
     # Don't manage piknik config - let user set it up manually
-    
-    # Script to merge key file with config
-    home.activation.piknikConfig = lib.hm.dag.entryAfter ["writeBoundary"] ''
-      if [ -f "$HOME/.piknik.toml.key" ]; then
-        # Merge the key file with the generated config
-        $DRY_RUN_CMD cat ${pkgs.writeText "piknik-base.toml" piknikConfig} > $HOME/.piknik.toml.tmp
-        $DRY_RUN_CMD echo "" >> $HOME/.piknik.toml.tmp
-        $DRY_RUN_CMD cat $HOME/.piknik.toml.key >> $HOME/.piknik.toml.tmp
-        $DRY_RUN_CMD mv $HOME/.piknik.toml.tmp $HOME/.piknik.toml
-      else
-        $VERBOSE_ECHO "Warning: ~/.piknik.toml.key not found. Run 'piknik -genkeys > ~/.piknik.toml.key' to generate it."
-      fi
-    '';
+    # User should create ~/.piknik.toml with appropriate server/client config
     
     # Shell configuration for clipboard commands
     programs.zsh = {

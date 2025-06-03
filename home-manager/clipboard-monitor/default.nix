@@ -24,20 +24,10 @@ let
       if [ "$current_clipboard" != "$last_clipboard" ] && [ -n "$current_clipboard" ]; then
         # Try to sync to piknik with timeout (non-blocking)
         (
-          # Debug: log what we're trying
-          echo "[DEBUG] Attempting to sync $(echo "$current_clipboard" | wc -c) bytes"
-          echo "[DEBUG] PATH=$PATH"
-          echo "[DEBUG] HOME=$HOME"
-          echo "[DEBUG] Looking for config at: $HOME/.piknik.toml"
-          
-          # Try with explicit config path and capture stderr
-          if echo "$current_clipboard" | ${pkgs.coreutils}/bin/timeout 2 ${pkgs.piknik}/bin/piknik -config "$HOME/.piknik.toml" -copy 2>&1; then
+          if echo "$current_clipboard" | ${pkgs.coreutils}/bin/timeout 2 ${pkgs.piknik}/bin/piknik -copy 2>/dev/null; then
             echo "✅ Synced clipboard to piknik ($(echo "$current_clipboard" | wc -c) bytes)"
           else
-            exit_code=$?
-            echo "⚠️  Piknik sync failed (exit code: $exit_code)"
-            echo "[DEBUG] Trying to cat config file..."
-            ls -la "$HOME/.piknik.toml" 2>&1 || echo "[DEBUG] Config file not found!"
+            echo "⚠️  Piknik sync failed (server unreachable?)"
           fi
         ) &
         # Update last known clipboard immediately (don't wait for piknik)
