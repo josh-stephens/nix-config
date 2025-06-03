@@ -32,10 +32,9 @@ in
         ${lib.concatStringsSep "\n        " (map (s: ''${s.name}) echo "${s.connectMessage}" ;;'') theme.spaces)}
         *) echo "🚀 Connecting to devspace $devspace..." ;;
       esac
-      # Use ET with the -c flag to execute the devspace command
-      # This gives us both persistent connection AND command execution
+      # Use ET with a command that attaches to tmux and doesn't exit
       echo "⚡ Connecting with Eternal Terminal..."
-      et ultraviolet:2022 -c "$devspace"
+      et ultraviolet:2022 -c "exec $devspace"
     }
     
     # 🔧 Setup a devspace with a project
