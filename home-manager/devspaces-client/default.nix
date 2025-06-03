@@ -7,6 +7,9 @@ let
   
   # Generate connection message lookup
   connectMessages = lib.listToAttrs (map (s: { name = s.name; value = s.connectMessage; }) theme.spaces);
+  
+  # Generate devspace ID lookup
+  devspaceIds = lib.listToAttrs (map (s: { name = s.name; value = toString s.id; }) theme.spaces);
 in
 
 {
@@ -29,9 +32,10 @@ in
         ${lib.concatStringsSep "\n        " (map (s: ''${s.name}) echo "${s.connectMessage}" ;;'') theme.spaces)}
         *) echo "🚀 Connecting to devspace $devspace..." ;;
       esac
-      # Use the smart ultraviolet connection function
-      # It will use SSH (with optimal settings) for command execution
-      ultraviolet "$devspace"
+      # Use ET with the -c flag to execute the devspace command
+      # This gives us both persistent connection AND command execution
+      echo "⚡ Connecting with Eternal Terminal..."
+      et ultraviolet:2022 -c "$devspace"
     }
     
     # 🔧 Setup a devspace with a project
@@ -41,10 +45,10 @@ in
       
       if [ -z "$project" ]; then
         echo "📊 Checking $devspace setup..."
-        ultraviolet devspace-setup $devspace
+        et ultraviolet:2022 -c "devspace-setup $devspace"
       else
         echo "🔧 Setting up $devspace with project: $project"
-        ultraviolet devspace-setup $devspace "$project"
+        et ultraviolet:2022 -c "devspace-setup $devspace '$project'"
       fi
     }
     
@@ -59,7 +63,7 @@ in
     # 📊 Status command
     devspace-status() {
       echo "🌌 Fetching devspace status from ultraviolet..."
-      ultraviolet devspace-status
+      et ultraviolet:2022 -c "devspace-status"
     }
     
     # 🔧 Setup commands from Mac (legacy - use earth setup instead)

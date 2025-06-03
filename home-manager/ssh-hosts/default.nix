@@ -125,11 +125,11 @@
       
       # Handle command execution vs interactive connection
       if [ ''${#extra_args[@]} -gt 0 ]; then
-        # Run command via SSH with proper TTY allocation
-        if [ "$use_et" = true ]; then
-          # ET doesn't support direct command execution, fall back to SSH
-          echo "⚠️  ET doesn't support command execution, using SSH instead..."
-          ssh -t "$target_host" "''${extra_args[@]}"
+        # Run command with ET or SSH
+        if [ "$use_et" = true ] && command -v et &> /dev/null; then
+          # Use ET with -c flag for command execution
+          echo "⚡ Executing via Eternal Terminal..."
+          et "$target_host:2022" -c "''${extra_args[*]}"
         elif [ "$use_autossh" = true ]; then
           # Use autossh for persistent connection with command
           AUTOSSH_GATETIME=0 autossh -M 0 -t "$target_host" "''${extra_args[@]}"
