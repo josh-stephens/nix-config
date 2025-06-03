@@ -24,11 +24,20 @@ let
       if [ "$current_clipboard" != "$last_clipboard" ] && [ -n "$current_clipboard" ]; then
         # Try to sync to piknik with timeout (non-blocking)
         (
-          echo "$current_clipboard" | timeout 0.5 ${pkgs.piknik}/bin/piknik -copy 2>/dev/null
-          if [ $? -eq 0 ]; then
+          # Debug: log what we're trying
+          echo "[DEBUG] Attempting to sync $(echo "$current_clipboard" | wc -c) bytes"
+          echo "[DEBUG] PATH=$PATH"
+          echo "[DEBUG] HOME=$HOME"
+          echo "[DEBUG] Looking for config at: $HOME/.piknik.toml"
+          
+          # Try with explicit config path and capture stderr
+          if echo "$current_clipboard" | ${pkgs.coreutils}/bin/timeout 2 ${pkgs.piknik}/bin/piknik -config "$HOME/.piknik.toml" -copy 2>&1; then
             echo "✅ Synced clipboard to piknik ($(echo "$current_clipboard" | wc -c) bytes)"
           else
-            echo "⚠️  Piknik sync failed (server unreachable?)"
+            exit_code=$?
+            echo "⚠️  Piknik sync failed (exit code: $exit_code)"
+            echo "[DEBUG] Trying to cat config file..."
+            ls -la "$HOME/.piknik.toml" 2>&1 || echo "[DEBUG] Config file not found!"
           fi
         ) &
         # Update last known clipboard immediately (don't wait for piknik)
@@ -97,8 +106,9 @@ in {
         StandardOutPath = "${config.home.homeDirectory}/Library/Logs/clipboard-monitor.log";
         StandardErrorPath = "${config.home.homeDirectory}/Library/Logs/clipboard-monitor.error.log";
         EnvironmentVariables = {
-          PATH = "${pkgs.piknik}/bin:/usr/bin:/bin:/usr/sbin:/sbin";
+          PATH = "${pkgs.piknik}/bin:${pkgs.coreutils}/bin:/usr/bin:/bin:/usr/sbin:/sbin";
           HOME = config.home.homeDirectory;
+          USER = config.home.username or "joshsymonds";
         };
       };
     };
