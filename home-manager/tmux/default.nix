@@ -89,6 +89,9 @@ in {
         setw -g allow-rename on
         set -g automatic-rename-format '#{pane_title}'
         
+        # Update environment variables in new shells
+        set -g update-environment "DISPLAY SSH_ASKPASS SSH_AUTH_SOCK SSH_AGENT_PID SSH_CONNECTION WINDOWID XAUTHORITY TMUX_DEVSPACE"
+        
         # Simple terminal title
         set -g set-titles-string "#S:#I:#W"
         

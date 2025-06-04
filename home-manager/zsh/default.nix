@@ -40,6 +40,14 @@
     initContent = ''
       [ -d "/opt/homebrew/bin" ] && export PATH=''${PATH}:/opt/homebrew/bin
 
+      # Import TMUX_DEVSPACE from tmux environment if we're in tmux
+      if [ -n "$TMUX" ]; then
+        TMUX_DEVSPACE=$(tmux show-environment TMUX_DEVSPACE 2>/dev/null | cut -d= -f2)
+        if [ -n "$TMUX_DEVSPACE" ]; then
+          export TMUX_DEVSPACE
+        fi
+      fi
+
       function async-ssh-add {
         if [ -f "''${HOME}/.ssh/github" ] && ! ssh-add -l >/dev/null; then
           ssh-add "''${HOME}/.ssh/github"

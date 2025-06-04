@@ -61,138 +61,15 @@ let
         -H "Tags: $tags" \
         -d "$message" \
         "$NFTY_SERVER/$NFTY_TOPIC" > /dev/null || true
+      
+      log "Notification sent: $title - $message"
     }
     
     # 🚀 Start Claude Code
     echo -e "''${BLUE}🤖 Starting Claude Code in devspace $DEVSPACE...''${NC}"
-    log "Starting Claude Code wrapper"
+    log "Starting Claude Code wrapper with args: $*"
     
-    # Create temporary files for output monitoring
-    STDOUT_FIFO="/tmp/claude-$DEVSPACE-$$.out"
-    STDERR_FIFO="/tmp/claude-$DEVSPACE-$$.err"
-    mkfifo "$STDOUT_FIFO" "$STDERR_FIFO"
-    
-    # Cleanup on exit
-    cleanup() {
-      rm -f "$STDOUT_FIFO" "$STDERR_FIFO"
-      log "Claude Code wrapper terminated"
-    }
-    trap cleanup EXIT
-    
-    # 🔍 Monitor function
-    monitor_output() {
-      local last_output_time=$(date +%s)
-      local idle_threshold=300  # 5 minutes
-      local buffer=""
-      local question_detected=false
-      local completion_detected=false
-      
-      while IFS= read -r line; do
-        # Check for terminal title escape sequences and pass them through
-        if [[ "$line" =~ $'\e]'[0-2]';'(.*)$'\a' ]]; then
-          # Extract the title from the escape sequence
-          local title="''${BASH_REMATCH[1]}"
-          # If in tmux, set the window name
-          if [ -n "$TMUX" ]; then
-            ${pkgs.tmux}/bin/tmux rename-window "$title" 2>/dev/null || true
-          fi
-        fi
-        
-        # Echo to terminal (preserves escape sequences)
-        echo "$line"
-        
-        # Add to buffer for context
-        buffer="$buffer
-    $line"
-        
-        # Keep buffer reasonable size (last 10 lines)
-        buffer=$(echo "$buffer" | tail -n 10)
-        
-        # Log output
-        log "OUTPUT: $line"
-        
-        # Update last output time
-        last_output_time=$(date +%s)
-        
-        # 🔔 Check for bell character
-        if [[ "$line" == *$'\a'* ]]; then
-          log "Bell detected!"
-          send_notification \
-            "🔔 $DEVSPACE needs attention" \
-            "Claude is requesting your input" \
-            "high" \
-            "bell,devspace_$DEVSPACE"
-        fi
-        
-        # ❓ Check for questions
-        if [[ "$line" =~ \?[[:space:]]*$ ]]; then
-          if [ "$question_detected" = false ]; then
-            question_detected=true
-            log "Question detected: $line"
-            send_notification \
-              "❓ $DEVSPACE has a question" \
-              "$line" \
-              "default" \
-              "question,devspace_$DEVSPACE"
-          fi
-        else
-          question_detected=false
-        fi
-        
-        # ✅ Check for completion patterns
-        if [[ "$line" =~ (task[[:space:]]+completed|done|finished|complete[d]?)[[:punct:]]*$ ]] ||
-           [[ "$line" =~ ^[[:space:]]*(✓|✅|Done|Finished|Completed) ]]; then
-          if [ "$completion_detected" = false ]; then
-            completion_detected=true
-            log "Completion detected: $line"
-            send_notification \
-              "✅ $DEVSPACE task completed" \
-              "$line" \
-              "default" \
-              "done,devspace_$DEVSPACE"
-          fi
-        else
-          completion_detected=false
-        fi
-        
-        # 🚨 Check for errors
-        if [[ "$line" =~ (error|failed|failure|exception|traceback) ]]; then
-          log "Error detected: $line"
-          send_notification \
-            "🚨 $DEVSPACE encountered an error" \
-            "$line" \
-            "high" \
-            "error,devspace_$DEVSPACE"
-        fi
-      done < "$1"
-      
-      # Check for idle timeout in background
-      (
-        while true; do
-          current_time=$(date +%s)
-          idle_time=$((current_time - last_output_time))
-          
-          if [ $idle_time -gt $idle_threshold ]; then
-            log "Idle timeout detected ($idle_time seconds)"
-            send_notification \
-              "💤 $DEVSPACE is idle" \
-              "No output for $(($idle_time / 60)) minutes" \
-              "low" \
-              "idle,devspace_$DEVSPACE"
-            break
-          fi
-          
-          sleep 60
-        done
-      ) &
-    }
-    
-    # 📊 Start monitoring in background
-    monitor_output "$STDOUT_FIFO" &
-    MONITOR_PID=$!
-    
-    # 🎬 Run Claude Code with output redirection
-    echo -e "''${GREEN}✨ Claude Code starting...''${NC}"
+    # Send start notification
     send_notification \
       "🚀 $DEVSPACE Claude starting" \
       "Claude Code is initializing in devspace $DEVSPACE" \
@@ -202,27 +79,170 @@ let
     # Get claude path from npm
     CLAUDE_PATH="$HOME/.npm-global/bin/claude"
     
-    # Set initial window name for tmux
-    if [ -n "$TMUX" ]; then
-      ${pkgs.tmux}/bin/tmux rename-window "claude"
+    if [ ! -x "$CLAUDE_PATH" ]; then
+      echo "❌ Claude not found at $CLAUDE_PATH"
+      log "ERROR: Claude not found at $CLAUDE_PATH"
+      exit 1
     fi
     
-    # Run claude with all arguments passed through
-    "$CLAUDE_PATH" "$@" > "$STDOUT_FIFO" 2> "$STDERR_FIFO" &
-    CLAUDE_PID=$!
+    # Set initial window name for tmux
+    if [ -n "$TMUX" ]; then
+      ${pkgs.tmux}/bin/tmux rename-window "claude" 2>/dev/null || true
+    fi
     
-    # Monitor stderr separately
-    while IFS= read -r line; do
-      echo "$line" >&2
-      log "STDERR: $line"
-    done < "$STDERR_FIFO" &
+    # Create a script to monitor output
+    MONITOR_SCRIPT="/tmp/claude-monitor-$$.sh"
+    cat > "$MONITOR_SCRIPT" << 'MONITOR_EOF'
+#!/bin/bash
+DEVSPACE="$1"
+LOG_FILE="$2"
+NFTY_TOPIC="$3"
+NFTY_SERVER="$4"
+
+log() {
+  echo "[$(date '+%Y-%m-%d %H:%M:%S')] MONITOR: $1" >> "$LOG_FILE"
+}
+
+is_session_attached() {
+  if [ -n "$TMUX" ]; then
+    local session_name=$(tmux display-message -p '#S' 2>/dev/null)
+    tmux list-clients -t "$session_name" 2>/dev/null | grep -q . && return 0
+  fi
+  return 1
+}
+
+send_notification() {
+  local title="$1"
+  local message="$2"
+  local priority="${3:-default}"
+  local tags="${4:-}"
+  
+  if [ -z "${CLAUDE_FORCE_NOTIFY:-}" ] && is_session_attached; then
+    log "Notification suppressed (session attached): $title"
+    return
+  fi
+  
+  curl -s \
+    -H "Title: $title" \
+    -H "Priority: $priority" \
+    -H "Tags: $tags" \
+    -d "$message" \
+    "$NFTY_SERVER/$NFTY_TOPIC" > /dev/null || true
+  
+  log "Notification sent: $title"
+}
+
+last_activity=$(date +%s)
+buffer=""
+question_detected=false
+completion_detected=false
+
+while IFS= read -r line; do
+  # Echo the line (preserving colors and escape sequences)
+  printf '%s\n' "$line"
+  
+  # Log the line (stripping ANSI colors for readability)
+  clean_line=$(printf '%s' "$line" | sed 's/\x1b\[[0-9;]*m//g')
+  log "OUTPUT: $clean_line"
+  
+  # Update activity time
+  last_activity=$(date +%s)
+  
+  # Check for terminal title escape sequences
+  if [[ "$line" =~ $'\e]'[0-2]';'(.*)$'\a' ]]; then
+    title="${BASH_REMATCH[1]}"
+    if [ -n "$TMUX" ]; then
+      tmux rename-window "$title" 2>/dev/null || true
+    fi
+  fi
+  
+  # Bell detection - check for actual bell character
+  if printf '%s' "$line" | grep -q $'\a'; then
+    log "Bell detected in line!"
+    send_notification \
+      "🔔 $DEVSPACE needs attention" \
+      "Claude is requesting your input" \
+      "high" \
+      "bell,devspace_$DEVSPACE"
+  fi
+  
+  # Check for questions (improved pattern)
+  if [[ "$clean_line" =~ \?[[:space:]]*$ ]] || [[ "$clean_line" =~ ^[[:space:]]*[Dd]o[[:space:]]+you[[:space:]]+want ]]; then
+    if [ "$question_detected" = false ]; then
+      question_detected=true
+      log "Question detected: $clean_line"
+      send_notification \
+        "❓ $DEVSPACE has a question" \
+        "$clean_line" \
+        "default" \
+        "question,devspace_$DEVSPACE"
+    fi
+  else
+    question_detected=false
+  fi
+  
+  # Check for completion patterns
+  if [[ "$clean_line" =~ (task[[:space:]]+completed|done|finished|complete[d]?)[[:punct:]]*$ ]] ||
+     [[ "$clean_line" =~ ^[[:space:]]*(✓|✅|Done|Finished|Completed) ]]; then
+    if [ "$completion_detected" = false ]; then
+      completion_detected=true
+      log "Completion detected: $clean_line"
+      send_notification \
+        "✅ $DEVSPACE task completed" \
+        "$clean_line" \
+        "default" \
+        "done,devspace_$DEVSPACE"
+    fi
+  else
+    completion_detected=false
+  fi
+  
+  # Error detection
+  if [[ "$clean_line" =~ (error|failed|failure|exception|traceback) ]]; then
+    log "Error detected: $clean_line"
+    send_notification \
+      "🚨 $DEVSPACE encountered an error" \
+      "$clean_line" \
+      "high" \
+      "error,devspace_$DEVSPACE"
+  fi
+done
+
+# Check idle time periodically
+(
+  while true; do
+    current_time=$(date +%s)
+    idle_time=$((current_time - last_activity))
     
-    # Wait for Claude to finish
-    wait $CLAUDE_PID
+    if [ $idle_time -gt 300 ]; then
+      log "Idle timeout detected ($idle_time seconds)"
+      send_notification \
+        "💤 $DEVSPACE is idle" \
+        "No output for $((idle_time / 60)) minutes" \
+        "low" \
+        "idle,devspace_$DEVSPACE"
+      break
+    fi
+    
+    sleep 60
+  done
+) &
+MONITOR_EOF
+
+    chmod +x "$MONITOR_SCRIPT"
+    
+    # Use script command to capture ALL output including bells and escape sequences
+    # The -e flag returns the exit code of the child process
+    # The -q flag suppresses script's own output
+    # The -c flag specifies the command to run
+    ${pkgs.util-linux}/bin/script -e -q -c "
+      '$CLAUDE_PATH' $* 2>&1 | '$MONITOR_SCRIPT' '$DEVSPACE' '$LOG_FILE' '$NFTY_TOPIC' '$NFTY_SERVER'
+    " /dev/null
+    
     CLAUDE_EXIT=$?
     
-    # Clean up monitor
-    kill $MONITOR_PID 2>/dev/null || true
+    # Clean up
+    rm -f "$MONITOR_SCRIPT"
     
     # Send final notification
     if [ $CLAUDE_EXIT -eq 0 ]; then
@@ -239,6 +259,7 @@ let
         "crash,devspace_$DEVSPACE"
     fi
     
+    log "Claude Code wrapper terminated with exit code $CLAUDE_EXIT"
     exit $CLAUDE_EXIT
   '';
   
@@ -284,6 +305,7 @@ in {
       claudeNotifyScript
       claudeDevspaceScript
       claudeSmartWrapper
+      util-linux  # for script command
     ];
 
     # Shell aliases

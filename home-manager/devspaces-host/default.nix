@@ -4,11 +4,11 @@
   # Devspace host configuration - for running ON ultraviolet
   programs.zsh.shellAliases = {
     # Local tmux session aliases - attach or create with TMUX_DEVSPACE set
-    mercury = "(tmux set-environment -t mercury -g TMUX_DEVSPACE mercury 2>/dev/null || true) && (tmux attach-session -t mercury || tmux new-session -s mercury -e TMUX_DEVSPACE=mercury)";
-    venus = "(tmux set-environment -t venus -g TMUX_DEVSPACE venus 2>/dev/null || true) && (tmux attach-session -t venus || tmux new-session -s venus -e TMUX_DEVSPACE=venus)";
-    earth = "(tmux set-environment -t earth -g TMUX_DEVSPACE earth 2>/dev/null || true) && (tmux attach-session -t earth || tmux new-session -s earth -e TMUX_DEVSPACE=earth)";
-    mars = "(tmux set-environment -t mars -g TMUX_DEVSPACE mars 2>/dev/null || true) && (tmux attach-session -t mars || tmux new-session -s mars -e TMUX_DEVSPACE=mars)";
-    jupiter = "(tmux set-environment -t jupiter -g TMUX_DEVSPACE jupiter 2>/dev/null || true) && (tmux attach-session -t jupiter || tmux new-session -s jupiter -e TMUX_DEVSPACE=jupiter)";
+    mercury = "tmux attach-session -t mercury 2>/dev/null || (tmux new-session -d -s mercury && tmux set-environment -t mercury TMUX_DEVSPACE mercury && tmux attach-session -t mercury)";
+    venus = "tmux attach-session -t venus 2>/dev/null || (tmux new-session -d -s venus && tmux set-environment -t venus TMUX_DEVSPACE venus && tmux attach-session -t venus)";
+    earth = "tmux attach-session -t earth 2>/dev/null || (tmux new-session -d -s earth && tmux set-environment -t earth TMUX_DEVSPACE earth && tmux attach-session -t earth)";
+    mars = "tmux attach-session -t mars 2>/dev/null || (tmux new-session -d -s mars && tmux set-environment -t mars TMUX_DEVSPACE mars && tmux attach-session -t mars)";
+    jupiter = "tmux attach-session -t jupiter 2>/dev/null || (tmux new-session -d -s jupiter && tmux set-environment -t jupiter TMUX_DEVSPACE jupiter && tmux attach-session -t jupiter)";
     
     # Status command to see what's running locally
     devspace-status = "tmux list-sessions 2>/dev/null || echo \"No active sessions\"";
