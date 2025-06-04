@@ -34,6 +34,7 @@
       talosctl
       wget
       go-tools
+      golangci-lint
       socat
       wireguard-tools
       k9s

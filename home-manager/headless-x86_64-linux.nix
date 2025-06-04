@@ -3,7 +3,6 @@
     ./common.nix
     # ./media.nix
     ./tmux
-    ./claude-wrapper
     ./devspaces-host
   ];
 
@@ -19,10 +18,6 @@
   };
 
   programs.zsh.shellAliases.update = "sudo nixos-rebuild switch --flake \".#$(hostname)\"";
-  
-  programs.claude-wrapper = {
-    enable = true;
-  };
 
   systemd.user.startServices = "sd-switch";
 }

@@ -5,7 +5,6 @@
     ./devspaces-client
     ./ssh-hosts
     ./ssh-config
-    ./claude-wrapper/darwin-idle.nix
   ];
 
   home.homeDirectory = "/Users/joshsymonds";
