@@ -81,8 +81,7 @@
         eval "$(it wrapper)"
       fi
 
-      export NPM_CONFIG_PREFIX=$(pwd)/.npm-packages
-      export PATH=''${PATH}:''${PATH}:''$NPM_CONFIG_PREFIX/bin:/Applications/Windsurf.app/Contents/Resources/app/bin:''${HOME}/go/bin:''${HOME}/.local/share/../bin
+      export PATH=''${PATH}:''${HOME}/go/bin:''${HOME}/.local/share/../bin
 
       cd ~
     '';
