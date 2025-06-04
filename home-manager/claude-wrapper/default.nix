@@ -148,8 +148,8 @@ is_session_active() {
 send_notification() {
   local title="$1"
   local message="$2"
-  local priority="${3:-default}"
-  local tags="${4:-}"
+  local priority="''${3:-default}"
+  local tags="''${4:-}"
   
   if [ -z "${CLAUDE_FORCE_NOTIFY:-}" ] && is_session_active; then
     log "Notification suppressed (session active): $title"
