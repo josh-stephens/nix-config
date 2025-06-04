@@ -8,7 +8,8 @@
     
     extraConfig = ''
       # Enable Kitty terminal integration
-      SetEnv TERM=xterm-256color
+      # Let the terminal type be passed through properly
+      SendEnv TERM COLORTERM
       
       # Performance optimizations
       Compression yes

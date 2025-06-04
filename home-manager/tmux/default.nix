@@ -79,6 +79,14 @@ in {
       ];
 
       extraConfig = ''
+        # Enable true color support
+        set -ga terminal-overrides ",xterm-256color:Tc"
+        set -ga terminal-overrides ",xterm-kitty:Tc"
+        set -ga terminal-overrides ",et-256color:Tc"
+        set -as terminal-features ",xterm-256color:RGB"
+        set -as terminal-features ",xterm-kitty:RGB"
+        set -as terminal-features ",et-256color:RGB"
+        
         # General Settings
         setw -g pane-base-index 1
         set -g renumber-windows on

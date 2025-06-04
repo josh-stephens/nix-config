@@ -41,4 +41,4 @@ require("config.clipboard")
 -- opt.signcolumn = "yes:1"
 -- opt.ruler = true
 opt.clipboard = "unnamedplus"
--- opt.termguicolors = true
+opt.termguicolors = true
