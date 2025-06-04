@@ -17,6 +17,7 @@ let
     NFTY_SERVER="https://ntfy.sh"
     DEVSPACE="''${TMUX_DEVSPACE:-unknown}"
     LOG_FILE="$HOME/.claude-code-$DEVSPACE.log"
+    IDLE_TIMEOUT="''${CLAUDE_IDLE_TIMEOUT:-120}"  # Default 2 minutes
     
     # 🎨 Color codes for output
     RED='\033[0;31m'
@@ -30,13 +31,30 @@ let
       echo "[$(date '+%Y-%m-%d %H:%M:%S')] $1" >> "$LOG_FILE"
     }
     
-    # 🔍 Check if session is attached
-    is_session_attached() {
+    # 🔍 Check if session is attached and active
+    is_session_active() {
       if [ -n "$TMUX" ]; then
         # Get session name from TMUX environment
         local session_name=$(${pkgs.tmux}/bin/tmux display-message -p '#S' 2>/dev/null)
+        
         # Check if any client is attached to this session
-        ${pkgs.tmux}/bin/tmux list-clients -t "$session_name" 2>/dev/null | grep -q . && return 0
+        if ! ${pkgs.tmux}/bin/tmux list-clients -t "$session_name" 2>/dev/null | grep -q .; then
+          log "Session not attached"
+          return 1
+        fi
+        
+        # Check for recent activity (within last 2 minutes)
+        local client_activity=$(${pkgs.tmux}/bin/tmux display-message -p '#{client_activity}' 2>/dev/null || echo "0")
+        local current_time=$(date +%s)
+        local idle_time=$((current_time - client_activity))
+        
+        # If idle for more than IDLE_TIMEOUT seconds, consider inactive
+        if [ $idle_time -gt $IDLE_TIMEOUT ]; then
+          log "Session attached but idle for $idle_time seconds (threshold: $IDLE_TIMEOUT)"
+          return 1
+        fi
+        
+        return 0
       fi
       return 1
     }
@@ -48,10 +66,10 @@ let
       local priority="''${3:-default}"
       local tags="''${4:-}"
       
-      # Skip notifications if session is attached (user is actively present)
+      # Skip notifications if session is attached AND active (user is actively present)
       # unless CLAUDE_FORCE_NOTIFY is set
-      if [ -z "''${CLAUDE_FORCE_NOTIFY:-}" ] && is_session_attached; then
-        log "Notification suppressed (session attached): $title"
+      if [ -z "''${CLAUDE_FORCE_NOTIFY:-}" ] && is_session_active; then
+        log "Notification suppressed (session active): $title"
         return
       fi
       
@@ -103,10 +121,26 @@ log() {
   echo "[$(date '+%Y-%m-%d %H:%M:%S')] MONITOR: $1" >> "$LOG_FILE"
 }
 
-is_session_attached() {
+is_session_active() {
   if [ -n "$TMUX" ]; then
     local session_name=$(tmux display-message -p '#S' 2>/dev/null)
-    tmux list-clients -t "$session_name" 2>/dev/null | grep -q . && return 0
+    
+    # Check if any client is attached
+    if ! tmux list-clients -t "$session_name" 2>/dev/null | grep -q .; then
+      return 1
+    fi
+    
+    # Check for recent activity
+    local client_activity=$(tmux display-message -p '#{client_activity}' 2>/dev/null || echo "0")
+    local current_time=$(date +%s)
+    local idle_time=$((current_time - client_activity))
+    
+    # If idle for more than 120 seconds (2 minutes), consider inactive
+    if [ $idle_time -gt 120 ]; then
+      return 1
+    fi
+    
+    return 0
   fi
   return 1
 }
@@ -117,8 +151,8 @@ send_notification() {
   local priority="${3:-default}"
   local tags="${4:-}"
   
-  if [ -z "${CLAUDE_FORCE_NOTIFY:-}" ] && is_session_attached; then
-    log "Notification suppressed (session attached): $title"
+  if [ -z "${CLAUDE_FORCE_NOTIFY:-}" ] && is_session_active; then
+    log "Notification suppressed (session active): $title"
     return
   fi
   
