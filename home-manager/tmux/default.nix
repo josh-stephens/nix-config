@@ -49,7 +49,7 @@ in {
       keyMode = "vi";
       mouse = true;
       escapeTime = 0;
-      terminal = "tmux-256color";
+      terminal = "xterm-256color";
       
       plugins = with pkgs.tmuxPlugins; [
         sensible
@@ -62,6 +62,11 @@ in {
             # Catppuccin settings
             set -g @catppuccin_flavor 'mocha'
             set -g @catppuccin_window_status_style "rounded"
+            
+            # Ensure transparent backgrounds where possible
+            set -g status-bg default
+            set -g message-style "fg=#94e2d5,bg=default"
+            set -g message-command-style "fg=#94e2d5,bg=default"
             
             # Window settings
             set -g @catppuccin_window_left_separator ""
@@ -82,10 +87,12 @@ in {
         # Enable true color support
         set -ga terminal-overrides ",xterm-256color:Tc"
         set -ga terminal-overrides ",xterm-kitty:Tc"
-        set -ga terminal-overrides ",et-256color:Tc"
         set -as terminal-features ",xterm-256color:RGB"
         set -as terminal-features ",xterm-kitty:RGB"
-        set -as terminal-features ",et-256color:RGB"
+        
+        # Ensure proper color rendering
+        set -g default-terminal "xterm-256color"
+        set -ag terminal-overrides ",xterm*:RGB"
         
         # General Settings
         setw -g pane-base-index 1
@@ -123,6 +130,10 @@ in {
         # Pane borders - Catppuccin Mocha colors
         set -g pane-border-style "fg=#313244"
         set -g pane-active-border-style "fg=#89b4fa"
+        
+        # Window and pane styles - ensure no background is set
+        set -g window-style 'default'
+        set -g window-active-style 'default'
         
         # Key bindings
         unbind C-b
