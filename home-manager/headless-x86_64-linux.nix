@@ -3,6 +3,7 @@
     ./common.nix
     ./tmux
     ./devspaces-host
+    ./linkpearl
   ];
 
   home = {

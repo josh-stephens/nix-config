@@ -58,7 +58,6 @@
           modules = [
             ./hosts/ultraviolet
             ./hosts/common.nix
-            inputs.linkpearl.nixosModules.default
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
