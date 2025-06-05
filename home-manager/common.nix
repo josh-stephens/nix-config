@@ -41,6 +41,7 @@
       starlark-lsp
       autossh
       eternal-terminal
+      gnumake
       
       # LSP servers
       lua-language-server
