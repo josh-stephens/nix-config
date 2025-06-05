@@ -193,7 +193,6 @@ in
     nodeId = "ultraviolet";
     verbose = false;
     package = inputs.linkpearl.packages.${system}.default;
-    clipboardPackage = pkgs.xsel;  # For X11 forwarding over SSH
   };
 
   programs.zsh.enable = true;
