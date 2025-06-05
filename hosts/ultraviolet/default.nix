@@ -186,6 +186,16 @@ in
     openFirewall = true;  # Open firewall for Tailscale
   };
 
+  services.linkpearl = {
+    enable = true;
+    secretFile = "/home/joshsymonds/.config/linkpearl/secret";
+    listen = ":9437";
+    nodeId = "ultraviolet";
+    verbose = false;
+    package = inputs.linkpearl.packages.${system}.default;
+    clipboardPackage = pkgs.xsel;  # For X11 forwarding over SSH
+  };
+
   programs.zsh.enable = true;
 
   services.jellyfin = {

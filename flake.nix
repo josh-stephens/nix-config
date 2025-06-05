@@ -23,6 +23,9 @@
 
     # Hardware-specific optimizations
     hardware.url = "github:nixos/nixos-hardware/master";
+
+    # Linkpearl - clipboard sync
+    linkpearl.url = "github:Veraticus/linkpearl";
   };
 
   outputs = { nixpkgs, darwin, home-manager, self, ... }@inputs:
@@ -55,6 +58,7 @@
           modules = [
             ./hosts/ultraviolet
             ./hosts/common.nix
+            inputs.linkpearl.nixosModules.default
             home-manager.nixosModules.home-manager
             {
               home-manager.useGlobalPkgs = true;
