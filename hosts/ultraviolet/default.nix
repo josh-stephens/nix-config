@@ -92,7 +92,7 @@ in
         config.services.tailscale.port
       ];
       allowedTCPPorts = [ 
-        22 80 443
+        22 80 443 9437
       ];
     };
     defaultGateway = "172.31.0.1";
