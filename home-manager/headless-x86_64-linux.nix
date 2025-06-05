@@ -1,7 +1,6 @@
 { inputs, lib, config, pkgs, ... }: {
   imports = [
     ./common.nix
-    # ./media.nix
     ./tmux
     ./devspaces-host
   ];
