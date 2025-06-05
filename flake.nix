@@ -119,7 +119,9 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.joshsymonds = import ./home-manager/aarch64-darwin.nix;
-              home-manager.extraSpecialArgs = mkSpecialArgs "aarch64-darwin";
+              home-manager.extraSpecialArgs = mkSpecialArgs "aarch64-darwin" // {
+                hostname = "cloudbank";
+              };
             }
           ];
         };
