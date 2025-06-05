@@ -63,7 +63,9 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.joshsymonds = import ./home-manager/headless-x86_64-linux.nix;
-              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux";
+              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux" // {
+                hostname = "ultraviolet";
+              };
             }
           ];
         };
@@ -79,7 +81,9 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.joshsymonds = import ./home-manager/headless-x86_64-linux.nix;
-              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux";
+              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux" // {
+                hostname = "bluedesert";
+              };
             }
           ];
         };
@@ -95,7 +99,9 @@
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.users.joshsymonds = import ./home-manager/headless-x86_64-linux.nix;
-              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux";
+              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux" // {
+                hostname = "echelon";
+              };
             }
           ];
         };

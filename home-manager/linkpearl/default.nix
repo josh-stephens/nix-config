@@ -1,8 +1,8 @@
-{ inputs, lib, config, pkgs, ... }:
+{ inputs, lib, config, pkgs, hostname ? "unknown", ... }:
 
 let
   # Determine if this host should run as a server or client
-  isServer = config.networking.hostName == "ultraviolet";
+  isServer = hostname == "ultraviolet";
 in
 {
   imports = [ inputs.linkpearl.homeManagerModules.default ];
@@ -17,7 +17,7 @@ in
     listen = if isServer then ":9437" else null;
     join = if isServer then [] else [ "ultraviolet:9437" ];
     
-    nodeId = config.networking.hostName or "unknown";
+    nodeId = hostname;
     verbose = false;
     pollInterval = "500ms";
     
