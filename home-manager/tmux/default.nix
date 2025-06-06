@@ -105,7 +105,11 @@ in {
         set -g automatic-rename-format '#{pane_title}'
         
         # Update environment variables in new shells
+        # Explicitly exclude CLAUDE_CODE_NTFY_WRAPPED from being passed to child shells
         set -g update-environment "DISPLAY SSH_ASKPASS SSH_AUTH_SOCK SSH_AGENT_PID SSH_CONNECTION WINDOWID XAUTHORITY TMUX_DEVSPACE"
+        
+        # Set default command to unset CLAUDE_CODE_NTFY_WRAPPED before starting the shell
+        set -g default-command "unset CLAUDE_CODE_NTFY_WRAPPED; exec $SHELL"
         
         # Simple terminal title
         set -g set-titles-string "#S:#I:#W"
