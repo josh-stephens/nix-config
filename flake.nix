@@ -26,6 +26,9 @@
 
     # Linkpearl - clipboard sync
     linkpearl.url = "github:Veraticus/linkpearl";
+
+    # Claude Code Ntfy - notification wrapper for Claude Code
+    claude-code-ntfy.url = "github:Veraticus/claude-code-ntfy";
   };
 
   outputs = { nixpkgs, darwin, home-manager, self, ... }@inputs:
