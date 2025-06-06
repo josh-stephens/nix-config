@@ -6,11 +6,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1749182570,
-        "narHash": "sha256-kvjksVQxRIJTvFFiGQ0SAycWo1KmCc4uUUEILQvgCbM=",
+        "lastModified": 1749185649,
+        "narHash": "sha256-8V22VedTdQiaOWMfOkg7tSIKCyTs9+9WMWNjumcWCtI=",
         "owner": "Veraticus",
         "repo": "claude-code-ntfy",
-        "rev": "3196a49473d2a68840a3682e7d63c5df12255e8a",
+        "rev": "729d7579cecfa31c1a5c98f5af468b69353f8dda",
         "type": "github"
       },
       "original": {
