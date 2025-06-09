@@ -7,8 +7,7 @@
     inherit (import ../pkgs { pkgs = final; })
       myCaddy
       starlark-lsp
-      nuclei
-      checkov;
+      nuclei;
     
     # Package modifications
     waybar = prev.waybar.overrideAttrs (oldAttrs: {
