@@ -258,11 +258,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1749496495,
-        "narHash": "sha256-vNPxw6XetlV0o/LG/25SbAgNbduCHAsMRHiIEF+pXtI=",
+        "lastModified": 1749499673,
+        "narHash": "sha256-TdaIy9FsQMDP+LERWHpFhThrLYeKBvsdBT3KjTqTrNg=",
         "owner": "Veraticus",
         "repo": "linkpearl",
-        "rev": "1303c703627fe0257c8c84aaf20b266c5afb33d4",
+        "rev": "2d1bd7368ac4085008af40d39c659e8c83719f7f",
         "type": "github"
       },
       "original": {
