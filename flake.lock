@@ -6,11 +6,11 @@
         "nixpkgs": "nixpkgs"
       },
       "locked": {
-        "lastModified": 1749253372,
-        "narHash": "sha256-6Bl8Gt1MwuAUuVGZsxlnRs0kQObKoniGwyfF56/a/QM=",
+        "lastModified": 1749253657,
+        "narHash": "sha256-8aiy65mpQJoIcebjaJ2zGkzAn7LOrpAyKG2Mefl9uvk=",
         "owner": "Veraticus",
         "repo": "claude-code-ntfy",
-        "rev": "56306502ee04b2b3c026430228586d36e150e3e4",
+        "rev": "e230f61e7b3917a7014a2a39a894a66d392a11a1",
         "type": "github"
       },
       "original": {
@@ -258,11 +258,11 @@
         "nixpkgs": "nixpkgs_2"
       },
       "locked": {
-        "lastModified": 1749168388,
-        "narHash": "sha256-KgS+kRXD9V8MJMRwt6dkf3FzvF47CvAl1FiD7tPUOvU=",
+        "lastModified": 1749491135,
+        "narHash": "sha256-p2V1n9nqBbEQ/2RFlLEC952R3SKTu5U4Z62tZ3yaqXQ=",
         "owner": "Veraticus",
         "repo": "linkpearl",
-        "rev": "c19351aa6bb2c47e1b513abe9a8f6304169e7ba0",
+        "rev": "01ade8cabc3303bb112b38a0abd3454ac5648625",
         "type": "github"
       },
       "original": {
