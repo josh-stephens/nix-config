@@ -518,6 +518,7 @@ in
       unar
       podman-tui
       jellyfin-ffmpeg
+      chromium
     ];
 
     loginShellInit = ''

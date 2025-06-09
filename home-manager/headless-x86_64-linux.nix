@@ -4,6 +4,7 @@
     ./tmux
     ./devspaces-host
     ./linkpearl
+    ./security-tools
   ];
 
   home = {

@@ -6,7 +6,9 @@
     # Import custom packages from the 'pkgs' directory
     inherit (import ../pkgs { pkgs = final; })
       myCaddy
-      starlark-lsp;
+      starlark-lsp
+      nuclei
+      checkov;
     
     # Package modifications
     waybar = prev.waybar.overrideAttrs (oldAttrs: {
