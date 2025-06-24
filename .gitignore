@@ -2,3 +2,7 @@
 result*
 .aider*
 !.aider.model*
+
+# Secrets
+modules/services/signal-cli-bot-secrets.nix
+hosts/secrets/
