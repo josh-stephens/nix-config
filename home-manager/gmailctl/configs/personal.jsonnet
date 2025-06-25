@@ -1,4 +1,27 @@
 // Gmail filters for josh@joshsymonds.com
+//
+// INBOX SECTIONS (Multiple Inboxes)
+// Configure these 5 sections in Gmail Settings > Multiple Inboxes:
+//
+// Section 1: 👤 Humans
+//   Query: in:inbox AND (label:👤-humans)
+//   Real people who need responses - highest priority
+//
+// Section 2: 🚨 Critical Life Matters
+//   Query: in:inbox AND (label:💰-money OR label:🏥-health OR label:🏛️-government)
+//   Financial, health, and government matters - critical and time-sensitive
+//
+// Section 3: 🎫 Support & Orders
+//   Query: in:inbox AND (label:🎫-support OR label:📦-orders)
+//   Active support tickets and package tracking - need monitoring/action
+//
+// Section 4: ⭐ Starred
+//   Query: in:inbox AND is:starred
+//   Manual priority override - anything you've marked important
+//
+// Section 5: 🔔 Unread Priority
+//   Query: in:inbox AND is:unread AND (label:⭐-priority OR label:github/mentioned OR label:✈️-travel)
+//   Safety net for unread: priority emails, GitHub mentions, and travel confirmations
 
 local lib = import 'gmailctl.libsonnet';
 local common = import 'lib/common-rules.libsonnet';
@@ -106,10 +129,10 @@ local rules =
           { from: '*@schwab.com' },
           { from: '*@fidelity.com' },
           { from: '*@vanguard.com' },
-          { from: '*bank*' },
-          { subject: 'payment' },
-          { subject: 'invoice' },
-          { subject: 'statement' },
+          { query: '"bank statement"' },
+          { query: '"payment due"' },
+          { query: '"invoice number"' },
+          { query: '"account statement"' },
         ],
       },
       actions: {
@@ -140,7 +163,6 @@ local rules =
       },
       actions: {
         labels: ['🛍️-shopping'],
-        archive: true,
       },
     },
 
@@ -161,17 +183,6 @@ local rules =
       },
     },
 
-    // Amazon & orders - star for tracking
-    {
-      filter: {
-        from: '*@amazon.com',
-      },
-      actions: {
-        labels: ['📦-orders'],
-        star: true,
-      },
-    },
-
     // Kickstarter/BackerKit (from your analysis)
     {
       filter: {
@@ -182,7 +193,6 @@ local rules =
       },
       actions: {
         labels: ['crowdfunding'],
-        archive: true,
       },
     },
 
@@ -193,13 +203,12 @@ local rules =
           { from: '*@airbnb.com' },
           { from: '*@booking.com' },
           { from: '*@expedia.com' },
-          { from: '*airline*' },
           { from: '*@lyft.com' },
           { from: '*@uber.com' },
-          { subject: '*flight*' },
-          { subject: '*boarding pass*' },
-          { subject: '*itinerary*' },
-          { subject: '*confirmation number*' },
+          { query: '"flight confirmation"' },
+          { query: '"boarding pass"' },
+          { query: '"travel itinerary"' },
+          { query: '"booking confirmation"' },
         ],
       },
       actions: {
@@ -220,7 +229,6 @@ local rules =
           { from: '*doctor*' },
           { from: '*dental*' },
           { from: '*medical*' },
-          { query: 'appointment' },
           { query: 'prescription' },
         ],
       },
@@ -228,6 +236,93 @@ local rules =
         labels: ['🏥-health'],
         markImportant: true,
         star: true,
+      },
+    },
+
+    // Government and legal notices - CRITICAL
+    {
+      filter: {
+        or: [
+          { from: '*.gov' },
+          { from: '*.gov.uk' },
+          { from: '*.govt.nz' },
+          { from: '*@irs.gov' },
+          { from: '*@dmv.*' },
+          { from: '*@courts.*' },
+          { query: '"driver license"' },
+          { query: '"license renewal"' },
+          { query: '"tax return"' },
+          { query: '"tax payment"' },
+          { query: '"jury duty"' },
+          { query: '"jury summons"' },
+          { query: '"legal summons"' },
+          { query: '"citation"' },
+          { query: '"vehicle registration"' },
+          { query: '"action required"' },
+          { query: '"legal notice"' },
+          { query: '"government notice"' },
+        ],
+      },
+      actions: {
+        labels: ['🏛️-government'],
+        star: true,
+        markImportant: true,
+      },
+    },
+
+    // Orders and shipping notifications (unified)
+    {
+      filter: {
+        or: [
+          // Amazon orders
+          { from: '*@amazon.com' },
+          // Shipping and tracking patterns
+          { from: '*shipping*' },
+          { from: '*tracking*' },
+          { from: '*@orders.*' },
+          { from: '*@shipment.*' },
+          { from: '*@delivery.*' },
+          { subject: '*order*' },
+          { subject: '*shipped*' },
+          { subject: '*tracking*' },
+          { subject: '*delivery*' },
+          { subject: '*dispatched*' },
+          { query: '"tracking number"' },
+          { query: '"track your package"' },
+          { query: '"track your order"' },
+          { query: '"order confirmation"' },
+          { query: '"order has been placed"' },
+        ],
+      },
+      actions: {
+        labels: ['📦-orders'],
+        star: true,
+        markImportant: true,
+      },
+    },
+
+    // Support tickets and customer service
+    {
+      filter: {
+        or: [
+          { from: '*@support.*' },
+          { from: '*@help.*' },
+          { from: '*@ticket.*' },
+          { from: '*@zendesk.com' },
+          { from: '*@helpdesk.*' },
+          { from: '*@freshdesk.com' },
+          { from: '*@intercom.io' },
+          { subject: '*ticket*' },
+          { subject: '*case #*' },
+          { subject: '*support request*' },
+          { query: '"your ticket"' },
+          { query: '"support ticket"' },
+          { query: '"case number"' },
+        ],
+      },
+      actions: {
+        labels: ['🎫-support'],
+        markImportant: true,
       },
     },
 
@@ -245,9 +340,9 @@ local rules =
       },
     },
 
-    // Newsletter management with plus addressing (best practice)
+    // Plus addressing - emails to josh+newsletter@joshsymonds.com etc
     {
-      filter: { to: 'josh@joshsymonds.com+*' },
+      filter: { to: 'josh+*@joshsymonds.com' },
       actions: {
         labels: ['plus-addressed'],
         archive: true,
@@ -257,9 +352,20 @@ local rules =
     // Bulk mail catch-all (68% of your emails have list headers!)
     {
       filter: {
-        or: [
-          { list: '*' },
-          { query: 'unsubscribe' },
+        and: [
+          { or: [
+            { list: '*' },
+            { query: 'unsubscribe' },
+          ]},
+          // Don't archive emails already categorized as important
+          { not: { query: 'label:👤-humans' } },
+          { not: { query: 'label:💰-money' } },
+          { not: { query: 'label:🏥-health' } },
+          { not: { query: 'label:🏛️-government' } },
+          { not: { query: 'label:📦-orders' } },
+          { not: { query: 'label:🎫-support' } },
+          { not: { query: 'label:✈️-travel' } },
+          { not: { query: 'label:⭐-priority' } },
         ],
       },
       actions: {
@@ -271,17 +377,50 @@ local rules =
     // Automated senders
     {
       filter: {
-        or: [
-          { from: '*noreply*' },
-          { from: '*no-reply*' },
-          { from: '*donotreply*' },
-          { from: '*notifications*' },
-          { from: '*automated*' },
+        and: [
+          { or: [
+            { from: '*noreply*' },
+            { from: '*no-reply*' },
+            { from: '*donotreply*' },
+            { from: '*notifications*' },
+            { from: '*automated*' },
+          ]},
+          // Don't archive emails already categorized as important
+          { not: { query: 'label:👤-humans' } },
+          { not: { query: 'label:💰-money' } },
+          { not: { query: 'label:🏥-health' } },
+          { not: { query: 'label:🏛️-government' } },
+          { not: { query: 'label:📦-orders' } },
+          { not: { query: 'label:🎫-support' } },
+          { not: { query: 'label:✈️-travel' } },
+          { not: { query: 'label:⭐-priority' } },
         ],
       },
       actions: {
         labels: ['automated'],
         archive: true,
+      },
+    },
+
+    // SMS messages (before humans filter to prevent misclassification)
+    {
+      filter: {
+        or: [
+          { from: '*@msg.fi.google.com' },      // Google Voice
+          { from: '*@txt.voice.google.com' },   // Google Voice alternative
+          { from: '1800*' },  // Toll-free SMS prefixes
+          { from: '1833*' },  // Catches (833) numbers
+          { from: '1844*' },
+          { from: '1855*' },
+          { from: '1866*' },
+          { from: '1877*' },
+          { from: '1888*' },
+        ],
+      },
+      actions: {
+        labels: ['📱-sms'],
+        archive: true,
+        markImportant: false,
       },
     },
 
@@ -294,6 +433,15 @@ local rules =
           { not: { from: '*no-reply*' } },
           { not: { from: '*donotreply*' } },
           { not: { from: '*notifications*' } },
+          { not: { from: '*notification*' } },  // Singular form
+          { not: { from: '*shipping*' } },      // Shipping notifications
+          { not: { from: '*tracking*' } },      // Tracking updates
+          { not: { from: '*alert*' } },         // Automated alerts
+          { not: { from: '*system*' } },        // System messages
+          { not: { from: '*automated*' } },     // Explicitly automated
+          { not: { from: '*bot@*' } },          // Bot accounts
+          { not: { from: '*@orders.*' } },      // Order systems (like Apple)
+          { not: { from: '*@support.*' } },     // Support ticketing systems
           { not: { query: 'unsubscribe' } },
         ],
       },
@@ -325,6 +473,7 @@ local rules =
     { name: 'github/' + n.label }
     for n in githubNotifications
   ] + [
+    { name: '🏛️-government' },
     { name: '🏥-health' },
     { name: '👤-humans' },
     { name: '💰-money' },
@@ -332,7 +481,9 @@ local rules =
     { name: 'plus-addressed' },
     { name: '⭐-priority' },
     { name: '🛍️-shopping' },
+    { name: '📱-sms' },
     { name: '💬-social' },
+    { name: '🎫-support' },
     { name: '✈️-travel' },
   ],
 }

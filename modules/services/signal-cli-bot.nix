@@ -72,7 +72,7 @@ in
         User = "signal-cli";
         Group = "signal-cli";
         
-        ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.signal-cli}/bin/signal-cli -a $(cat ${cfg.phoneNumberFile}) daemon'";
+        ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.signal-cli}/bin/signal-cli -a $(cat ${cfg.phoneNumberFile}) daemon --socket'";
         Restart = "always";
         RestartSec = 10;
         

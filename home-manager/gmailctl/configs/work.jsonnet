@@ -1,5 +1,28 @@
 // Gmail filters for josh@crossnokaye.com (work account)
 // Enhanced with all best practices from research + personal config
+//
+// INBOX SECTIONS (Multiple Inboxes)
+// Configure these 5 sections in Gmail Settings > Multiple Inboxes:
+//
+// Section 1: 🚨 Critical
+//   Query: in:inbox AND (label:🚨-critical OR subject:URGENT OR subject:CRITICAL OR subject:DOWN)
+//   Outages, incidents, and urgent issues - absolute top priority
+//
+// Section 2: 👥 Team
+//   Query: in:inbox AND (label:👥-team OR label:📨-direct OR label:docs/comments)
+//   Your coworkers, direct messages, and doc comments - internal collaboration
+//
+// Section 3: 🎫 Support & External
+//   Query: in:inbox AND (label:🎫-support OR label:👤-external-human)
+//   ALL support tickets + external humans - people needing help or responses
+//
+// Section 4: 📋 Business
+//   Query: in:inbox AND (label:💰-finance OR label:⚖️-legal OR label:compliance/drata OR label:📦-shipping)
+//   Finance, legal, compliance, and business purchases - administrative tasks
+//
+// Section 5: ⭐ Starred & Alerts
+//   Query: in:inbox AND (is:starred OR (label:monitoring/alerts AND is:unread) OR (label:security/critical AND is:unread))
+//   Manual overrides + unread monitoring/security alerts not critical enough for section 1
 
 local lib = import 'gmailctl.libsonnet';
 local common = import 'lib/common-rules.libsonnet';
@@ -103,19 +126,17 @@ local rules =
     {
       filter: {
         or: [
-          { subject: '*URGENT*' },
-          { subject: '*EMERGENCY*' },
-          { subject: '*CRITICAL*' },
-          { subject: '*OUTAGE*' },
-          { subject: '*DOWN*' },
-          { subject: '*INCIDENT*' },
-          { subject: '*urgent*' },
-          { subject: '*emergency*' },
-          { subject: '*critical*' },
-          { subject: '*outage*' },
-          { subject: '*down*' },
-          { subject: '*incident*' },
-          { subject: '*pager*' },
+          { query: '"[URGENT]"' },
+          { query: '"[EMERGENCY]"' },
+          { query: '"[CRITICAL]"' },
+          { query: '"[OUTAGE]"' },
+          { query: '"[INCIDENT]"' },
+          { query: '"service down"' },
+          { query: '"system down"' },
+          { query: '"site down"' },
+          { query: '"production outage"' },
+          { query: '"pager alert"' },
+          { query: '"on-call alert"' },
         ],
       },
       actions: {
@@ -159,14 +180,14 @@ local rules =
         and: [
           { or: [{ from: service } for service in monitoringServices] },
           { or: [
-            { subject: '*alert*' },
-            { subject: '*ALERT*' },
-            { subject: '*fail*' },
-            { subject: '*FAIL*' },
-            { subject: '*error*' },
-            { subject: '*ERROR*' },
-            { subject: '*critical*' },
-            { subject: '*CRITICAL*' },
+            { query: '"monitoring alert"' },
+            { query: '"[ALERT]"' },
+            { query: '"test failed"' },
+            { query: '"build failed"' },
+            { query: '"deployment failed"' },
+            { query: '"error rate"' },
+            { query: '"critical alert"' },
+            { query: '"severity: critical"' },
           ]},
         ],
       },
@@ -189,17 +210,35 @@ local rules =
       },
     },
 
-    // Honeycomb support (8.8% of inbox!) - Special handling
+    // Support tickets - expanded beyond just Honeycomb
     {
       filter: {
-        and: [
-          { from: 'support@honeycomb.io' },
-          { subject: '*ticket*' },
+        or: [
+          // Honeycomb tickets
+          { and: [
+            { from: 'support@honeycomb.io' },
+            { subject: '*ticket*' },
+          ]},
+          // General support patterns
+          { from: '*@support.*' },
+          { from: '*@help.*' },
+          { from: '*@ticket.*' },
+          { from: '*@zendesk.com' },
+          { from: '*@helpdesk.*' },
+          { from: '*@freshdesk.com' },
+          { from: '*@intercom.io' },
+          { subject: '*ticket #*' },
+          { subject: '*case #*' },
+          { subject: '*support request*' },
+          { query: '"your ticket"' },
+          { query: '"support ticket"' },
+          { query: '"case number"' },
         ],
       },
       actions: {
-        labels: ['support/honeycomb'],
-        star: true,  // Active tickets need attention
+        labels: ['🎫-support'],
+        star: true,
+        markImportant: true,
       },
     },
 
@@ -330,10 +369,13 @@ local rules =
       filter: {
         or: [
           { from: '*@docusign.net' },
-          { subject: '*contract*' },
-          { subject: '*agreement*' },
-          { subject: '*nda*' },
-          { subject: '*signature*' },
+          { query: '"please sign"' },
+          { query: '"signature required"' },
+          { query: '"sign contract"' },
+          { query: '"sign agreement"' },
+          { query: '"execute agreement"' },
+          { query: '"NDA attached"' },
+          { query: '"non-disclosure agreement"' },
         ],
       },
       actions: {
@@ -348,14 +390,40 @@ local rules =
       filter: {
         or: [
           { from: '*@expensify.com' },
-          { subject: '*expense*' },
-          { subject: '*reimbursement*' },
-          { subject: '*invoice*' },
-          { subject: '*payment*' },
+          { query: '"expense report"' },
+          { query: '"reimbursement request"' },
+          { query: '"invoice #"' },
+          { query: '"invoice number"' },
+          { query: '"payment due"' },
+          { query: '"payment received"' },
         ],
       },
       actions: {
         labels: ['💰-finance'],
+        markImportant: true,
+      },
+    },
+
+    // Shipping notifications for business purchases
+    {
+      filter: {
+        or: [
+          { from: '*@shipment.*' },
+          { from: '*@delivery.*' },
+          { query: '"has shipped"' },
+          { query: '"order shipped"' },
+          { query: '"package shipped"' },
+          { query: '"tracking information"' },
+          { query: '"delivery scheduled"' },
+          { query: '"order dispatched"' },
+          { query: '"tracking number"' },
+          { query: '"track your package"' },
+          { query: '"track your order"' },
+        ],
+      },
+      actions: {
+        labels: ['📦-shipping'],
+        star: true,
         markImportant: true,
       },
     },
@@ -403,8 +471,10 @@ local rules =
           { from: '*@powertofly.com' },
           { from: '*recruiter*' },
           { from: '*recruiting*' },
-          { subject: '*opportunity*' },
-          { subject: '*position*' },
+          { query: '"job opportunity"' },
+          { query: '"open position"' },
+          { query: '"career opportunity"' },
+          { query: '"role at"' },
         ],
       },
       actions: {
@@ -417,15 +487,28 @@ local rules =
     // Marketing/Events/Newsletters (51.2% have list headers!)
     {
       filter: {
-        or: [
-          { list: '*' },
-          { query: 'unsubscribe' },
-          { from: '*@campaigns.*' },
-          { from: '*@mail.*' },
-          { from: '*@email.*' },
-          { from: '*@engage.*' },
-          { from: '*@reply.*' },
-          { from: '*newsletter*' },
+        and: [
+          { or: [
+            { list: '*' },
+            { query: 'unsubscribe' },
+            { from: '*@campaigns.*' },
+            { from: '*@mail.*' },
+            { from: '*@email.*' },
+            { from: '*@engage.*' },
+            { from: '*@reply.*' },
+            { from: '*newsletter*' },
+          ]},
+          // Don't archive emails already categorized as important
+          { not: { query: 'label:🚨-critical' } },
+          { not: { query: 'label:📨-direct' } },
+          { not: { query: 'label:👥-team' } },
+          { not: { query: 'label:👤-external-human' } },
+          { not: { query: 'label:💰-finance' } },
+          { not: { query: 'label:⚖️-legal' } },
+          { not: { query: 'label:📦-shipping' } },
+          { not: { query: 'label:🎫-support' } },
+          { not: { query: 'label:docs/comments' } },
+          { not: { query: 'label:compliance/drata' } },
         ],
       },
       actions: {
@@ -438,12 +521,25 @@ local rules =
     // Auto-archive all remaining noreply
     {
       filter: {
-        or: [
-          { from: '*noreply*' },
-          { from: '*no-reply*' },
-          { from: '*donotreply*' },
-          { from: '*notifications*' },
-          { from: '*automated*' },
+        and: [
+          { or: [
+            { from: '*noreply*' },
+            { from: '*no-reply*' },
+            { from: '*donotreply*' },
+            { from: '*notifications*' },
+            { from: '*automated*' },
+          ]},
+          // Don't archive emails already categorized as important
+          { not: { query: 'label:🚨-critical' } },
+          { not: { query: 'label:📨-direct' } },
+          { not: { query: 'label:👥-team' } },
+          { not: { query: 'label:👤-external-human' } },
+          { not: { query: 'label:💰-finance' } },
+          { not: { query: 'label:⚖️-legal' } },
+          { not: { query: 'label:📦-shipping' } },
+          { not: { query: 'label:🎫-support' } },
+          { not: { query: 'label:docs/comments' } },
+          { not: { query: 'label:compliance/drata' } },
         ],
       },
       actions: {
@@ -461,7 +557,17 @@ local rules =
           { not: { list: '*' } },
           { not: { from: '*noreply*' } },
           { not: { from: '*no-reply*' } },
+          { not: { from: '*donotreply*' } },
           { not: { from: '*notifications*' } },
+          { not: { from: '*notification*' } },
+          { not: { from: '*shipping*' } },
+          { not: { from: '*tracking*' } },
+          { not: { from: '*alert*' } },
+          { not: { from: '*system*' } },
+          { not: { from: '*automated*' } },
+          { not: { from: '*bot@*' } },
+          { not: { from: '*@orders.*' } },
+          { not: { from: '*@support.*' } },
           { not: { query: 'unsubscribe' } },
         ],
       },
@@ -514,7 +620,8 @@ local rules =
     { name: 'security' },
     { name: 'security/critical' },
     { name: 'security/scans' },
-    { name: 'support' },
+    { name: '📦-shipping' },
+    { name: '🎫-support' },
     { name: 'support/honeycomb' },
     { name: 'tools' },
     { name: 'tools/cleary' },

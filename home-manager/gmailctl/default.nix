@@ -47,16 +47,20 @@ in
     # Copy personal config
     if [ -d "$HOME/.gmailctl-personal" ]; then
       $DRY_RUN_CMD cp ${./configs/personal.jsonnet} $HOME/.gmailctl-personal/config.jsonnet
-      $DRY_RUN_CMD rm -rf $HOME/.gmailctl-personal/lib
-      $DRY_RUN_CMD cp -r ${./lib} $HOME/.gmailctl-personal/
+      # Remove the lib directory/symlink completely before copying
+      $DRY_RUN_CMD rm -rf $HOME/.gmailctl-personal/lib || true
+      $DRY_RUN_CMD mkdir -p $HOME/.gmailctl-personal/lib
+      $DRY_RUN_CMD cp -r ${./lib}/* $HOME/.gmailctl-personal/lib/
       $DRY_RUN_CMD echo "gmailctl: Synced personal config"
     fi
 
     # Copy work config
     if [ -d "$HOME/.gmailctl-work" ]; then
       $DRY_RUN_CMD cp ${./configs/work.jsonnet} $HOME/.gmailctl-work/config.jsonnet
-      $DRY_RUN_CMD rm -rf $HOME/.gmailctl-work/lib
-      $DRY_RUN_CMD cp -r ${./lib} $HOME/.gmailctl-work/
+      # Remove the lib directory/symlink completely before copying
+      $DRY_RUN_CMD rm -rf $HOME/.gmailctl-work/lib || true
+      $DRY_RUN_CMD mkdir -p $HOME/.gmailctl-work/lib
+      $DRY_RUN_CMD cp -r ${./lib}/* $HOME/.gmailctl-work/lib/
       $DRY_RUN_CMD echo "gmailctl: Synced work config"
     fi
   '';
