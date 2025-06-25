@@ -125,18 +125,21 @@ local rules =
     // CRITICAL: Outages and incidents (BEFORE other filters)
     {
       filter: {
-        or: [
-          { query: '"[URGENT]"' },
-          { query: '"[EMERGENCY]"' },
-          { query: '"[CRITICAL]"' },
-          { query: '"[OUTAGE]"' },
-          { query: '"[INCIDENT]"' },
-          { query: '"service down"' },
-          { query: '"system down"' },
-          { query: '"site down"' },
-          { query: '"production outage"' },
-          { query: '"pager alert"' },
-          { query: '"on-call alert"' },
+        and: [
+          { or: [
+            { query: '"[URGENT]"' },
+            { query: '"[EMERGENCY]"' },
+            { query: '"[CRITICAL]"' },
+            { query: '"[OUTAGE]"' },
+            { query: '"[INCIDENT]"' },
+            { query: '"service down"' },
+            { query: '"system down"' },
+            { query: '"site down"' },
+            { query: '"production outage"' },
+            { query: '"pager alert"' },
+            { query: '"on-call alert"' },
+          ]},
+          { not: { query: 'unsubscribe' } },  // Exclude marketing emails
         ],
       },
       actions: {
@@ -162,9 +165,12 @@ local rules =
     // Your direct boss/reports (add as needed)
     {
       filter: {
-        or: [
-          { from: 'dmag@crossnokaye.com' },  // Example - adjust to your manager
-          { to: 'josh@crossnokaye.com' },   // Directly to you
+        and: [
+          { or: [
+            { from: 'dmag@crossnokaye.com' },  // Example - adjust to your manager
+            { to: 'josh@crossnokaye.com' },   // Directly to you
+          ]},
+          { not: { query: 'unsubscribe' } },  // But not bulk mail
         ],
       },
       actions: {
@@ -388,14 +394,37 @@ local rules =
     // Financial/expenses
     {
       filter: {
-        or: [
-          { from: '*@expensify.com' },
-          { query: '"expense report"' },
-          { query: '"reimbursement request"' },
-          { query: '"invoice #"' },
-          { query: '"invoice number"' },
-          { query: '"payment due"' },
-          { query: '"payment received"' },
+        and: [
+          { or: [
+            // Expense management systems
+            { from: '*@expensify.com' },
+            { from: '*@concur.com' },
+            { from: '*@certify.com' },
+            { from: '*@divvy.com' },
+            { from: '*@ramp.com' },
+            { from: '*@brex.com' },
+            // Invoice/billing addresses
+            { from: '*invoice*' },
+            { from: '*billing*' },
+            { from: '*receipts*' },
+            { from: '*statements*' },
+            { from: '*@bill.com' },
+            { from: '*@quickbooks.com' },
+            // Accounting/finance
+            { from: '*@gusto.com' },
+            { from: '*@adp.com' },
+            { from: '*accounting*' },
+            { from: '*finance*' },
+            // DocuSign for contracts/invoices
+            { from: '*@docusign.net' },
+            // Keep some specific queries for edge cases
+            { subject: 'invoice' },
+            { subject: 'receipt' },
+            { subject: 'payment' },
+            { subject: 'expense' },
+            { subject: 'reimbursement' },
+          ]},
+          { not: { query: 'unsubscribe' } },  // Exclude marketing emails
         ],
       },
       actions: {
@@ -565,9 +594,14 @@ local rules =
           { not: { from: '*alert*' } },
           { not: { from: '*system*' } },
           { not: { from: '*automated*' } },
+          { not: { from: 'auto-*' } },          // Auto-confirm, auto-reply, etc.
           { not: { from: '*bot@*' } },
           { not: { from: '*@orders.*' } },
           { not: { from: '*@support.*' } },
+          { not: { from: '*invoice*' } },       // Invoice/billing systems
+          { not: { from: '*billing*' } },       // Billing systems
+          { not: { from: '*receipts*' } },      // Receipt systems
+          { not: { from: '*statements*' } },    // Statement systems
           { not: { query: 'unsubscribe' } },
         ],
       },

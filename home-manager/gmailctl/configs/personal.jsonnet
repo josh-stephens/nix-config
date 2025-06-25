@@ -129,10 +129,18 @@ local rules =
           { from: '*@schwab.com' },
           { from: '*@fidelity.com' },
           { from: '*@vanguard.com' },
+          { from: '*invoice*' },
+          { from: '*billing*' },
+          { from: '*receipts*' },
+          { from: '*statements*' },
           { query: '"bank statement"' },
           { query: '"payment due"' },
           { query: '"invoice number"' },
           { query: '"account statement"' },
+          { subject: 'receipt' },
+          { subject: 'invoice' },
+          { subject: 'payment' },
+          { subject: 'bill' },
         ],
       },
       actions: {
@@ -221,15 +229,19 @@ local rules =
     // Health-related emails
     {
       filter: {
-        or: [
-          { from: '*@myhealth*' },
-          { from: '*@healthcare*' },
-          { from: '*clinic*' },
-          { from: '*hospital*' },
-          { from: '*doctor*' },
-          { from: '*dental*' },
-          { from: '*medical*' },
-          { query: 'prescription' },
+        and: [
+          { or: [
+            { from: '*@myhealth*' },
+            { from: '*@healthcare*' },
+            { from: '*clinic*' },
+            { from: '*hospital*' },
+            { from: '*doctor*' },
+            { from: '*dental*' },
+            { from: '*medical*' },
+            { query: 'prescription' },
+          ]},
+          { not: { from: '*alumni*' } },        // Exclude alumni benefits emails
+          { not: { query: 'unsubscribe' } },    // Exclude marketing
         ],
       },
       actions: {
@@ -439,10 +451,19 @@ local rules =
           { not: { from: '*alert*' } },         // Automated alerts
           { not: { from: '*system*' } },        // System messages
           { not: { from: '*automated*' } },     // Explicitly automated
+          { not: { from: 'auto-*' } },          // Auto-confirm, auto-reply, etc.
           { not: { from: '*bot@*' } },          // Bot accounts
           { not: { from: '*@orders.*' } },      // Order systems (like Apple)
           { not: { from: '*@support.*' } },     // Support ticketing systems
+          { not: { from: '*invoice*' } },       // Invoice/billing systems
+          { not: { from: '*billing*' } },       // Billing systems
+          { not: { from: '*receipts*' } },      // Receipt systems
+          { not: { from: '*statements*' } },    // Statement systems
+          { not: { from: '*alumni*' } },        // Alumni associations
+          { not: { from: '*@meyerandassoc.com' } }, // Marketing agencies
           { not: { query: 'unsubscribe' } },
+          { not: { query: 'click here to unsubscribe' } },
+          { not: { query: 'do not wish to receive' } },
         ],
       },
       actions: {
