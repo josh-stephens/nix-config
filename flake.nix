@@ -65,7 +65,7 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.joshsymonds = import ./home-manager/headless-x86_64-linux.nix;
+              home-manager.users.joshsymonds = import ./home-manager/hosts/ultraviolet.nix;
               home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux" // {
                 hostname = "ultraviolet";
               };
@@ -83,7 +83,7 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.joshsymonds = import ./home-manager/headless-x86_64-linux.nix;
+              home-manager.users.joshsymonds = import ./home-manager/hosts/bluedesert.nix;
               home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux" // {
                 hostname = "bluedesert";
               };
@@ -101,9 +101,27 @@
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
-              home-manager.users.joshsymonds = import ./home-manager/headless-x86_64-linux.nix;
+              home-manager.users.joshsymonds = import ./home-manager/hosts/echelon.nix;
               home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux" // {
                 hostname = "echelon";
+              };
+            }
+          ];
+        };
+
+        vermissian = lib.nixosSystem {
+          system = "x86_64-linux";
+          specialArgs = mkSpecialArgs "x86_64-linux";
+          modules = [
+            ./hosts/vermissian
+            ./hosts/common.nix
+            home-manager.nixosModules.home-manager
+            {
+              home-manager.useGlobalPkgs = true;
+              home-manager.useUserPackages = true;
+              home-manager.users.joshsymonds = import ./home-manager/hosts/vermissian.nix;
+              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux" // {
+                hostname = "vermissian";
               };
             }
           ];
@@ -140,12 +158,12 @@
             modules = [ module ];
           };
           
-          linuxHosts = [ "ultraviolet" "bluedesert" "echelon" ];
+          linuxHosts = [ "ultraviolet" "bluedesert" "echelon" "vermissian" ];
           darwinHosts = [ "cloudbank" ];
         in
           (lib.genAttrs 
             (map (h: "joshsymonds@${h}") linuxHosts)
-            (_: mkHome { system = "x86_64-linux"; module = ./home-manager/headless-x86_64-linux.nix; })
+            (h: mkHome { system = "x86_64-linux"; module = ./home-manager/hosts/${lib.removePrefix "joshsymonds@" h}.nix; })
           ) // (lib.genAttrs 
             (map (h: "joshsymonds@${h}") darwinHosts)
             (_: mkHome { system = "aarch64-darwin"; module = ./home-manager/aarch64-darwin.nix; })
