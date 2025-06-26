@@ -151,9 +151,17 @@ local rules =
     },
 
     // Real team members - ALWAYS visible
+    // Anyone from crossnokaye.com domain except automated senders
     {
       filter: {
-        or: [{ from: member } for member in teamMembers],
+        and: [
+          { from: '*@crossnokaye.com' },
+          { not: { from: 'devops@crossnokaye.com' } },  // Already handled separately
+          { not: { from: '*noreply@crossnokaye.com' } },
+          { not: { from: '*no-reply@crossnokaye.com' } },
+          { not: { from: '*automated@crossnokaye.com' } },
+          { not: { query: 'unsubscribe' } },  // Exclude bulk mail from internal systems
+        ],
       },
       actions: {
         labels: ['👥-team'],
