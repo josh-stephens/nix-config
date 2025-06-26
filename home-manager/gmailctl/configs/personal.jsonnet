@@ -313,6 +313,43 @@ local rules =
       },
     },
 
+    // Marketing emails misusing shipping/order addresses
+    // Catches common marketing platform signatures in email content
+    {
+      filter: {
+        and: [
+          { or: [
+            { from: '*shipping*' },
+            { from: '*order*' },
+            { from: '*fulfillment*' },
+          ]},
+          { or: [
+            // Common marketing platform footprints
+            { query: 'constantcontact.com' },
+            { query: 'mailchimp.com' },
+            { query: 'sendgrid.net' },
+            { query: 'klaviyo.com' },
+            { query: 'brevo.com' },
+            { query: 'sendinblue.com' },
+            { query: 'convertkit.com' },
+            { query: 'activecampaign.com' },
+            // Marketing language that wouldn't appear in real shipping emails
+            { query: '"view in browser"' },
+            { query: '"add us to your address book"' },
+            { query: '"forward to a friend"' },
+            { query: '"manage preferences"' },
+            { query: '"email preferences"' },
+            { query: '"why am I receiving this"' },
+          ]},
+        ],
+      },
+      actions: {
+        labels: ['🛍️-shopping'],
+        archive: true,
+        markImportant: false,
+      },
+    },
+
     // Support tickets and customer service
     {
       filter: {
