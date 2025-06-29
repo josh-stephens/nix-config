@@ -72,7 +72,11 @@ in
         User = "signal-cli";
         Group = "signal-cli";
         
-        ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.signal-cli}/bin/signal-cli -a $(cat ${cfg.phoneNumberFile}) daemon --socket'";
+        # Runtime directory for socket
+        RuntimeDirectory = "signal-cli";
+        RuntimeDirectoryMode = "0755";
+        
+        ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.signal-cli}/bin/signal-cli -a $(cat ${cfg.phoneNumberFile}) daemon --socket /run/signal-cli/socket'";
         Restart = "always";
         RestartSec = 10;
         

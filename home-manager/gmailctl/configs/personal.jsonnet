@@ -96,16 +96,10 @@ local rules =
       },
     },
 
-    // CRITICAL: Protect potentially important emails
+    // CRITICAL: Protect emails from yourself (for notes/reminders)
     {
       filter: {
-        or: [
-          { from: 'josh@joshsymonds.com' },  // Emails to yourself
-          { subject: 'urgent' },
-          { subject: 'emergency' },
-          { subject: 'asap' },
-          { subject: 'important' },
-        ],
+        from: 'josh@joshsymonds.com',  // Only emails to yourself
       },
       actions: {
         star: true,
@@ -333,6 +327,19 @@ local rules =
             { query: 'sendinblue.com' },
             { query: 'convertkit.com' },
             { query: 'activecampaign.com' },
+            { query: 'aweber.com' },
+            { query: 'getresponse.com' },
+            { query: 'campaign-archive.com' },
+            { query: 'list-manage.com' },
+            { query: 'mcsv.net' },  // Mailchimp server
+            { query: 'rsgsv.net' },  // Common ESP
+            { query: 'exacttarget.com' },
+            { query: 'salesforce-email.com' },
+            { query: 'hubspot.com' },
+            { query: 'marketo.com' },
+            { query: 'pardot.com' },
+            { query: 'eloqua.com' },
+            { query: 'ccsend.com' },  // Constant Contact
             // Marketing language that wouldn't appear in real shipping emails
             { query: '"view in browser"' },
             { query: '"add us to your address book"' },
@@ -395,6 +402,71 @@ local rules =
       actions: {
         labels: ['plus-addressed'],
         archive: true,
+      },
+    },
+
+    // Enhanced marketing platform detection (before bulk catch-all)
+    {
+      filter: {
+        or: [
+          // Marketing platform signatures in email content
+          { query: 'constantcontact.com' },
+          { query: 'mailchimp.com' },
+          { query: 'sendgrid.net' },
+          { query: 'klaviyo.com' },
+          { query: 'brevo.com' },
+          { query: 'sendinblue.com' },
+          { query: 'convertkit.com' },
+          { query: 'activecampaign.com' },
+          { query: 'aweber.com' },
+          { query: 'getresponse.com' },
+          { query: 'campaign-archive.com' },
+          { query: 'list-manage.com' },
+          { query: 'mcsv.net' },  // Mailchimp server
+          { query: 'rsgsv.net' },  // Common ESP
+          { query: 'exacttarget.com' },
+          { query: 'salesforce-email.com' },
+          { query: 'hubspot.com' },
+          { query: 'marketo.com' },
+          { query: 'pardot.com' },
+          { query: 'eloqua.com' },
+          { query: 'ccsend.com' },  // Constant Contact
+          { query: 'mailjet.com' },
+          { query: 'sendpulse.com' },
+          { query: 'mailerlite.com' },
+          { query: 'moosend.com' },
+          { query: 'omnisend.com' },
+          { query: 'drip.com' },
+          { query: 'autopilot.com' },
+          { query: 'customer.io' },
+          { query: 'intercom.io' },
+          { query: 'mixmax.com' },
+          // Marketing-specific language patterns
+          { query: '"view in browser"' },
+          { query: '"add us to your address book"' },
+          { query: '"forward to a friend"' },
+          { query: '"manage preferences"' },
+          { query: '"email preferences"' },
+          { query: '"why am I receiving this"' },
+          { query: '"this email was sent to"' },
+          { query: '"you are receiving this because you"' },
+          { query: '"update your preferences"' },
+          { query: '"manage your subscription"' },
+          { query: '"click here to unsubscribe"' },
+          { query: '"unsubscribe from this list"' },
+          { query: '"update subscription preferences"' },
+          { query: '"view this email in your browser"' },
+          { query: '"trouble viewing this email"' },
+          { query: '"ensure delivery to your inbox"' },
+          { query: '"whitelist our email"' },
+          { query: '"mark as not spam"' },
+          { query: '"move to inbox"' },
+        ],
+      },
+      actions: {
+        labels: ['marketing-platform'],
+        archive: true,
+        markImportant: false,
       },
     },
 
@@ -534,6 +606,7 @@ local rules =
     { name: '🏛️-government' },
     { name: '🏥-health' },
     { name: '👤-humans' },
+    { name: 'marketing-platform' },
     { name: '💰-money' },
     { name: '📦-orders' },
     { name: 'plus-addressed' },
