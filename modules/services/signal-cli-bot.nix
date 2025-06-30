@@ -37,7 +37,9 @@ in
       createHome = true;
     };
     
-    users.groups.signal-cli = {};
+    users.groups.signal-cli = {
+      members = [ "joshsymonds" ];  # Add your user to signal-cli group
+    };
 
     # Install signal-cli package
     environment.systemPackages = [ pkgs.signal-cli ];
@@ -77,6 +79,10 @@ in
         RuntimeDirectoryMode = "0755";
         
         ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.signal-cli}/bin/signal-cli -a $(cat ${cfg.phoneNumberFile}) daemon --socket /run/signal-cli/socket'";
+        
+        # Fix socket permissions after daemon starts
+        ExecStartPost = "${pkgs.coreutils}/bin/chmod 660 /run/signal-cli/socket";
+        
         Restart = "always";
         RestartSec = 10;
         

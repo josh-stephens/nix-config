@@ -535,7 +535,7 @@ local rules =
             { from: '*@reply.*' },
             { from: '*newsletter*' },
           ]},
-          // Don't archive emails already categorized as important
+          // Don't archive emails already categorized
           { not: { query: 'label:🚨-critical' } },
           { not: { query: 'label:📨-direct' } },
           { not: { query: 'label:👥-team' } },
@@ -546,6 +546,9 @@ local rules =
           { not: { query: 'label:🎫-support' } },
           { not: { query: 'label:docs/comments' } },
           { not: { query: 'label:compliance/drata' } },
+          { not: { query: 'label:📅-calendar' } },
+          { not: { query: 'label:monitoring/alerts' } },
+          { not: { query: 'label:security/critical' } },
         ],
       },
       actions: {
@@ -566,7 +569,7 @@ local rules =
             { from: '*notifications*' },
             { from: '*automated*' },
           ]},
-          // Don't archive emails already categorized as important
+          // Don't archive emails already categorized
           { not: { query: 'label:🚨-critical' } },
           { not: { query: 'label:📨-direct' } },
           { not: { query: 'label:👥-team' } },
@@ -577,6 +580,9 @@ local rules =
           { not: { query: 'label:🎫-support' } },
           { not: { query: 'label:docs/comments' } },
           { not: { query: 'label:compliance/drata' } },
+          { not: { query: 'label:📅-calendar' } },
+          { not: { query: 'label:monitoring/alerts' } },
+          { not: { query: 'label:security/critical' } },
         ],
       },
       actions: {

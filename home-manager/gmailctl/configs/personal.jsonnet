@@ -38,6 +38,8 @@ local retailSenders = [
   // Additional retail from analysis
   '*@mail.zillow.com',
   '*@joycoast.com',
+  // Wine/vineyard retailers
+  '*@foxenvineyard.com',
 ];
 
 // GitHub notification types (most proven gmailctl pattern)
@@ -155,6 +157,56 @@ local rules =
       actions: {
         labels: ['📅-calendar'],
         star: true,
+      },
+    },
+
+    // Marketing emails misusing shipping/order addresses
+    // Catches common marketing platform signatures in email content
+    {
+      filter: {
+        and: [
+          { or: [
+            { from: '*shipping*' },
+            { from: '*order*' },
+            { from: '*fulfillment*' },
+          ]},
+          { or: [
+            // Common marketing platform footprints
+            { query: 'constantcontact.com' },
+            { query: 'mailchimp.com' },
+            { query: 'sendgrid.net' },
+            { query: 'klaviyo.com' },
+            { query: 'brevo.com' },
+            { query: 'sendinblue.com' },
+            { query: 'convertkit.com' },
+            { query: 'activecampaign.com' },
+            { query: 'aweber.com' },
+            { query: 'getresponse.com' },
+            { query: 'campaign-archive.com' },
+            { query: 'list-manage.com' },
+            { query: 'mcsv.net' },  // Mailchimp server
+            { query: 'rsgsv.net' },  // Common ESP
+            { query: 'exacttarget.com' },
+            { query: 'salesforce-email.com' },
+            { query: 'hubspot.com' },
+            { query: 'marketo.com' },
+            { query: 'pardot.com' },
+            { query: 'eloqua.com' },
+            { query: 'ccsend.com' },  // Constant Contact
+            // Marketing language that wouldn't appear in real shipping emails
+            { query: '"view in browser"' },
+            { query: '"add us to your address book"' },
+            { query: '"forward to a friend"' },
+            { query: '"manage preferences"' },
+            { query: '"email preferences"' },
+            { query: '"why am I receiving this"' },
+          ]},
+        ],
+      },
+      actions: {
+        labels: ['🛍️-shopping'],
+        archive: true,
+        markImportant: false,
       },
     },
 
@@ -288,84 +340,47 @@ local rules =
     // Orders and shipping notifications (unified)
     {
       filter: {
-        or: [
-          // Amazon orders (excluding AWS marketing)
-          { and: [
-            { from: '*@amazon.com' },
-            { not: { from: 'aws-marketing-email-replies@amazon.com' } },
+        and: [
+          { or: [
+            // Amazon orders (excluding AWS marketing)
+            { and: [
+              { from: '*@amazon.com' },
+              { not: { from: 'aws-marketing-email-replies@amazon.com' } },
+            ]},
+            // Shipping and tracking patterns
+            { from: '*shipping*' },
+            { from: '*tracking*' },
+            { from: '*@orders.*' },
+            { from: '*@shipment.*' },
+            { from: '*@delivery.*' },
+            { subject: '*order*' },
+            { subject: '*shipped*' },
+            { subject: '*tracking*' },
+            { subject: '*delivery*' },
+            { subject: '*dispatched*' },
+            { query: '"tracking number"' },
+            { query: '"track your package"' },
+            { query: '"track your order"' },
+            { query: '"order confirmation"' },
+            { query: '"order has been placed"' },
           ]},
-          // Shipping and tracking patterns
-          { from: '*shipping*' },
-          { from: '*tracking*' },
-          { from: '*@orders.*' },
-          { from: '*@shipment.*' },
-          { from: '*@delivery.*' },
-          { subject: '*order*' },
-          { subject: '*shipped*' },
-          { subject: '*tracking*' },
-          { subject: '*delivery*' },
-          { subject: '*dispatched*' },
-          { query: '"tracking number"' },
-          { query: '"track your package"' },
-          { query: '"track your order"' },
-          { query: '"order confirmation"' },
-          { query: '"order has been placed"' },
+          // Exclude promotional emails
+          { not: { subject: '*sale*' } },
+          { not: { subject: '*promotion*' } },
+          { not: { subject: '*discount*' } },
+          { not: { subject: '*special offer*' } },
+          { not: { subject: '*limited time*' } },
+          { not: { query: '"flash sale"' } },
+          { not: { query: '"summer sale"' } },
+          { not: { query: '"winter sale"' } },
+          { not: { query: '"black friday"' } },
+          { not: { query: '"cyber monday"' } },
         ],
       },
       actions: {
         labels: ['📦-orders'],
         star: true,
         markImportant: true,
-      },
-    },
-
-    // Marketing emails misusing shipping/order addresses
-    // Catches common marketing platform signatures in email content
-    {
-      filter: {
-        and: [
-          { or: [
-            { from: '*shipping*' },
-            { from: '*order*' },
-            { from: '*fulfillment*' },
-          ]},
-          { or: [
-            // Common marketing platform footprints
-            { query: 'constantcontact.com' },
-            { query: 'mailchimp.com' },
-            { query: 'sendgrid.net' },
-            { query: 'klaviyo.com' },
-            { query: 'brevo.com' },
-            { query: 'sendinblue.com' },
-            { query: 'convertkit.com' },
-            { query: 'activecampaign.com' },
-            { query: 'aweber.com' },
-            { query: 'getresponse.com' },
-            { query: 'campaign-archive.com' },
-            { query: 'list-manage.com' },
-            { query: 'mcsv.net' },  // Mailchimp server
-            { query: 'rsgsv.net' },  // Common ESP
-            { query: 'exacttarget.com' },
-            { query: 'salesforce-email.com' },
-            { query: 'hubspot.com' },
-            { query: 'marketo.com' },
-            { query: 'pardot.com' },
-            { query: 'eloqua.com' },
-            { query: 'ccsend.com' },  // Constant Contact
-            // Marketing language that wouldn't appear in real shipping emails
-            { query: '"view in browser"' },
-            { query: '"add us to your address book"' },
-            { query: '"forward to a friend"' },
-            { query: '"manage preferences"' },
-            { query: '"email preferences"' },
-            { query: '"why am I receiving this"' },
-          ]},
-        ],
-      },
-      actions: {
-        labels: ['🛍️-shopping'],
-        archive: true,
-        markImportant: false,
       },
     },
 
