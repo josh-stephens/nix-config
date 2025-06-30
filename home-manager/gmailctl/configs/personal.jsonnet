@@ -264,7 +264,16 @@ local rules =
           { query: '"legal summons"' },
           { query: '"citation"' },
           { query: '"vehicle registration"' },
-          { query: '"action required"' },
+          { and: [
+            { query: '"action required"' },
+            { or: [
+              { from: '*.gov' },
+              { query: 'tax' },
+              { query: 'jury' },
+              { query: 'license' },
+              { query: 'registration' },
+            ]},
+          ]},
           { query: '"legal notice"' },
           { query: '"government notice"' },
         ],
@@ -280,8 +289,11 @@ local rules =
     {
       filter: {
         or: [
-          // Amazon orders
-          { from: '*@amazon.com' },
+          // Amazon orders (excluding AWS marketing)
+          { and: [
+            { from: '*@amazon.com' },
+            { not: { from: 'aws-marketing-email-replies@amazon.com' } },
+          ]},
           // Shipping and tracking patterns
           { from: '*shipping*' },
           { from: '*tracking*' },
@@ -402,6 +414,41 @@ local rules =
       actions: {
         labels: ['plus-addressed'],
         archive: true,
+      },
+    },
+
+    // AWS Marketing emails
+    {
+      filter: {
+        from: 'aws-marketing-email-replies@amazon.com',
+      },
+      actions: {
+        labels: ['marketing-platform'],
+        archive: true,
+        markImportant: false,
+      },
+    },
+
+    // AWS Service notifications (EOL, deprecations, etc.)
+    {
+      filter: {
+        or: [
+          { from: 'no-reply-aws@amazon.com' },
+          { and: [
+            { from: '*@amazon.com' },
+            { or: [
+              { subject: '*[AWS Account:*' },
+              { subject: '*End of Life*' },
+              { subject: '*EOL*' },
+              { subject: '*deprecation*' },
+              { subject: '*Lex V1*' },
+            ]},
+          ]},
+        ],
+      },
+      actions: {
+        labels: ['aws-notifications'],
+        markImportant: true,
       },
     },
 
@@ -594,6 +641,7 @@ local rules =
     { name: 'auto-archived' },
     { name: 'auto-archived/old-unread' },
     { name: 'automated' },
+    { name: 'aws-notifications' },
     { name: 'bulk' },
     { name: '📅-calendar' },
     { name: 'calendar/accepted' },
