@@ -80,8 +80,8 @@ in
         
         ExecStart = "${pkgs.bash}/bin/bash -c '${pkgs.signal-cli}/bin/signal-cli -a $(cat ${cfg.phoneNumberFile}) daemon --socket /run/signal-cli/socket'";
         
-        # Fix socket permissions after daemon starts
-        ExecStartPost = "${pkgs.coreutils}/bin/chmod 660 /run/signal-cli/socket";
+        # Fix socket permissions after daemon starts (with retry logic)
+        ExecStartPost = "${pkgs.bash}/bin/bash -c 'for i in {1..10}; do if [ -S /run/signal-cli/socket ]; then chmod 660 /run/signal-cli/socket && exit 0; fi; sleep 1; done; exit 1'";
         
         Restart = "always";
         RestartSec = 10;
