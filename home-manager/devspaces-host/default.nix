@@ -9,15 +9,15 @@
     earth = "tmux attach-session -t earth 2>/dev/null || (tmux new-session -d -s earth && tmux set-environment -t earth TMUX_DEVSPACE earth && tmux attach-session -t earth)";
     mars = "tmux attach-session -t mars 2>/dev/null || (tmux new-session -d -s mars && tmux set-environment -t mars TMUX_DEVSPACE mars && tmux attach-session -t mars)";
     jupiter = "tmux attach-session -t jupiter 2>/dev/null || (tmux new-session -d -s jupiter && tmux set-environment -t jupiter TMUX_DEVSPACE jupiter && tmux attach-session -t jupiter)";
-    
+
     # Status command to see what's running locally
     devspace-status = "tmux list-sessions 2>/dev/null || echo \"No active sessions\"";
-    
+
     # Quick aliases for common operations
     ds = "devspace-status";
     dsl = "tmux list-sessions -F \"#{session_name}: #{session_windows} windows, created #{session_created_string}\" 2>/dev/null || echo \"No sessions\"";
   };
-  
+
   # Helper function for devspace information
   programs.zsh.initContent = ''
     devspaces() {

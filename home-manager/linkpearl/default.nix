@@ -11,16 +11,16 @@ in
   services.linkpearl = {
     enable = true;
     secretFile = "${config.xdg.configHome}/linkpearl/secret";
-    
+
     # Server mode: listen on port, no join addresses
     # Client mode: don't listen, join ultraviolet
     listen = if isServer then ":9437" else null;
-    join = if isServer then [] else [ "ultraviolet:9437" ];
-    
+    join = if isServer then [ ] else [ "ultraviolet:9437" ];
+
     nodeId = hostname;
     verbose = false;
     pollInterval = "500ms";
-    
+
     # Use the package from the linkpearl flake
     package = inputs.linkpearl.packages.${pkgs.system}.default;
   };

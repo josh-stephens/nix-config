@@ -18,7 +18,7 @@
       # Integration/automation specific tools
       jq
       httpie
-      websocat  # WebSocket client
+      websocat # WebSocket client
     ];
   };
 

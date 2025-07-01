@@ -6,7 +6,7 @@
     themeFile = "Catppuccin-Mocha";
 
     keybindings = {
-      "kitty_mod"   = "ctrl+shift";
+      "kitty_mod" = "ctrl+shift";
       # Keep default macOS clipboard behavior
       "cmd+c" = "copy_to_clipboard";
       "cmd+v" = "paste_from_clipboard";
@@ -63,7 +63,7 @@
       "share_connections" = true;
       "remote_kitty" = "yes";
       # macOS clipboard integration
-      "copy_on_select" = false;  # Don't auto-copy on select
+      "copy_on_select" = false; # Don't auto-copy on select
       "paste_actions" = "quote-urls-at-prompt";
       "strip_trailing_spaces" = "smart";
       "background_opacity" = "0.9";

@@ -31,10 +31,15 @@
 #   # Disable specific checks for a project
 #   echo "export CLAUDE_HOOKS_GO_ENABLED=false" > .claude-hooks-config.sh
 
-set -e
+# Don't use set -e - we need to control exit codes carefully
+set +e
 
 # Load shared library
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ ! -f "$SCRIPT_DIR/hooks-lib.sh" ]]; then
+    echo "Error: hooks-lib.sh not found in $SCRIPT_DIR" >&2
+    exit 2
+fi
 source "$SCRIPT_DIR/hooks-lib.sh"
 
 # Parse command line options
@@ -45,8 +50,8 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         *)
-            echo "Unknown option: $1"
-            exit 1
+            echo "Unknown option: $1" >&2
+            exit 2
             ;;
     esac
 done
@@ -78,22 +83,16 @@ lint_go() {
         if [[ -n "$has_fmt" && -n "$has_lint" ]]; then
             log_info "Using Makefile targets"
             
-            show_progress "Running make fmt"
             if ! make fmt >/dev/null 2>&1; then
-                clear_progress
                 add_summary "error" "Go formatting failed (make fmt)"
                 return 2
             fi
-            clear_progress
             add_summary "success" "Go code formatted"
             
-            show_progress "Running make lint"
             if ! make lint 2>&1; then
-                clear_progress
                 add_summary "error" "Go linting failed (make lint)"
                 return 2
             fi
-            clear_progress
             add_summary "success" "Go linting passed"
             return 0
         fi
@@ -103,9 +102,7 @@ lint_go() {
     log_info "Using direct Go tools"
     
     # Format check
-    show_progress "Checking Go formatting"
     local unformatted_files=$(gofmt -l . 2>/dev/null | grep -v vendor/ || true)
-    clear_progress
     
     if [[ -n "$unformatted_files" ]]; then
         log_warn "Formatting Go files..."
@@ -117,22 +114,16 @@ lint_go() {
     
     # Linting
     if command_exists golangci-lint; then
-        show_progress "Running golangci-lint"
         if ! golangci-lint run --timeout=2m 2>&1; then
-            clear_progress
             add_summary "error" "golangci-lint found issues"
             return 2
         fi
-        clear_progress
         add_summary "success" "golangci-lint passed"
     elif command_exists go; then
-        show_progress "Running go vet"
         if ! go vet ./... 2>&1; then
-            clear_progress
             add_summary "error" "go vet found issues"
             return 2
         fi
-        clear_progress
         add_summary "success" "go vet passed"
     else
         log_warn "No Go linting tools available"
@@ -152,34 +143,25 @@ lint_python() {
     
     # Black formatting
     if command_exists black; then
-        show_progress "Running black formatter"
         if black . --check --quiet 2>/dev/null; then
-            clear_progress
             add_summary "success" "Python formatting correct"
         else
             black . --quiet 2>/dev/null
-            clear_progress
             add_summary "warning" "Python files were reformatted"
         fi
     fi
     
     # Linting
     if command_exists ruff; then
-        show_progress "Running ruff"
         if ! ruff check --fix . 2>&1; then
-            clear_progress
             add_summary "warning" "Ruff found and fixed issues"
         else
-            clear_progress
             add_summary "success" "Ruff check passed"
         fi
     elif command_exists flake8; then
-        show_progress "Running flake8"
         if flake8 . 2>&1; then
-            clear_progress
             add_summary "success" "Flake8 check passed"
         else
-            clear_progress
             add_summary "warning" "Flake8 found issues"
         fi
     fi
@@ -199,12 +181,9 @@ lint_javascript() {
     # Check for ESLint
     if [[ -f "package.json" ]] && grep -q "eslint" package.json 2>/dev/null; then
         if command_exists npm; then
-            show_progress "Running ESLint"
             if npm run lint --if-present 2>&1; then
-                clear_progress
                 add_summary "success" "ESLint check passed"
             else
-                clear_progress
                 add_summary "warning" "ESLint found issues"
             fi
         fi
@@ -213,23 +192,17 @@ lint_javascript() {
     # Prettier
     if [[ -f ".prettierrc" ]] || [[ -f "prettier.config.js" ]] || [[ -f ".prettierrc.json" ]]; then
         if command_exists prettier; then
-            show_progress "Running Prettier"
             if prettier --check . 2>/dev/null; then
-                clear_progress
                 add_summary "success" "Prettier formatting correct"
             else
                 prettier --write . 2>/dev/null
-                clear_progress
                 add_summary "warning" "Files were reformatted with Prettier"
             fi
         elif command_exists npx; then
-            show_progress "Running Prettier via npx"
             if npx prettier --check . 2>/dev/null; then
-                clear_progress
                 add_summary "success" "Prettier formatting correct"
             else
                 npx prettier --write . 2>/dev/null
-                clear_progress
                 add_summary "warning" "Files were reformatted with Prettier"
             fi
         fi
@@ -248,22 +221,16 @@ lint_rust() {
     log_info "Running Rust linters..."
     
     if command_exists cargo; then
-        show_progress "Running cargo fmt"
         if cargo fmt -- --check 2>/dev/null; then
-            clear_progress
             add_summary "success" "Rust formatting correct"
         else
             cargo fmt 2>/dev/null
-            clear_progress
             add_summary "warning" "Rust files were reformatted"
         fi
         
-        show_progress "Running cargo clippy"
         if cargo clippy --quiet -- -D warnings 2>&1; then
-            clear_progress
             add_summary "success" "Clippy check passed"
         else
-            clear_progress
             add_summary "warning" "Clippy found issues"
         fi
     else
@@ -292,35 +259,26 @@ lint_nix() {
     
     # Check formatting with nixpkgs-fmt or alejandra
     if command_exists nixpkgs-fmt; then
-        show_progress "Running nixpkgs-fmt"
         if echo "$nix_files" | xargs nixpkgs-fmt --check 2>/dev/null; then
-            clear_progress
             add_summary "success" "Nix formatting correct"
         else
             echo "$nix_files" | xargs nixpkgs-fmt 2>/dev/null
-            clear_progress
             add_summary "warning" "Nix files were reformatted"
         fi
     elif command_exists alejandra; then
-        show_progress "Running alejandra"
         if echo "$nix_files" | xargs alejandra --check 2>/dev/null; then
-            clear_progress
             add_summary "success" "Nix formatting correct"
         else
             echo "$nix_files" | xargs alejandra --quiet 2>/dev/null
-            clear_progress
             add_summary "warning" "Nix files were reformatted"
         fi
     fi
     
     # Static analysis with statix
     if command_exists statix; then
-        show_progress "Running statix"
         if statix check 2>&1; then
-            clear_progress
             add_summary "success" "Statix check passed"
         else
-            clear_progress
             add_summary "warning" "Statix found issues"
         fi
     fi

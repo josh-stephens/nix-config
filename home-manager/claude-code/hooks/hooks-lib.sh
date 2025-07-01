@@ -4,12 +4,11 @@
 # This library provides common functionality used across all Claude hooks:
 # - Standardized color output
 # - Logging and debugging
-# - Performance optimizations via caching
 # - Error handling utilities
 # - Project type detection
 
-# Enable strict error handling
-set -euo pipefail
+# Don't use strict mode here - let individual scripts decide
+# set -euo pipefail
 
 # Color definitions
 export RED='\033[0;31m'
@@ -153,10 +152,20 @@ load_config() {
     
     # Source config.sh for compatibility
     local script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-    [[ -f "$script_dir/config.sh" ]] && source "$script_dir/config.sh"
+    if [[ -f "$script_dir/config.sh" ]]; then
+        source "$script_dir/config.sh" || {
+            log_error "Failed to load config.sh"
+            exit 2
+        }
+    fi
     
     # Project-specific overrides
-    [[ -f ".claude-hooks-config.sh" ]] && source ".claude-hooks-config.sh"
+    if [[ -f ".claude-hooks-config.sh" ]]; then
+        source ".claude-hooks-config.sh" || {
+            log_error "Failed to load .claude-hooks-config.sh"
+            exit 2
+        }
+    fi
     
     # Quick exit if hooks are disabled
     if [[ "$CLAUDE_HOOKS_ENABLED" != "true" ]]; then
@@ -165,19 +174,6 @@ load_config() {
     fi
 }
 
-# Progress indicator for long operations
-show_progress() {
-    local message="$1"
-    if [[ -t 2 ]]; then  # Only if stderr is a terminal
-        printf "\r${BLUE}⏳${NC} %s..." "$message" >&2
-    fi
-}
-
-clear_progress() {
-    if [[ -t 2 ]]; then
-        printf "\r\033[K" >&2  # Clear line
-    fi
-}
 
 # Summary tracking
 declare -a CLAUDE_HOOKS_SUMMARY=()
@@ -222,18 +218,10 @@ print_summary() {
     fi
 }
 
-# Cleanup function
-cleanup() {
-    clear_progress
-}
-
-# Set up trap for cleanup
-trap cleanup EXIT
-
 # Export functions for use in other scripts
 export -f log_debug log_info log_warn log_error log_success
 export -f time_start time_end
 export -f detect_project_type command_exists
 export -f get_modified_files should_skip_file
-export -f load_config show_progress clear_progress
+export -f load_config
 export -f add_summary print_summary

@@ -43,7 +43,7 @@
       eternal-terminal
       gnumake
       yq
-      
+
       # LSP servers
       lua-language-server
       gopls
@@ -51,7 +51,7 @@
       nil # Nix LSP
       nodePackages.typescript-language-server
       nodePackages.vscode-langservers-extracted # HTML, CSS, JSON, ESLint
-      
+
       # Formatters
       stylua
       nixpkgs-fmt

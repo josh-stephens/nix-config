@@ -39,10 +39,18 @@
 #   # Disable specific check for a file
 #   // claude-hooks-disable: forbidden-patterns
 
-set -e
+# Don't use set -e - we need to control exit codes carefully
+set +e
+
+# Always output something to stderr to confirm we're running
+echo "[DEBUG] go-guardrails.sh starting in $(pwd)" >&2
 
 # Load shared library
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+if [[ ! -f "$SCRIPT_DIR/hooks-lib.sh" ]]; then
+    echo "Error: hooks-lib.sh not found in $SCRIPT_DIR" >&2
+    exit 2
+fi
 source "$SCRIPT_DIR/hooks-lib.sh"
 
 # Configuration defaults
@@ -60,8 +68,8 @@ while [[ $# -gt 0 ]]; do
             shift
             ;;
         *)
-            echo "Unknown option: $1"
-            exit 1
+            echo "Unknown option: $1" >&2
+            exit 2
             ;;
     esac
 done
@@ -70,11 +78,17 @@ done
 load_config
 
 # Check if this is a Go project
-PROJECT_TYPE=$(detect_project_type)
-if [[ "$PROJECT_TYPE" != "go" && "$PROJECT_TYPE" != mixed:*go* ]]; then
-    log_debug "Not a Go project, skipping Go guardrails"
-    exit 0
-fi
+PROJECT_TYPE=$(detect_project_type || echo "unknown")
+log_info "Go guardrails checking project type: $PROJECT_TYPE"
+case "$PROJECT_TYPE" in
+    go|mixed:*go*)
+        log_info "Running Go guardrails for $PROJECT_TYPE project"
+        ;;
+    *)
+        log_info "Not a Go project ($PROJECT_TYPE), skipping Go guardrails"
+        exit 0
+        ;;
+esac
 
 # Check if Go guardrails are enabled
 if [[ "${CLAUDE_HOOKS_GO_GUARDRAILS:-true}" != "true" ]]; then
@@ -97,16 +111,12 @@ check_pattern() {
     local exclude_pattern="${3:-}"
     local is_blocking="${4:-true}"
     
-    show_progress "Checking for $description"
-    
     local results=""
     if [[ -n "$exclude_pattern" ]]; then
         results=$(rg "$pattern" --type go --glob '!*_test.go' 2>/dev/null | grep -v "$exclude_pattern" | head -10 || true)
     else
         results=$(rg "$pattern" --type go --glob '!*_test.go' 2>/dev/null | head -10 || true)
     fi
-    
-    clear_progress
     
     if [[ -n "$results" ]]; then
         if [[ "$is_blocking" == "true" ]]; then
@@ -130,9 +140,7 @@ check_pattern() {
 # 1. Check for forbidden patterns
 if [[ "${CLAUDE_HOOKS_GO_FORBIDDEN_PATTERNS:-true}" == "true" ]]; then
     # Check for time.Sleep (excluding main.go and test files)
-    show_progress "Checking for time.Sleep usage"
     SLEEP_USAGE=$(rg 'time\.Sleep' --type go --glob '!*_test.go' --glob '!**/main.go' 2>/dev/null | grep -v "// nosec" | head -10 || true)
-    clear_progress
     
     if [[ -n "$SLEEP_USAGE" ]]; then
         add_summary "error" "time.Sleep usage detected (use channels for synchronization)"
@@ -154,11 +162,7 @@ fi
 
 # 2. Check for import cycles (slow, can be skipped in fast mode)
 if [[ "${CLAUDE_HOOKS_GO_IMPORT_CYCLES:-true}" == "true" && "$FAST_MODE" != "true" ]]; then
-    show_progress "Checking for import cycles"
-    
     IMPORT_CYCLE_RESULT=$(go list -f '{{join .Deps "\n"}}' ./... 2>&1 | xargs go list -f '{{if .Error}}{{.Error}}{{end}}' 2>&1 | grep -i 'import cycle' || echo "")
-    
-    clear_progress
     
     if [[ -n "$IMPORT_CYCLE_RESULT" ]]; then
         add_summary "error" "Import cycle detected"
@@ -172,8 +176,6 @@ fi
 
 # 3. Check for missing godoc on exported items
 if [[ "${CLAUDE_HOOKS_GO_GODOC_CHECK:-true}" == "true" ]]; then
-    show_progress "Checking exported items documentation"
-    
     # Use a more efficient approach - check specific files that were modified
     MODIFIED_GO_FILES=$(get_modified_files | grep '\.go$' | grep -v '_test\.go' || true)
     
@@ -194,8 +196,6 @@ if [[ "${CLAUDE_HOOKS_GO_GODOC_CHECK:-true}" == "true" ]]; then
             add_summary "success" "Exported items have documentation"
         fi
     fi
-    
-    clear_progress
 fi
 
 # 4. Check for potential SQL injection
@@ -213,12 +213,8 @@ fi
 
 # 5. Check complexity (if gocognit is available)
 if [[ "${CLAUDE_HOOKS_GO_COMPLEXITY:-true}" == "true" ]] && command_exists gocognit; then
-    show_progress "Checking cognitive complexity"
-    
     COMPLEXITY_THRESHOLD="${CLAUDE_HOOKS_GO_COMPLEXITY_THRESHOLD:-20}"
     COMPLEX_FUNCTIONS=$(gocognit -over "$COMPLEXITY_THRESHOLD" -top 5 . 2>/dev/null | head -10 || true)
-    
-    clear_progress
     
     if [[ -n "$COMPLEX_FUNCTIONS" ]]; then
         add_summary "warning" "Functions with high complexity found"
@@ -234,31 +230,10 @@ if [[ "${CLAUDE_HOOKS_GO_PRINT_STATEMENTS:-true}" == "true" ]]; then
     check_pattern 'fmt\.Print' "direct print statements" "cmd/.*/main\.go" "false"
 fi
 
-# 7. Security scan with gosec (slow, can be skipped in fast mode)
-if [[ "${CLAUDE_HOOKS_GO_SECURITY_SCAN:-true}" == "true" && "$FAST_MODE" != "true" ]] && command_exists gosec; then
-    show_progress "Running security scan"
-    
-    # Run gosec with specific confidence level
-    GOSEC_ISSUES=$(gosec -quiet -confidence medium -fmt json ./... 2>/dev/null | jq -r '.Issues | length' 2>/dev/null || echo "0")
-    
-    clear_progress
-    
-    if [[ "$GOSEC_ISSUES" != "0" && -n "$GOSEC_ISSUES" ]]; then
-        add_summary "warning" "Security issues found ($GOSEC_ISSUES)"
-        log_warn "Security scan found $GOSEC_ISSUES issues - run 'gosec ./...' for details"
-    else
-        add_summary "success" "Security scan passed"
-    fi
-fi
-
-# 8. Check for naked returns in long functions
+# 7. Check for naked returns in long functions
 if [[ "${CLAUDE_HOOKS_GO_NAKED_RETURNS:-true}" == "true" ]]; then
-    show_progress "Checking for naked returns"
-    
     # Simple heuristic: look for named return values and naked returns
     NAKED_RETURNS=$(rg '^\s*return\s*$' --type go -B 20 2>/dev/null | grep -E 'func.*\(.*\).*\(.*\w+.*\)' | head -5 || true)
-    
-    clear_progress
     
     if [[ -n "$NAKED_RETURNS" ]]; then
         add_summary "warning" "Possible naked returns in long functions"

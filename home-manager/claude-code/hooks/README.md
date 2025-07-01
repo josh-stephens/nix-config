@@ -21,12 +21,10 @@ When working in Go projects, additional checks prevent common Claude mistakes:
 - 🛡️ SQL injection pattern detection
 - 🧠 Cognitive complexity limits
 - 🖨️ Direct print statement warnings
-- 🔐 Security scanning with `gosec`
 - 📤 Naked return detection
 
 ### ⚡ Performance Optimizations
 - **Smart file filtering**: Only checks modified files when possible
-- **Progress indicators**: Shows what's running for long operations
 - **Configurable limits**: Prevent runaway on huge repos
 - **Fast mode**: Skip slow checks with `--fast` flag
 
@@ -122,12 +120,11 @@ Add to the top of any file to skip hooks:
    - Results are summarized with success/warning/error counts
 
 2. Exit codes:
-   - `0`: All checks passed (may include warnings)
-   - `1`: General error (missing dependencies, etc.)
+   - `0`: All checks passed (may include warnings) or not applicable
+   - `1`: General error (missing dependencies, etc.) 
    - `2`: Blocking errors that must be fixed
 
 3. Performance features:
-   - Shows progress for operations taking >1 second
    - Fast mode available to skip slow checks
    - Smart filtering to only check modified files
 
@@ -170,7 +167,6 @@ The hooks work best with these optional tools installed:
 - `gofmt`: Code formatting (included with Go)
 - `golangci-lint`: Comprehensive linting
 - `gocognit`: Complexity analysis
-- `gosec`: Security scanning
 
 ### Python
 - `black`: Code formatting

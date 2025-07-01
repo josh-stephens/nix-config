@@ -10,8 +10,8 @@ let
   ]);
 in
 {
-  home.packages = [ 
-    pkgs.gmailctl 
+  home.packages = [
+    pkgs.gmailctl
     pythonWithPackages
   ];
 
@@ -43,7 +43,7 @@ in
   home.sessionPath = [ "$HOME/.local/bin" ];
 
   # Automatically sync configs on activation
-  home.activation.gmailctlSync = lib.hm.dag.entryAfter ["writeBoundary"] ''
+  home.activation.gmailctlSync = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     # Copy personal config
     if [ -d "$HOME/.gmailctl-personal" ]; then
       $DRY_RUN_CMD cp ${./configs/personal.jsonnet} $HOME/.gmailctl-personal/config.jsonnet

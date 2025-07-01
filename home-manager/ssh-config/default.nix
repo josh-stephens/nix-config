@@ -5,7 +5,7 @@
     enable = true;
     forwardAgent = true;
     serverAliveInterval = 60;
-    
+
     extraConfig = ''
       # Enable Kitty terminal integration
       # Let the terminal type be passed through properly
@@ -36,7 +36,7 @@
       # Use IPQoS for interactive sessions
       IPQoS lowdelay throughput
     '';
-    
+
     matchBlocks = {
       "ultraviolet" = {
         hostname = "ultraviolet";
@@ -44,14 +44,14 @@
         forwardX11 = true;
         forwardX11Trusted = true;
       };
-      
+
       "bluedesert" = {
         hostname = "bluedesert";
         user = "joshsymonds";
         forwardX11 = true;
         forwardX11Trusted = true;
       };
-      
+
       "echelon" = {
         hostname = "echelon";
         user = "joshsymonds";
