@@ -30,24 +30,6 @@
 # export CLAUDE_HOOKS_RUST_ENABLED=false
 # export CLAUDE_HOOKS_NIX_ENABLED=false
 
-# ============================================================================
-# GO-SPECIFIC SETTINGS
-# ============================================================================
-
-# Disable specific Go checks
-# export CLAUDE_HOOKS_GO_FORBIDDEN_PATTERNS=false  # Allow time.Sleep, panic(), interface{}
-# export CLAUDE_HOOKS_GO_IMPORT_CYCLES=false      # Skip slow import cycle check
-# export CLAUDE_HOOKS_GO_GODOC_CHECK=false        # Skip godoc coverage check
-# export CLAUDE_HOOKS_GO_SQL_INJECTION=false      # Skip SQL injection patterns
-# export CLAUDE_HOOKS_GO_COMPLEXITY=false         # Skip complexity analysis
-# export CLAUDE_HOOKS_GO_PRINT_STATEMENTS=false   # Allow fmt.Print statements
-# export CLAUDE_HOOKS_GO_NAKED_RETURNS=false      # Skip naked return check
-
-# Adjust Go complexity threshold (default is 20)
-# export CLAUDE_HOOKS_GO_COMPLEXITY_THRESHOLD=30
-
-# Enable TODO/FIXME checking (off by default)
-# export CLAUDE_HOOKS_GO_TODO_CHECK=true
 
 # ============================================================================
 # NOTIFICATION SETTINGS

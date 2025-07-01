@@ -208,17 +208,6 @@ load_config() {
     export CLAUDE_HOOKS_RUST_ENABLED="${CLAUDE_HOOKS_RUST_ENABLED:-true}"
     export CLAUDE_HOOKS_NIX_ENABLED="${CLAUDE_HOOKS_NIX_ENABLED:-true}"
     
-    # Go-specific settings
-    export CLAUDE_HOOKS_GO_FORBIDDEN_PATTERNS="${CLAUDE_HOOKS_GO_FORBIDDEN_PATTERNS:-true}"
-    export CLAUDE_HOOKS_GO_IMPORT_CYCLES="${CLAUDE_HOOKS_GO_IMPORT_CYCLES:-true}"
-    export CLAUDE_HOOKS_GO_GODOC_CHECK="${CLAUDE_HOOKS_GO_GODOC_CHECK:-true}"
-    export CLAUDE_HOOKS_GO_SQL_INJECTION="${CLAUDE_HOOKS_GO_SQL_INJECTION:-true}"
-    export CLAUDE_HOOKS_GO_COMPLEXITY="${CLAUDE_HOOKS_GO_COMPLEXITY:-true}"
-    export CLAUDE_HOOKS_GO_PRINT_STATEMENTS="${CLAUDE_HOOKS_GO_PRINT_STATEMENTS:-true}"
-    export CLAUDE_HOOKS_GO_NAKED_RETURNS="${CLAUDE_HOOKS_GO_NAKED_RETURNS:-true}"
-    export CLAUDE_HOOKS_GO_TODO_CHECK="${CLAUDE_HOOKS_GO_TODO_CHECK:-false}"
-    export CLAUDE_HOOKS_GO_COMPLEXITY_THRESHOLD="${CLAUDE_HOOKS_GO_COMPLEXITY_THRESHOLD:-20}"
-    
     # Project-specific overrides
     if [[ -f ".claude-hooks-config.sh" ]]; then
         source ".claude-hooks-config.sh" || {
@@ -235,35 +224,8 @@ load_config() {
 }
 
 # ============================================================================
-# GO LINTING AND GUARDRAILS
+# GO LINTING
 # ============================================================================
-
-# Helper function to check a specific pattern in Go files
-check_go_pattern() {
-    local pattern="$1"
-    local description="$2"
-    local exclude_pattern="${3:-}"
-    
-    local results=""
-    if [[ -n "$exclude_pattern" ]]; then
-        results=$(rg "$pattern" --type go --glob '!*_test.go' 2>/dev/null | grep -v "$exclude_pattern" | head -10 || true)
-    else
-        results=$(rg "$pattern" --type go --glob '!*_test.go' 2>/dev/null | head -10 || true)
-    fi
-    
-    if [[ -n "$results" ]]; then
-        add_summary "error" "$description detected - MUST BE FIXED"
-        log_error "❌ FORBIDDEN: $description detected - YOU MUST FIX THIS:"
-        echo "$results" | while IFS= read -r line; do
-            echo "  $line" >&2
-        done
-        echo -e "${RED}  → Fix ALL occurrences before proceeding${NC}" >&2
-        return 2
-    else
-        add_summary "success" "No $description found"
-        return 0
-    fi
-}
 
 lint_go() {
     if [[ "${CLAUDE_HOOKS_GO_ENABLED:-true}" != "true" ]]; then
@@ -358,126 +320,6 @@ lint_go() {
             log_error "No Go linting tools available - install golangci-lint or go"
         fi
     fi
-    
-    # Run advanced Go guardrails checks
-    log_info "Running Go guardrails..."
-    
-    # Track blocking issues for guardrails
-    local guardrails_blocking=0
-    
-    # 1. Check for forbidden patterns
-    if [[ "${CLAUDE_HOOKS_GO_FORBIDDEN_PATTERNS:-true}" == "true" ]]; then
-        # Check for time.Sleep (excluding main.go and test files)
-        SLEEP_USAGE=$(rg 'time\.Sleep' --type go --glob '!*_test.go' --glob '!**/main.go' 2>/dev/null | grep -v "// nosec" | head -10 || true)
-        
-        if [[ -n "$SLEEP_USAGE" ]]; then
-            add_summary "error" "time.Sleep usage detected - MUST use channels for synchronization"
-            log_error "❌ FORBIDDEN PATTERN: time.Sleep found - YOU MUST FIX THIS:"
-            echo "$SLEEP_USAGE" | while IFS= read -r line; do
-                echo "  $line" >&2
-            done
-            echo -e "${RED}  → Replace ALL time.Sleep with proper channel synchronization${NC}" >&2
-            echo -e "${RED}  → This violates Go-Specific Rules in CLAUDE.md${NC}" >&2
-            ((guardrails_blocking++))
-        else
-            add_summary "success" "No time.Sleep usage found"
-        fi
-        
-        # Check for panic calls (excluding panic handlers)
-        check_go_pattern 'panic\(' "panic() calls" "panic.*\.go|// nosec" && ((guardrails_blocking++)) || true
-        
-        # Check for interface{} usage
-        check_go_pattern '\binterface\{\}' "interface{} usage" "// nosec|comment" && ((guardrails_blocking++)) || true
-    fi
-    
-    # 2. Check for import cycles (slow, can be skipped in fast mode)
-    if [[ "${CLAUDE_HOOKS_GO_IMPORT_CYCLES:-true}" == "true" && "$FAST_MODE" != "true" ]]; then
-        IMPORT_CYCLE_RESULT=$(go list -f '{{join .Deps "\n"}}' ./... 2>&1 | xargs go list -f '{{if .Error}}{{.Error}}{{end}}' 2>&1 | grep -i 'import cycle' || echo "")
-        
-        if [[ -n "$IMPORT_CYCLE_RESULT" ]]; then
-            add_summary "error" "Import cycle detected"
-            log_error "Import cycle detected:"
-            echo "$IMPORT_CYCLE_RESULT" >&2
-            ((guardrails_blocking++))
-        else
-            add_summary "success" "No import cycles found"
-        fi
-    fi
-    
-    # 3. Check for missing godoc on exported items
-    if [[ "${CLAUDE_HOOKS_GO_GODOC_CHECK:-true}" == "true" ]]; then
-        # Use a more efficient approach - check specific files that were modified
-        MODIFIED_GO_FILES=$(get_modified_files | grep '\.go$' | grep -v '_test\.go' || true)
-        
-        if [[ -n "$MODIFIED_GO_FILES" ]]; then
-            MISSING_DOCS=0
-            while IFS= read -r file; do
-                if [[ -f "$file" ]] && ! should_skip_file "$file"; then
-                    # Check for exported functions/types without docs
-                    if grep -E '^(func|type|const|var) [A-Z]' "$file" | grep -v '^//' >/dev/null 2>&1; then
-                        MISSING_DOCS=$((MISSING_DOCS + 1))
-                    fi
-                fi
-            done <<< "$MODIFIED_GO_FILES"
-            
-            if [[ $MISSING_DOCS -gt 0 ]]; then
-                add_summary "error" "Some exported items missing documentation ($MISSING_DOCS files)"
-            else
-                add_summary "success" "Exported items have documentation"
-            fi
-        fi
-    fi
-    
-    # 4. Check for potential SQL injection
-    if [[ "${CLAUDE_HOOKS_GO_SQL_INJECTION:-true}" == "true" ]]; then
-        # First check if database/sql is even imported
-        if rg -q 'database/sql' --type go 2>/dev/null; then
-            check_go_pattern 'fmt\.Sprintf.*(?:SELECT|INSERT|UPDATE|DELETE|WHERE)' "SQL injection patterns" && ((guardrails_blocking++)) || true
-            
-            # Also check for string concatenation with SQL
-            check_go_pattern '\+.*(?:SELECT|INSERT|UPDATE|DELETE|WHERE)' "SQL string concatenation" && ((guardrails_blocking++)) || true
-        else
-            log_debug "No database/sql usage found, skipping SQL injection checks"
-        fi
-    fi
-    
-    # 5. Check complexity (if gocognit is available)
-    if [[ "${CLAUDE_HOOKS_GO_COMPLEXITY:-true}" == "true" ]] && command_exists gocognit; then
-        COMPLEXITY_THRESHOLD="${CLAUDE_HOOKS_GO_COMPLEXITY_THRESHOLD:-20}"
-        COMPLEX_FUNCTIONS=$(gocognit -over "$COMPLEXITY_THRESHOLD" -top 5 . 2>/dev/null | head -10 || true)
-        
-        if [[ -n "$COMPLEX_FUNCTIONS" ]]; then
-            add_summary "error" "Functions with high complexity found"
-            log_error "Functions exceeding complexity threshold ($COMPLEXITY_THRESHOLD):"
-            echo "$COMPLEX_FUNCTIONS" >&2
-        else
-            add_summary "success" "All functions within complexity limits"
-        fi
-    fi
-    
-    # 6. Check for direct fmt.Print usage
-    if [[ "${CLAUDE_HOOKS_GO_PRINT_STATEMENTS:-true}" == "true" ]]; then
-        check_go_pattern 'fmt\.Print' "direct print statements" "cmd/.*/main\.go" && ((guardrails_blocking++)) || true
-    fi
-    
-    # 7. Check for naked returns in long functions
-    if [[ "${CLAUDE_HOOKS_GO_NAKED_RETURNS:-true}" == "true" ]]; then
-        # Simple heuristic: look for named return values and naked returns
-        NAKED_RETURNS=$(rg '^\s*return\s*$' --type go -B 20 2>/dev/null | grep -E 'func.*\(.*\).*\(.*\w+.*\)' | head -5 || true)
-        
-        if [[ -n "$NAKED_RETURNS" ]]; then
-            add_summary "error" "Possible naked returns in long functions"
-            log_error "Potential naked returns detected"
-        else
-            add_summary "success" "No problematic naked returns found"
-        fi
-    fi
-    
-    # 8. Check for TODO/FIXME comments
-    if [[ "${CLAUDE_HOOKS_GO_TODO_CHECK:-false}" == "true" ]]; then
-        check_go_pattern 'TODO|FIXME|XXX|HACK' "TODO/FIXME comments" && ((guardrails_blocking++)) || true
-    fi
-    
 }
 
 # ============================================================================

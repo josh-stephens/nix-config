@@ -6,22 +6,22 @@ This directory contains intelligent hooks that run after Claude Code modifies fi
 
 ### 🎯 Smart Language Detection
 The hook automatically detects your project type and runs appropriate tools:
-- **Go**: `gofmt`, `golangci-lint`, plus advanced checks (forbidden patterns, import cycles, complexity analysis)
+- **Go**: `gofmt`, `golangci-lint`
 - **Python**: `black`, `ruff`/`flake8`
 - **JavaScript/TypeScript**: `eslint`, `prettier`
 - **Rust**: `cargo fmt`, `cargo clippy`
 - **Nix**: `nixpkgs-fmt`/`alejandra`, `statix`
 - **Mixed projects**: Runs appropriate tools for each detected language
 
-### 🛡️ Go-Specific Advanced Checks
-When working in Go projects, additional guardrails prevent common mistakes:
-- ❌ Forbidden patterns (`time.Sleep`, `panic()`, `interface{}`)
-- 🔄 Import cycle detection
-- 📝 Godoc coverage for exported items
-- 🛡️ SQL injection pattern detection
-- 🧠 Cognitive complexity limits
-- 🖨️ Direct print statement detection
-- 📤 Naked return detection
+### 🛡️ Project-Specific Enforcement
+For Go projects, ensure your `.golangci.yml` includes linters for:
+- Forbidden patterns (forbidigo: `time.Sleep`, `panic()`, `interface{}`)
+- Complexity limits (gocognit, gocyclo)
+- Naked returns (nakedret)
+- TODO/FIXME comments (godox)
+- And many more quality checks
+
+The hook runs `make lint` which enforces all your project's standards.
 
 ### ⚡ Performance Optimizations
 - **Smart file filtering**: Only checks modified files when possible
