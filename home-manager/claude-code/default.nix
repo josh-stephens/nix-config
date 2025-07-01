@@ -28,23 +28,8 @@
     executable = true;
   };
   
-  home.file.".claude/hooks/go-guardrails.sh" = {
-    source = ./hooks/go-guardrails.sh;
-    executable = true;
-  };
-  
   home.file.".claude/hooks/ntfy-notifier.sh" = {
     source = ./hooks/ntfy-notifier.sh;
-    executable = true;
-  };
-  
-  home.file.".claude/hooks/config.sh" = {
-    source = ./hooks/config.sh;
-    executable = true;
-  };
-  
-  home.file.".claude/hooks/hooks-lib.sh" = {
-    source = ./hooks/hooks-lib.sh;
     executable = true;
   };
   

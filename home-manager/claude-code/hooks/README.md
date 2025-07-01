@@ -5,16 +5,16 @@ This directory contains intelligent hooks that run after Claude Code modifies fi
 ## 🚀 Features
 
 ### 🎯 Smart Language Detection
-The hooks automatically detect your project type and run appropriate tools:
-- **Go**: `gofmt`, `golangci-lint`, security checks, complexity analysis
+The hook automatically detects your project type and runs appropriate tools:
+- **Go**: `gofmt`, `golangci-lint`, plus advanced checks (forbidden patterns, import cycles, complexity analysis)
 - **Python**: `black`, `ruff`/`flake8`
 - **JavaScript/TypeScript**: `eslint`, `prettier`
 - **Rust**: `cargo fmt`, `cargo clippy`
 - **Nix**: `nixpkgs-fmt`/`alejandra`, `statix`
 - **Mixed projects**: Runs appropriate tools for each detected language
 
-### 🛡️ Go-Specific Guardrails
-When working in Go projects, additional checks prevent common Claude mistakes:
+### 🛡️ Go-Specific Advanced Checks
+When working in Go projects, additional guardrails prevent common mistakes:
 - ❌ Forbidden patterns (`time.Sleep`, `panic()`, `interface{}`)
 - 🔄 Import cycle detection
 - 📝 Godoc coverage for exported items
@@ -40,7 +40,7 @@ These hooks are automatically installed by Nix home-manager to `~/.claude/hooks/
 ## ⚙️ Configuration
 
 ### Global Settings
-Default configuration is in `config.sh`. Override via environment variables:
+Override via environment variables or project-specific `.claude-hooks-config.sh`:
 
 ```bash
 # Disable all hooks
@@ -50,7 +50,7 @@ export CLAUDE_HOOKS_ENABLED=false
 export CLAUDE_HOOKS_DEBUG=1
 
 # Skip slow checks
-./go-guardrails.sh --fast
+./smart-lint.sh --fast
 ```
 
 ### Per-Project Settings
@@ -91,32 +91,21 @@ Add to the top of any file to skip hooks:
 
 ## 🔧 Command Line Usage
 
-### Smart Lint
 ```bash
 # Normal usage (called automatically by Claude)
 ./smart-lint.sh
 
 # Debug mode
 ./smart-lint.sh --debug
-```
-
-### Go Guardrails
-```bash
-# Normal usage
-./go-guardrails.sh
 
 # Fast mode (skip slow checks)
-./go-guardrails.sh --fast
-
-# Debug mode
-./go-guardrails.sh --debug
+./smart-lint.sh --fast
 ```
 
 ## 📊 How It Works
 
-1. After any `Write`, `Edit`, or `MultiEdit` operation:
-   - `smart-lint.sh` runs first, detecting project type and running formatters/linters
-   - `go-guardrails.sh` runs second (only in Go projects) for additional checks
+1. After any `Write`, `Edit`, `MultiEdit`, or `Update` operation:
+   - `smart-lint.sh` runs, detecting project type and running appropriate checks
    - Results are summarized with success/warning/error counts
 
 2. Exit codes:
@@ -137,7 +126,6 @@ export CLAUDE_HOOKS_FAIL_FAST=true
 
 # Skip expensive checks
 export CLAUDE_HOOKS_GO_IMPORT_CYCLES=false
-export CLAUDE_HOOKS_GO_SECURITY_SCAN=false
 
 # Reduce file limit for large repos
 export CLAUDE_HOOKS_MAX_FILES=500
@@ -191,30 +179,16 @@ The hooks gracefully degrade if tools aren't installed.
 
 ## 🎨 Customization
 
-### Adding New Checks
-1. Edit the appropriate script or create a new one
-2. Use the shared library functions from `hooks-lib.sh`
-3. Follow the patterns:
-   ```bash
-   show_progress "Running my check"
-   # ... do the check ...
-   clear_progress
-   add_summary "success" "My check passed"
-   ```
-
 ### Custom Project Hooks
 Add to `.claude-hooks-config.sh`:
 ```bash
-# Run after standard hooks
-custom_post_hook() {
-    echo "Running project-specific checks..."
-    # Your custom logic here
-}
+# Override specific settings
+export CLAUDE_HOOKS_GO_COMPLEXITY_THRESHOLD=30
+export CLAUDE_HOOKS_PYTHON_ENABLED=false
 ```
 
 ## 📈 Future Improvements
 - JSON/YAML configuration instead of shell variables
 - Language server protocol integration
 - Incremental checking (only modified lines)
-- Web UI for configuration
 - More language support (C++, Java, etc.)

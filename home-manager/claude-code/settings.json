@@ -8,10 +8,6 @@
           {
             "type": "command",
             "command": "~/.claude/hooks/smart-lint.sh"
-          },
-          {
-            "type": "command",
-            "command": "~/.claude/hooks/go-guardrails.sh"
           }
         ]
       }

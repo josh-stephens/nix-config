@@ -4,7 +4,7 @@
 # Copy this file to your project root as .claude-hooks-config.sh and uncomment
 # the settings you want to override.
 #
-# This file is sourced after the global config, so it can override any setting.
+# This file is sourced by smart-lint.sh, so it can override any setting.
 
 # ============================================================================
 # COMMON OVERRIDES
@@ -23,29 +23,38 @@
 # LANGUAGE-SPECIFIC OVERRIDES
 # ============================================================================
 
-# Disable Go checks (but keep other languages)
+# Disable checks for specific languages
 # export CLAUDE_HOOKS_GO_ENABLED=false
+# export CLAUDE_HOOKS_PYTHON_ENABLED=false
+# export CLAUDE_HOOKS_JS_ENABLED=false
+# export CLAUDE_HOOKS_RUST_ENABLED=false
+# export CLAUDE_HOOKS_NIX_ENABLED=false
 
-# Disable specific Go guardrails
-# export CLAUDE_HOOKS_GO_FORBIDDEN_PATTERNS=false  # Allow time.Sleep, panic(), etc.
+# ============================================================================
+# GO-SPECIFIC SETTINGS
+# ============================================================================
+
+# Disable specific Go checks
+# export CLAUDE_HOOKS_GO_FORBIDDEN_PATTERNS=false  # Allow time.Sleep, panic(), interface{}
 # export CLAUDE_HOOKS_GO_IMPORT_CYCLES=false      # Skip slow import cycle check
-# export CLAUDE_HOOKS_GO_SECURITY_SCAN=false      # Skip gosec scan
+# export CLAUDE_HOOKS_GO_GODOC_CHECK=false        # Skip godoc coverage check
+# export CLAUDE_HOOKS_GO_SQL_INJECTION=false      # Skip SQL injection patterns
+# export CLAUDE_HOOKS_GO_COMPLEXITY=false         # Skip complexity analysis
+# export CLAUDE_HOOKS_GO_PRINT_STATEMENTS=false   # Allow fmt.Print statements
+# export CLAUDE_HOOKS_GO_NAKED_RETURNS=false      # Skip naked return check
 
-# Adjust Go complexity threshold for complex projects
-# export CLAUDE_HOOKS_GO_COMPLEXITY_THRESHOLD=30  # Default is 20
+# Adjust Go complexity threshold (default is 20)
+# export CLAUDE_HOOKS_GO_COMPLEXITY_THRESHOLD=30
 
 # Enable TODO/FIXME checking (off by default)
 # export CLAUDE_HOOKS_GO_TODO_CHECK=true
 
 # ============================================================================
-# NOTIFICATION OVERRIDES
+# NOTIFICATION SETTINGS
 # ============================================================================
 
 # Disable notifications for this project
 # export CLAUDE_HOOKS_NTFY_ENABLED=false
-
-# Use a different ntfy config file
-# export CLAUDE_HOOKS_NTFY_CONFIG="$HOME/.config/my-project/ntfy.yaml"
 
 # ============================================================================
 # PERFORMANCE TUNING
@@ -55,26 +64,16 @@
 # export CLAUDE_HOOKS_MAX_FILES=500
 
 # ============================================================================
-# PROJECT-SPECIFIC PATTERNS
+# PROJECT-SPECIFIC EXAMPLES
 # ============================================================================
 
-# Example: Allow specific patterns in certain files
-# if [[ "$CLAUDE_HOOKS_GO_FORBIDDEN_PATTERNS" == "true" ]]; then
-#     # Custom logic to allow patterns in specific contexts
-#     # This runs after the default checks
+# Example: Different settings for different environments
+# if [[ "$USER" == "ci" ]]; then
+#     export CLAUDE_HOOKS_FAIL_FAST=true
+#     export CLAUDE_HOOKS_GO_COMPLEXITY_THRESHOLD=15
 # fi
 
-# ============================================================================
-# CUSTOM HOOKS
-# ============================================================================
-
-# Add custom checks that run after the standard hooks
-# custom_post_hook() {
-#     echo "Running custom project checks..."
-#     # Add your custom validation here
-# }
-#
-# Run custom hook if function exists
-# if declare -f custom_post_hook > /dev/null; then
-#     custom_post_hook
+# Example: Disable certain checks in test directories
+# if [[ "$PWD" =~ /test/ ]]; then
+#     export CLAUDE_HOOKS_GO_FORBIDDEN_PATTERNS=false
 # fi
