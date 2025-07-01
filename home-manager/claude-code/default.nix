@@ -38,6 +38,10 @@
   home.file.".claude/hooks/example-claude-hooks-config.sh".source = ./hooks/example-claude-hooks-config.sh;
   home.file.".claude/hooks/example-claude-hooks-ignore".source = ./hooks/example-claude-hooks-ignore;
 
+  # Copy command files
+  home.file.".claude/commands/check.md".source = ./commands/check.md;
+  home.file.".claude/commands/next.md".source = ./commands/next.md;
+
   # Create necessary directories
   home.file.".claude/.keep".text = "";
   home.file.".claude/projects/.keep".text = "";
