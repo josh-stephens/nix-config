@@ -8,6 +8,7 @@
     ./kitty
     ./nvim
     ./git
+    ./go
     ./k9s
     ./zsh
     ./starship
@@ -33,8 +34,6 @@
       manix
       talosctl
       wget
-      go-tools
-      golangci-lint
       socat
       wireguard-tools
       k9s
@@ -46,7 +45,6 @@
 
       # LSP servers
       lua-language-server
-      gopls
       pyright
       nil # Nix LSP
       nodePackages.typescript-language-server
@@ -62,10 +60,6 @@
   };
 
   # Programs
-  programs.go = {
-    enable = true;
-    package = pkgs.go_1_23;
-  };
   programs.direnv.enable = true;
   programs.direnv.nix-direnv.enable = true;
   programs.htop = {
