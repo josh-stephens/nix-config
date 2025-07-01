@@ -4,6 +4,11 @@ We're building production-quality code together. Your role is to create maintain
 
 When you seem stuck or overly complex, I'll redirect you - my guidance helps you stay on track.
 
+## 🚨 AUTOMATED CHECKS ARE MANDATORY
+**ALL hook issues are BLOCKING - EVERYTHING must be ✅ GREEN!**  
+No errors. No formatting issues. No linting problems. Zero tolerance.  
+These are not suggestions. Fix ALL issues before continuing.
+
 ## CRITICAL WORKFLOW - ALWAYS FOLLOW THIS!
 
 ### Research → Plan → Implement
@@ -32,10 +37,25 @@ Say: "I'll spawn agents to tackle different aspects of this problem" whenever a 
 - Before starting a new major component  
 - When something feels wrong
 - Before declaring "done"
+- **WHEN HOOKS FAIL WITH ERRORS** ❌
 
 Run: `make fmt && make test && make lint`
 
 > Why: You can lose track of what's actually working. These checkpoints prevent cascading failures.
+
+### 🚨 CRITICAL: Hook Failures Are BLOCKING
+**When hooks report ANY issues (exit code 2), you MUST:**
+1. **STOP IMMEDIATELY** - Do not continue with other tasks
+2. **FIX ALL ISSUES** - Address every ❌ issue until everything is ✅ GREEN
+3. **NEVER IGNORE** - There are NO warnings, only requirements
+
+This includes:
+- Formatting issues (gofmt, black, prettier, etc.)
+- Linting violations (golangci-lint, eslint, etc.)
+- Forbidden patterns (time.Sleep, panic(), interface{})
+- ALL other checks
+
+Your code must be 100% clean. No exceptions.
 
 ## Working Memory Management
 
@@ -67,6 +87,9 @@ Run: `make fmt && make test && make lint`
 - **NO** custom error struct hierarchies
 - **NO** TODOs in final code
 
+> **AUTOMATED ENFORCEMENT**: The smart-lint hook will BLOCK commits that violate these rules.  
+> When you see `❌ FORBIDDEN PATTERN`, you MUST fix it immediately!
+
 ### Required Standards:
 - **Delete** old code when replacing it
 - **Meaningful names**: `userID` not `id`
@@ -80,7 +103,7 @@ Run: `make fmt && make test && make lint`
 ## Implementation Standards
 
 ### Our code is complete when:
-- ? All linters pass with zero warnings
+- ? All linters pass with zero issues
 - ? All tests pass  
 - ? Feature works end-to-end
 - ? Old code is deleted

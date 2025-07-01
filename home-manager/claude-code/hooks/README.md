@@ -20,7 +20,7 @@ When working in Go projects, additional guardrails prevent common mistakes:
 - 📝 Godoc coverage for exported items
 - 🛡️ SQL injection pattern detection
 - 🧠 Cognitive complexity limits
-- 🖨️ Direct print statement warnings
+- 🖨️ Direct print statement detection
 - 📤 Naked return detection
 
 ### ⚡ Performance Optimizations
@@ -106,12 +106,12 @@ Add to the top of any file to skip hooks:
 
 1. After any `Write`, `Edit`, `MultiEdit`, or `Update` operation:
    - `smart-lint.sh` runs, detecting project type and running appropriate checks
-   - Results are summarized with success/warning/error counts
+   - Results are summarized showing all issues that must be fixed
 
 2. Exit codes:
-   - `0`: All checks passed (may include warnings) or not applicable
+   - `0`: All checks passed - everything is ✅ GREEN
    - `1`: General error (missing dependencies, etc.) 
-   - `2`: Blocking errors that must be fixed
+   - `2`: ANY issues found - ALL must be fixed (no warnings, everything is an error)
 
 3. Performance features:
    - Fast mode available to skip slow checks

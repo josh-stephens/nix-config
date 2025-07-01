@@ -16,7 +16,7 @@
 # Enable debug output for troubleshooting
 # export CLAUDE_HOOKS_DEBUG=1
 
-# Stop on first error instead of running all checks
+# Stop on first issue instead of running all checks
 # export CLAUDE_HOOKS_FAIL_FAST=true
 
 # ============================================================================
