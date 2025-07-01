@@ -12,7 +12,6 @@
   home.packages = with pkgs; [
     # Core tools
     go-tools # Official Go tools (goimports, etc.)
-    golangci-lint # Comprehensive linting
     gopls # Language server
     delve # Debugger
 
@@ -67,6 +66,13 @@
   # Optional: Create project template directory structure
   home.file.".go-templates/.keep".text = "";
 
+  # Activation script to ensure golangci-lint is installed
+  home.activation.installGolangciLint = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+    if [ ! -f "$HOME/go/bin/golangci-lint" ]; then
+      $DRY_RUN_CMD ${pkgs.curl}/bin/curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $HOME/go/bin
+    fi
+  '';
+
   # Helpful aliases for Go development
   home.shellAliases = {
     # Testing shortcuts
@@ -78,6 +84,7 @@
     # Linting shortcuts
     gol = "golangci-lint run";
     golf = "golangci-lint run --fix";
+    golu = "curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $(go env GOPATH)/bin";
 
     # Module management
     gomu = "go mod download && go mod tidy";

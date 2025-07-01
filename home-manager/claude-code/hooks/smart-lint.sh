@@ -175,19 +175,28 @@ add_summary() {
 }
 
 print_summary() {
-    if [[ ${#CLAUDE_HOOKS_SUMMARY[@]} -gt 0 ]]; then
+    if [[ $CLAUDE_HOOKS_ERROR_COUNT -gt 0 ]]; then
+        # Only show failures when there are errors
+        echo -e "\n${BLUE}═══ Summary ═══${NC}" >&2
+        for item in "${CLAUDE_HOOKS_SUMMARY[@]}"; do
+            # Only print error items
+            if [[ "$item" == *"❌"* ]]; then
+                echo -e "$item" >&2
+            fi
+        done
+        
+        echo -e "\n${RED}Found $CLAUDE_HOOKS_ERROR_COUNT issue(s) that MUST be fixed!${NC}" >&2
+        echo -e "${RED}════════════════════════════════════════════${NC}" >&2
+        echo -e "${RED}❌ ALL ISSUES ARE BLOCKING ❌${NC}" >&2
+        echo -e "${RED}════════════════════════════════════════════${NC}" >&2
+        echo -e "${RED}Fix EVERYTHING above until all checks are ✅ GREEN${NC}" >&2
+    elif [[ ${#CLAUDE_HOOKS_SUMMARY[@]} -gt 0 ]]; then
+        # Show all successes when everything passes
         echo -e "\n${BLUE}═══ Summary ═══${NC}" >&2
         for item in "${CLAUDE_HOOKS_SUMMARY[@]}"; do
             echo -e "$item" >&2
         done
-        
-        if [[ $CLAUDE_HOOKS_ERROR_COUNT -gt 0 ]]; then
-            echo -e "\n${RED}Found $CLAUDE_HOOKS_ERROR_COUNT issue(s) that MUST be fixed!${NC}" >&2
-            echo -e "${RED}════════════════════════════════════════════${NC}" >&2
-            echo -e "${RED}❌ ALL ISSUES ARE BLOCKING ❌${NC}" >&2
-            echo -e "${RED}════════════════════════════════════════════${NC}" >&2
-            echo -e "${RED}Fix EVERYTHING above until all checks are ✅ GREEN${NC}" >&2
-        fi
+        echo -e "\n${GREEN}All checks passed! ✨${NC}" >&2
     fi
 }
 
@@ -262,9 +271,10 @@ lint_go() {
             local unformatted_files=$(gofmt -l . 2>/dev/null | grep -v vendor/ || true)
             
             if [[ -n "$unformatted_files" ]]; then
-                log_error "Go files need formatting - fixing..."
-                gofmt -w .
-                add_summary "error" "Go files need formatting"
+                if ! gofmt -w . >/dev/null 2>&1; then
+                    add_summary "error" "Go formatting failed"
+                fi
+                # Don't report success - formatting was needed and applied
             else
                 add_summary "success" "Go formatting correct"
             fi
@@ -294,9 +304,10 @@ lint_go() {
         local unformatted_files=$(gofmt -l . 2>/dev/null | grep -v vendor/ || true)
         
         if [[ -n "$unformatted_files" ]]; then
-            log_error "Go files need formatting - fixing..."
-            gofmt -w .
-            add_summary "error" "Go files need formatting"
+            if ! gofmt -w . >/dev/null 2>&1; then
+                add_summary "error" "Go formatting failed"
+            fi
+            # Don't report success - formatting was needed and applied
         else
             add_summary "success" "Go formatting correct"
         fi

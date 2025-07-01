@@ -60,8 +60,6 @@ in
     # Making legacy nix commands consistent as well, awesome!
     nixPath = lib.mapAttrsToList (key: value: "${key}=${value.to.path}") config.nix.registry;
 
-    optimise.automatic = true;
-
     settings = {
       # Enable flakes and new 'nix' command
       experimental-features = "nix-command flakes";
