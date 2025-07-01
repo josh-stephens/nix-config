@@ -26,9 +26,6 @@
 
     # Linkpearl - clipboard sync
     linkpearl.url = "github:Veraticus/linkpearl";
-
-    # Claude Code Ntfy - notification wrapper for Claude Code
-    claude-code-ntfy.url = "github:Veraticus/claude-code-ntfy";
   };
 
   outputs = { nixpkgs, darwin, home-manager, self, ... }@inputs:
@@ -151,10 +148,13 @@
       # Simplified home configurations - generated programmatically
       homeConfigurations = 
         let
-          mkHome = { system, module }: home-manager.lib.homeManagerConfiguration {
-            inherit system;
-            pkgs = nixpkgs.legacyPackages.${system};
-            extraSpecialArgs = mkSpecialArgs system;
+          mkHome = { system, module, hostname }: home-manager.lib.homeManagerConfiguration {
+            pkgs = import nixpkgs {
+              inherit system;
+              overlays = [ outputs.overlays.default ];
+              config.allowUnfree = true;
+            };
+            extraSpecialArgs = mkSpecialArgs system // { inherit hostname; };
             modules = [ module ];
           };
           
@@ -163,10 +163,20 @@
         in
           (lib.genAttrs 
             (map (h: "joshsymonds@${h}") linuxHosts)
-            (h: mkHome { system = "x86_64-linux"; module = ./home-manager/hosts/${lib.removePrefix "joshsymonds@" h}.nix; })
+            (h: let hostname = lib.removePrefix "joshsymonds@" h; in
+              mkHome { 
+                system = "x86_64-linux"; 
+                module = ./home-manager/hosts/${hostname}.nix; 
+                inherit hostname;
+              })
           ) // (lib.genAttrs 
             (map (h: "joshsymonds@${h}") darwinHosts)
-            (_: mkHome { system = "aarch64-darwin"; module = ./home-manager/aarch64-darwin.nix; })
+            (h: let hostname = lib.removePrefix "joshsymonds@" h; in
+              mkHome { 
+                system = "aarch64-darwin"; 
+                module = ./home-manager/aarch64-darwin.nix; 
+                inherit hostname;
+              })
           );
     };
 }

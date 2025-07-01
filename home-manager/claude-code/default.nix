@@ -1,29 +1,64 @@
 { inputs, lib, config, pkgs, ... }: 
-let
-  # Get claude-code-ntfy package from flake input
-  claude-code-ntfy = inputs.claude-code-ntfy.packages.${pkgs.system}.default;
-in
 {
   # Install Node.js to enable npm
   home.packages = with pkgs; [
     nodejs_20
-    # Add claude-code-ntfy wrapper
-    claude-code-ntfy
+    # Dependencies for hooks
+    yq
+    ripgrep
   ];
 
   # Add npm global bin to PATH for user-installed packages
-  # Put claude-code-ntfy first so it takes precedence
   home.sessionPath = [ 
-    "${claude-code-ntfy}/bin"
     "$HOME/.npm-global/bin" 
   ];
   
   # Set npm prefix to user directory
   home.sessionVariables = {
     NPM_CONFIG_PREFIX = "$HOME/.npm-global";
-    # Ensure claude-code-ntfy wrapper is found first
-    PATH = "${claude-code-ntfy}/bin:$PATH";
   };
+
+  # Create and manage ~/.claude directory
+  home.file.".claude/settings.json".source = ./settings.json;
+  home.file.".claude/CLAUDE.md".source = ./CLAUDE.md;
+  
+  # Copy hook scripts with executable permissions
+  home.file.".claude/hooks/smart-lint.sh" = {
+    source = ./hooks/smart-lint.sh;
+    executable = true;
+  };
+  
+  home.file.".claude/hooks/go-guardrails.sh" = {
+    source = ./hooks/go-guardrails.sh;
+    executable = true;
+  };
+  
+  home.file.".claude/hooks/ntfy-notifier.sh" = {
+    source = ./hooks/ntfy-notifier.sh;
+    executable = true;
+  };
+  
+  home.file.".claude/hooks/config.sh" = {
+    source = ./hooks/config.sh;
+    executable = true;
+  };
+  
+  home.file.".claude/hooks/hooks-lib.sh" = {
+    source = ./hooks/hooks-lib.sh;
+    executable = true;
+  };
+  
+  # Copy documentation and examples (not executable)
+  home.file.".claude/hooks/README.md".source = ./hooks/README.md;
+  home.file.".claude/hooks/example-claude-hooks-config.sh".source = ./hooks/example-claude-hooks-config.sh;
+  home.file.".claude/hooks/example-claude-hooks-ignore".source = ./hooks/example-claude-hooks-ignore;
+
+  # Create necessary directories
+  home.file.".claude/.keep".text = "";
+  home.file.".claude/projects/.keep".text = "";
+  home.file.".claude/todos/.keep".text = "";
+  home.file.".claude/statsig/.keep".text = "";
+  home.file.".claude/commands/.keep".text = "";
 
   # Install Claude Code on activation
   home.activation.installClaudeCode = lib.hm.dag.entryAfter ["writeBoundary"] ''
@@ -37,4 +72,5 @@ in
       echo "Claude Code is already installed at $(which claude)"
     fi
   '';
+
 }

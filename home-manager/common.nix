@@ -42,6 +42,7 @@
       autossh
       eternal-terminal
       gnumake
+      yq
       
       # LSP servers
       lua-language-server
