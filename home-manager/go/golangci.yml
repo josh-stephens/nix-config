@@ -14,66 +14,6 @@ issues:
   new: false
   # Don't skip generated files - we want quality everywhere
   exclude-generated: false
-  
-  # Use community-vetted exclusion presets
-  exclusions:
-    # Log a warning if an exclusion rule is unused
-    warn-unused: true
-    # Predefined exclusion rules for common patterns
-    presets:
-      - std-error-handling     # Excludes common error handling patterns
-      - common-false-positives  # Excludes known false positives
-    
-    # Exclude some patterns in specific contexts
-    rules:
-      # Test file exclusions
-      - path: _test\.go
-        linters:
-          - bodyclose      # HTTP response bodies in tests
-          - dupl          # Test code often has similar patterns
-          - errcheck      # Error checking might be relaxed in tests
-          - funlen        # Test functions can be longer
-          - gocyclo       # Test functions can be more complex
-          - gocognit      # Test complexity is less critical
-          - goconst       # Test strings don't need to be constants
-          - gosec         # Security checks can be relaxed in tests
-          - noctx         # Context might not be needed in tests
-          - wrapcheck     # Test error handling can be simpler
-          - containedctx  # Tests might store context for lifecycle
-          
-      # Allow time.Sleep in test files only
-      - path: _test\.go
-        text: "time.Sleep"
-        linters:
-          - forbidigo
-          
-      # Allow panic in main.go for CLI apps
-      - path: main\.go
-        text: "panic"
-        linters:
-          - forbidigo
-          
-      # Allow returning interfaces in mock implementations
-      - path: mock_.*\.go
-        linters:
-          - ireturn
-          
-      # Allow simpler error handling in generated code
-      - path: _generated\.go
-        linters:
-          - wrapcheck
-          - goconst
-          
-      # TODO comments don't need periods
-      - source: 'TODO'
-        linters: [ godot ]
-        
-      # Package comments can be TODO/nolint
-      - text: 'should have a package comment'
-        linters: [ revive ]
-      - text: 'package comment should be of the form ".+"'
-        source: '// ?(nolint|TODO)'
-        linters: [ revive ]
 
 # Formatters - automatically fix style issues
 formatters:
@@ -180,7 +120,7 @@ linters:
     - goprintffuncname # Printf-like functions end with 'f'
     
     # Performance
-    - perfsprint      # Optimize fmt.Sprintf usage
+    # - perfsprint      # Disabled due to conflict with forbidigo rules on errors.New
     - intrange        # Use integer ranges (Go 1.22+)
     - mirror          # Correct bytes/strings patterns
     
@@ -490,6 +430,21 @@ linters:
         - io.ReadWriteCloser
         - http.ResponseWriter
         - http.Handler
+        # Project interfaces for dependency injection
+        - github.com/Veraticus/mentat/internal/agent.Handler
+        - github.com/Veraticus/mentat/internal/agent.ValidationStrategy
+        - github.com/Veraticus/mentat/internal/claude.LLM
+        - github.com/Veraticus/mentat/internal/conversation.SessionManager
+        - github.com/Veraticus/mentat/internal/queue.MessageQueue
+        - github.com/Veraticus/mentat/internal/queue.RateLimiter
+        - github.com/Veraticus/mentat/internal/queue.StateMachine
+        - github.com/Veraticus/mentat/internal/queue.StateValidator
+        - github.com/Veraticus/mentat/internal/queue.Worker
+        - github.com/Veraticus/mentat/internal/signal.Client
+        - github.com/Veraticus/mentat/internal/signal.Messenger
+        - github.com/Veraticus/mentat/internal/signal.MessageHandler
+        - github.com/Veraticus/mentat/internal/signal.TypingIndicatorManager
+        - github.com/Veraticus/mentat/internal/storage.Storage
         
     # Error wrapping
     wrapcheck:
@@ -532,8 +487,8 @@ linters:
       context: "scope"
       # Static log messages
       static-msg: true
-      # No raw keys
-      no-raw-keys: true
+      # No raw keys - disabled as it's overly strict requiring constants for every key
+      no-raw-keys: false
       # Snake case keys
       key-naming-case: snake
       
@@ -541,8 +496,8 @@ linters:
     perfsprint:
       # String format optimization
       string-format: true
-      # Error string optimization
-      err-error: true
+      # Error string optimization - disabled due to conflict with forbidigo
+      err-error: false
       # Don't optimize concatenation (readability)
       strconcat: false
       
@@ -587,6 +542,40 @@ linters:
     # Miscellaneous settings
     misspell:
       locale: US
+      
+  # Defines a set of rules to ignore issues.
+  exclusions:
+    # Log a warning if an exclusion rule is unused
+    warn-unused: true
+    
+    # Excluding configuration per-path, per-linter, per-text and per-source
+    rules:
+      # Exclude some linters from running on tests files
+      - path: _test\.go
+        linters:
+          - bodyclose      # HTTP response bodies in tests
+          - dupl          # Test code often has similar patterns
+          - errcheck      # Error checking might be relaxed in tests
+          - funlen        # Test functions can be longer
+          - gocyclo       # Test functions can be more complex
+          - gocognit      # Test complexity is less critical
+          - goconst       # Test strings don't need to be constants
+          - gosec         # Security checks can be relaxed in tests
+          - noctx         # Context might not be needed in tests
+          - wrapcheck     # Test error handling can be simpler
+          - containedctx  # Tests might store context for lifecycle
+          
+      # Allow time.Sleep in test files only
+      - path: _test\.go
+        text: "time.Sleep"
+        linters:
+          - forbidigo
+          
+      # Allow panic in main.go for CLI apps
+      - path: main\.go
+        text: "panic"
+        linters:
+          - forbidigo
 
 run:
   # Timeout for analysis
