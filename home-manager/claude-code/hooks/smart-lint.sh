@@ -30,6 +30,7 @@ set +e
 
 RED='\033[0;31m'
 GREEN='\033[0;32m'
+YELLOW='\033[0;33m'
 BLUE='\033[0;34m'
 CYAN='\033[0;36m'
 NC='\033[0m' # No Color
@@ -190,14 +191,8 @@ print_summary() {
         echo -e "${RED}❌ ALL ISSUES ARE BLOCKING ❌${NC}" >&2
         echo -e "${RED}════════════════════════════════════════════${NC}" >&2
         echo -e "${RED}Fix EVERYTHING above until all checks are ✅ GREEN${NC}" >&2
-    elif [[ ${#CLAUDE_HOOKS_SUMMARY[@]} -gt 0 ]]; then
-        # Show all successes when everything passes
-        echo -e "\n${BLUE}═══ Summary ═══${NC}" >&2
-        for item in "${CLAUDE_HOOKS_SUMMARY[@]}"; do
-            echo -e "$item" >&2
-        done
-        echo -e "\n${GREEN}All checks passed! ✨${NC}" >&2
     fi
+    # Don't print success summary - we'll handle that in the final message
 }
 
 # ============================================================================
@@ -512,7 +507,7 @@ done
 
 # Print header
 echo "" >&2
-echo "🔍 Smart Lint - All issues are blocking!" >&2
+echo "🔍 Style Check - Validating code formatting..." >&2
 echo "────────────────────────────────────────────" >&2
 
 # Load configuration
@@ -578,15 +573,16 @@ main() {
 main
 exit_code=$?
 
-# Final message
+# Final message and exit
 if [[ $exit_code -eq 2 ]]; then
     echo -e "\n${RED}🛑 FAILED - Fix all issues above! 🛑${NC}" >&2
     echo -e "${YELLOW}📋 NEXT STEPS:${NC}" >&2
     echo -e "${YELLOW}  1. Fix the issues listed above${NC}" >&2
     echo -e "${YELLOW}  2. Verify the fix by running the lint command again${NC}" >&2
     echo -e "${YELLOW}  3. Continue with your original task${NC}" >&2
+    exit 2
 else
-    echo -e "\n${GREEN}✅ All checks passed - you may proceed!${NC}" >&2
+    # Always exit with 2 so Claude sees the continuation message
+    echo -e "\n${YELLOW}👉 Style clean. Continue with your task.${NC}" >&2
+    exit 2
 fi
-
-exit $exit_code
