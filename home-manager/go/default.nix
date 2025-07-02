@@ -70,8 +70,8 @@
   home.activation.installGolangciLint = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
     echo "Installing golangci-lint..."
     if [ ! -f "$HOME/go/bin/golangci-lint" ]; then
-      export PATH="${pkgs.curl}/bin:${pkgs.coreutils}/bin:$PATH"
-      $DRY_RUN_CMD ${pkgs.curl}/bin/curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | PATH="${pkgs.curl}/bin:${pkgs.coreutils}/bin:${pkgs.gnused}/bin:${pkgs.gawk}/bin:$PATH" sh -s -- -b $HOME/go/bin
+      export PATH="${pkgs.curl}/bin:${pkgs.coreutils}/bin:${pkgs.gnutar}/bin:${pkgs.gnused}/bin:${pkgs.gawk}/bin:$PATH"
+      $DRY_RUN_CMD ${pkgs.curl}/bin/curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/HEAD/install.sh | sh -s -- -b $HOME/go/bin
     fi
   '';
 
