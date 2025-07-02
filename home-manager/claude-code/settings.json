@@ -3,7 +3,7 @@
   "hooks": {
     "PostToolUse": [
       {
-        "matcher": "Write|Edit|MultiEdit|Update",
+        "matcher": "Write|Edit|MultiEdit|Task",
         "hooks": [
           {
             "type": "command",
@@ -12,7 +12,7 @@
         ]
       }
     ],
-    "Notification": [
+    "Stop": [
       {
         "matcher": "",
         "hooks": [

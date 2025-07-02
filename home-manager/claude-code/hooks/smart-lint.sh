@@ -581,6 +581,10 @@ exit_code=$?
 # Final message
 if [[ $exit_code -eq 2 ]]; then
     echo -e "\n${RED}🛑 FAILED - Fix all issues above! 🛑${NC}" >&2
+    echo -e "${YELLOW}📋 NEXT STEPS:${NC}" >&2
+    echo -e "${YELLOW}  1. Fix the issues listed above${NC}" >&2
+    echo -e "${YELLOW}  2. Verify the fix by running the lint command again${NC}" >&2
+    echo -e "${YELLOW}  3. Continue with your original task${NC}" >&2
 else
     echo -e "\n${GREEN}✅ All checks passed - you may proceed!${NC}" >&2
 fi

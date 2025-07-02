@@ -47,7 +47,9 @@ Run: `make fmt && make test && make lint`
 **When hooks report ANY issues (exit code 2), you MUST:**
 1. **STOP IMMEDIATELY** - Do not continue with other tasks
 2. **FIX ALL ISSUES** - Address every ❌ issue until everything is ✅ GREEN
-3. **NEVER IGNORE** - There are NO warnings, only requirements
+3. **VERIFY THE FIX** - Re-run the failed command to confirm it's fixed
+4. **CONTINUE ORIGINAL TASK** - Return to what you were doing before the interrupt
+5. **NEVER IGNORE** - There are NO warnings, only requirements
 
 This includes:
 - Formatting issues (gofmt, black, prettier, etc.)
@@ -56,6 +58,11 @@ This includes:
 - ALL other checks
 
 Your code must be 100% clean. No exceptions.
+
+**Recovery Protocol:**
+- When interrupted by a hook failure, maintain awareness of your original task
+- After fixing all issues and verifying the fix, continue where you left off
+- Use the todo list to track both the fix and your original task
 
 ## Working Memory Management
 
