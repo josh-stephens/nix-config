@@ -20,6 +20,16 @@
       gcc # For treesitter compilation
       gnumake # For various build processes
     ];
+
+    # Wrapper to ensure neovim has access to git
+    withNodeJs = true;
+    withPython3 = true;
+
+    # Set up wrapper to ensure PATH includes git
+    extraConfig = ''
+      " Ensure git is in PATH for plugins
+      let $PATH = $PATH . ':${pkgs.git}/bin'
+    '';
   };
 
   xdg.configFile."nvim" = {

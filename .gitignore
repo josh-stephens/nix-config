@@ -6,3 +6,6 @@ result*
 # Secrets
 modules/services/signal-cli-bot-secrets.nix
 hosts/secrets/
+
+# Vendor directories
+vendor/
