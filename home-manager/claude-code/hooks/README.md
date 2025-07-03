@@ -1,194 +1,88 @@
 # Claude Code Hooks
 
-This directory contains intelligent hooks that run after Claude Code modifies files, providing real-time feedback and preventing common mistakes.
+Automated code quality checks that run after Claude Code modifies files, enforcing project standards with zero tolerance for errors.
 
-## 🚀 Features
+## Hooks
 
-### 🎯 Smart Language Detection
-The hook automatically detects your project type and runs appropriate tools:
-- **Go**: `gofmt`, `golangci-lint`
-- **Python**: `black`, `ruff`/`flake8`
+### `smart-lint.sh`
+Intelligent project-aware linting that automatically detects language and runs appropriate checks:
+- **Go**: `gofmt`, `golangci-lint` (enforces forbidden patterns like `time.Sleep`, `panic()`, `interface{}`)
+- **Python**: `black`, `ruff` or `flake8`
 - **JavaScript/TypeScript**: `eslint`, `prettier`
 - **Rust**: `cargo fmt`, `cargo clippy`
 - **Nix**: `nixpkgs-fmt`/`alejandra`, `statix`
-- **Mixed projects**: Runs appropriate tools for each detected language
 
-### 🛡️ Project-Specific Enforcement
-For Go projects, ensure your `.golangci.yml` includes linters for:
-- Forbidden patterns (forbidigo: `time.Sleep`, `panic()`, `interface{}`)
-- Complexity limits (gocognit, gocyclo)
-- Naked returns (nakedret)
-- TODO/FIXME comments (godox)
-- And many more quality checks
+Features:
+- Detects project type automatically
+- Respects project-specific Makefiles (`make lint`)
+- Smart file filtering (only checks modified files)
+- Fast mode available (`--fast` to skip slow checks)
+- Exit code 2 means issues found - ALL must be fixed
 
-The hook runs `make lint` which enforces all your project's standards.
+### `ntfy-notifier.sh`
+Push notifications via ntfy service for Claude Code events:
+- Sends alerts when Claude finishes tasks
+- Includes terminal context (tmux/Terminal window name) for identification
+- Requires `~/.config/claude-code-ntfy/config.yaml` with topic configuration
 
-### ⚡ Performance Optimizations
-- **Smart file filtering**: Only checks modified files when possible
-- **Configurable limits**: Prevent runaway on huge repos
-- **Fast mode**: Skip slow checks with `--fast` flag
+## Installation
 
-### 🔔 Notifications
-- Sends notifications via ntfy when Claude finishes
-- Includes terminal context for easy identification
-- Rate limited to prevent spam
+Automatically installed by Nix home-manager to `~/.claude/hooks/`
 
-## 📦 Installation
-
-These hooks are automatically installed by Nix home-manager to `~/.claude/hooks/`
-
-## ⚙️ Configuration
+## Configuration
 
 ### Global Settings
-Override via environment variables or project-specific `.claude-hooks-config.sh`:
+Set environment variables or create project-specific `.claude-hooks-config.sh`:
 
 ```bash
-# Disable all hooks
-export CLAUDE_HOOKS_ENABLED=false
-
-# Enable debug mode
-export CLAUDE_HOOKS_DEBUG=1
-
-# Skip slow checks
-./smart-lint.sh --fast
+CLAUDE_HOOKS_ENABLED=false      # Disable all hooks
+CLAUDE_HOOKS_DEBUG=1            # Enable debug output
 ```
 
 ### Per-Project Settings
 Create `.claude-hooks-config.sh` in your project root:
 
 ```bash
-# Disable specific checks for this project
-export CLAUDE_HOOKS_GO_PRINT_STATEMENTS=false
-export CLAUDE_HOOKS_GO_COMPLEXITY_THRESHOLD=30
+# Language-specific options
+CLAUDE_HOOKS_GO_ENABLED=false
+CLAUDE_HOOKS_GO_COMPLEXITY_THRESHOLD=30
+CLAUDE_HOOKS_PYTHON_ENABLED=false
 
-# Disable Go checks entirely
-export CLAUDE_HOOKS_GO_ENABLED=false
-
-# See example-claude-hooks-config.sh for more options
+# See example-claude-hooks-config.sh for all options
 ```
 
 ### Excluding Files
-Create `.claude-hooks-ignore` in your project root:
+Create `.claude-hooks-ignore` in your project root using gitignore syntax:
 
-```gitignore
-# Vendor directories
+```
 vendor/**
 node_modules/**
-
-# Generated files
 *.pb.go
 *_generated.go
-
-# See example-claude-hooks-ignore for more patterns
 ```
 
-### Inline Disabling
-Add to the top of any file to skip hooks:
+Add `// claude-hooks-disable` to the top of any file to skip hooks.
 
-```go
-// claude-hooks-disable
-```
-
-## 🔧 Command Line Usage
+## Usage
 
 ```bash
-# Normal usage (called automatically by Claude)
-./smart-lint.sh
-
-# Debug mode
-./smart-lint.sh --debug
-
-# Fast mode (skip slow checks)
-./smart-lint.sh --fast
+./smart-lint.sh           # Auto-runs after Claude edits
+./smart-lint.sh --debug   # Debug mode
+./smart-lint.sh --fast    # Skip slow checks
 ```
 
-## 📊 How It Works
+### Exit Codes
+- `0`: All checks passed ✅
+- `1`: General error (missing dependencies)
+- `2`: Issues found - must fix ALL
 
-1. After any `Write`, `Edit`, `MultiEdit`, or `Update` operation:
-   - `smart-lint.sh` runs, detecting project type and running appropriate checks
-   - Results are summarized showing all issues that must be fixed
+## Dependencies
 
-2. Exit codes:
-   - `0`: All checks passed - everything is ✅ GREEN
-   - `1`: General error (missing dependencies, etc.) 
-   - `2`: ANY issues found - ALL must be fixed (no warnings, everything is an error)
+Hooks work best with these tools installed:
+- **Go**: `golangci-lint`
+- **Python**: `black`, `ruff`
+- **JavaScript**: `eslint`, `prettier` 
+- **Rust**: `cargo fmt`, `cargo clippy`
+- **Nix**: `nixpkgs-fmt`, `alejandra`, `statix`
 
-3. Performance features:
-   - Fast mode available to skip slow checks
-   - Smart filtering to only check modified files
-
-## 🐛 Troubleshooting
-
-### Hooks running too slowly?
-```bash
-# Use fast mode
-export CLAUDE_HOOKS_FAIL_FAST=true
-
-# Skip expensive checks
-export CLAUDE_HOOKS_GO_IMPORT_CYCLES=false
-
-# Reduce file limit for large repos
-export CLAUDE_HOOKS_MAX_FILES=500
-```
-
-### False positives?
-- Check for allowed exceptions (e.g., `main.go` can use `time.Sleep`)
-- Use `.claude-hooks-ignore` to exclude specific files
-- Adjust thresholds in `.claude-hooks-config.sh`
-
-### Need to debug?
-```bash
-# Enable debug output
-export CLAUDE_HOOKS_DEBUG=1
-
-# Run hooks manually
-cd /your/project
-~/.claude/hooks/smart-lint.sh --debug
-```
-
-## 🔌 Dependencies
-
-The hooks work best with these optional tools installed:
-
-### Go
-- `go`: Basic Go toolchain
-- `gofmt`: Code formatting (included with Go)
-- `golangci-lint`: Comprehensive linting
-- `gocognit`: Complexity analysis
-
-### Python
-- `black`: Code formatting
-- `ruff`: Fast linting
-- `flake8`: Traditional linting (fallback)
-
-### JavaScript/TypeScript
-- `npm`/`npx`: Package management
-- `eslint`: Linting (via package.json)
-- `prettier`: Code formatting
-
-### Rust
-- `cargo`: Rust toolchain
-- `rustfmt`: Code formatting
-- `clippy`: Linting
-
-### Nix
-- `nixpkgs-fmt` or `alejandra`: Code formatting
-- `statix`: Static analysis
-
-The hooks gracefully degrade if tools aren't installed.
-
-## 🎨 Customization
-
-### Custom Project Hooks
-Add to `.claude-hooks-config.sh`:
-```bash
-# Override specific settings
-export CLAUDE_HOOKS_GO_COMPLEXITY_THRESHOLD=30
-export CLAUDE_HOOKS_PYTHON_ENABLED=false
-```
-
-## 📈 Future Improvements
-- JSON/YAML configuration instead of shell variables
-- Language server protocol integration
-- Incremental checking (only modified lines)
-- More language support (C++, Java, etc.)
+Hooks gracefully degrade if tools aren't installed.
