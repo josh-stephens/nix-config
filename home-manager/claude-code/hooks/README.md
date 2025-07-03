@@ -19,6 +19,52 @@ Features:
 - Fast mode available (`--fast` to skip slow checks)
 - Exit code 2 means issues found - ALL must be fixed
 
+#### Failure
+
+```
+> Edit operation feedback:
+  - [~/.claude/hooks/smart-lint.sh]:
+  🔍 Style Check - Validating code formatting...
+  ────────────────────────────────────────────
+  [INFO] Project type: go
+  [INFO] Running Go formatting and linting...
+  [INFO] Using Makefile targets
+
+  ═══ Summary ═══
+  ❌ Go linting failed (make lint)
+
+  Found 1 issue(s) that MUST be fixed!
+  ════════════════════════════════════════════
+  ❌ ALL ISSUES ARE BLOCKING ❌
+  ════════════════════════════════════════════
+  Fix EVERYTHING above until all checks are ✅ GREEN
+
+  🛑 FAILED - Fix all issues above! 🛑
+  📋 NEXT STEPS:
+    1. Fix the issues listed above
+    2. Verify the fix by running the lint command again
+    3. Continue with your original task
+```
+```
+
+#### Success
+
+```
+> Task operation feedback:
+  - [~/.claude/hooks/smart-lint.sh]:
+  🔍 Style Check - Validating code formatting...
+  ────────────────────────────────────────────
+  [INFO] Project type: go
+  [INFO] Running Go formatting and linting...
+  [INFO] Using Makefile targets
+
+  👉 Style clean. Continue with your task.
+```
+```
+
+By `exit 2` on success and telling it to continue, we prevent Claude from stopping after it has corrected
+the style issues.
+
 ### `ntfy-notifier.sh`
 Push notifications via ntfy service for Claude Code events:
 - Sends alerts when Claude finishes tasks
