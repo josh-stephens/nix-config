@@ -157,22 +157,16 @@ should_skip_file() {
 }
 
 # ============================================================================
-# SUMMARY TRACKING
+# ERROR TRACKING
 # ============================================================================
 
 declare -a CLAUDE_HOOKS_SUMMARY=()
 declare -i CLAUDE_HOOKS_ERROR_COUNT=0
 
-add_summary() {
-    local level="$1"
-    local message="$2"
-    
-    if [[ "$level" == "error" ]]; then
-        CLAUDE_HOOKS_ERROR_COUNT+=1
-        CLAUDE_HOOKS_SUMMARY+=("${RED}❌${NC} $message")
-    else
-        CLAUDE_HOOKS_SUMMARY+=("${GREEN}✅${NC} $message")
-    fi
+add_error() {
+    local message="$1"
+    CLAUDE_HOOKS_ERROR_COUNT+=1
+    CLAUDE_HOOKS_SUMMARY+=("${RED}❌${NC} $message")
 }
 
 print_summary() {
@@ -180,10 +174,7 @@ print_summary() {
         # Only show failures when there are errors
         echo -e "\n${BLUE}═══ Summary ═══${NC}" >&2
         for item in "${CLAUDE_HOOKS_SUMMARY[@]}"; do
-            # Only print error items
-            if [[ "$item" == *"❌"* ]]; then
-                echo -e "$item" >&2
-            fi
+            echo -e "$item" >&2
         done
         
         echo -e "\n${RED}Found $CLAUDE_HOOKS_ERROR_COUNT issue(s) that MUST be fixed!${NC}" >&2
@@ -192,7 +183,6 @@ print_summary() {
         echo -e "${RED}════════════════════════════════════════════${NC}" >&2
         echo -e "${RED}Fix EVERYTHING above until all checks are ✅ GREEN${NC}" >&2
     fi
-    # Don't print success summary - we'll handle that in the final message
 }
 
 # ============================================================================
@@ -247,16 +237,16 @@ lint_go() {
         if [[ -n "$has_fmt" && -n "$has_lint" ]]; then
             log_info "Using Makefile targets"
             
-            if ! make fmt >/dev/null 2>&1; then
-                add_summary "error" "Go formatting failed (make fmt)"
-            else
-                add_summary "success" "Go code formatted"
+            local fmt_output
+            if ! fmt_output=$(make fmt 2>&1); then
+                add_error "Go formatting failed (make fmt)"
+                echo "$fmt_output" >&2
             fi
             
-            if ! make lint 2>&1; then
-                add_summary "error" "Go linting failed (make lint)"
-            else
-                add_summary "success" "Go linting passed"
+            local lint_output
+            if ! lint_output=$(make lint 2>&1); then
+                add_error "Go linting failed (make lint)"
+                echo "$lint_output" >&2
             fi
         else
             # Fallback to direct commands
@@ -266,26 +256,25 @@ lint_go() {
             local unformatted_files=$(gofmt -l . 2>/dev/null | grep -v vendor/ || true)
             
             if [[ -n "$unformatted_files" ]]; then
-                if ! gofmt -w . >/dev/null 2>&1; then
-                    add_summary "error" "Go formatting failed"
+                local fmt_output
+                if ! fmt_output=$(gofmt -w . 2>&1); then
+                    add_error "Go formatting failed"
+                    echo "$fmt_output" >&2
                 fi
-                # Don't report success - formatting was needed and applied
-            else
-                add_summary "success" "Go formatting correct"
             fi
             
             # Linting
             if command_exists golangci-lint; then
-                if ! golangci-lint run --timeout=2m 2>&1; then
-                    add_summary "error" "golangci-lint found issues"
-                else
-                    add_summary "success" "golangci-lint passed"
+                local lint_output
+                if ! lint_output=$(golangci-lint run --timeout=2m 2>&1); then
+                    add_error "golangci-lint found issues"
+                    echo "$lint_output" >&2
                 fi
             elif command_exists go; then
-                if ! go vet ./... 2>&1; then
-                    add_summary "error" "go vet found issues"
-                else
-                    add_summary "success" "go vet passed"
+                local vet_output
+                if ! vet_output=$(go vet ./... 2>&1); then
+                    add_error "go vet found issues"
+                    echo "$vet_output" >&2
                 fi
             else
                 log_error "No Go linting tools available - install golangci-lint or go"
@@ -299,28 +288,25 @@ lint_go() {
         local unformatted_files=$(gofmt -l . 2>/dev/null | grep -v vendor/ || true)
         
         if [[ -n "$unformatted_files" ]]; then
-            if ! gofmt -w . >/dev/null 2>&1; then
-                add_summary "error" "Go formatting failed"
+            local fmt_output
+            if ! fmt_output=$(gofmt -w . 2>&1); then
+                add_error "Go formatting failed"
+                echo "$fmt_output" >&2
             fi
-            # Don't report success - formatting was needed and applied
-        else
-            add_summary "success" "Go formatting correct"
         fi
         
         # Linting
         if command_exists golangci-lint; then
-            if ! golangci-lint run --timeout=2m 2>&1; then
-                add_summary "error" "golangci-lint found issues"
-                exit_code=2
-            else
-                add_summary "success" "golangci-lint passed"
+            local lint_output
+            if ! lint_output=$(golangci-lint run --timeout=2m 2>&1); then
+                add_error "golangci-lint found issues"
+                echo "$lint_output" >&2
             fi
         elif command_exists go; then
-            if ! go vet ./... 2>&1; then
-                add_summary "error" "go vet found issues"
-                exit_code=2
-            else
-                add_summary "success" "go vet passed"
+            local vet_output
+            if ! vet_output=$(go vet ./... 2>&1); then
+                add_error "go vet found issues"
+                echo "$vet_output" >&2
             fi
         else
             log_error "No Go linting tools available - install golangci-lint or go"
@@ -342,26 +328,29 @@ lint_python() {
     
     # Black formatting
     if command_exists black; then
-        if black . --check --quiet 2>/dev/null; then
-            add_summary "success" "Python formatting correct"
-        else
-            black . --quiet 2>/dev/null
-            add_summary "error" "Python files need formatting"
+        local black_output
+        if ! black_output=$(black . --check 2>&1); then
+            # Apply formatting and capture any errors
+            local format_output
+            if ! format_output=$(black . 2>&1); then
+                add_error "Python formatting failed"
+                echo "$format_output" >&2
+            fi
         fi
     fi
     
     # Linting
     if command_exists ruff; then
-        if ! ruff check --fix . 2>&1; then
-            add_summary "error" "Ruff found issues"
-        else
-            add_summary "success" "Ruff check passed"
+        local ruff_output
+        if ! ruff_output=$(ruff check --fix . 2>&1); then
+            add_error "Ruff found issues"
+            echo "$ruff_output" >&2
         fi
     elif command_exists flake8; then
-        if flake8 . 2>&1; then
-            add_summary "success" "Flake8 check passed"
-        else
-            add_summary "error" "Flake8 found issues"
+        local flake8_output
+        if ! flake8_output=$(flake8 . 2>&1); then
+            add_error "Flake8 found issues"
+            echo "$flake8_output" >&2
         fi
     fi
     
@@ -379,10 +368,10 @@ lint_javascript() {
     # Check for ESLint
     if [[ -f "package.json" ]] && grep -q "eslint" package.json 2>/dev/null; then
         if command_exists npm; then
-            if npm run lint --if-present 2>&1; then
-                add_summary "success" "ESLint check passed"
-            else
-                add_summary "error" "ESLint found issues"
+            local eslint_output
+            if ! eslint_output=$(npm run lint --if-present 2>&1); then
+                add_error "ESLint found issues"
+                echo "$eslint_output" >&2
             fi
         fi
     fi
@@ -390,18 +379,24 @@ lint_javascript() {
     # Prettier
     if [[ -f ".prettierrc" ]] || [[ -f "prettier.config.js" ]] || [[ -f ".prettierrc.json" ]]; then
         if command_exists prettier; then
-            if prettier --check . 2>/dev/null; then
-                add_summary "success" "Prettier formatting correct"
-            else
-                prettier --write . 2>/dev/null
-                add_summary "error" "Files need formatting with Prettier"
+            local prettier_output
+            if ! prettier_output=$(prettier --check . 2>&1); then
+                # Apply formatting and capture any errors
+                local format_output
+                if ! format_output=$(prettier --write . 2>&1); then
+                    add_error "Prettier formatting failed"
+                    echo "$format_output" >&2
+                fi
             fi
         elif command_exists npx; then
-            if npx prettier --check . 2>/dev/null; then
-                add_summary "success" "Prettier formatting correct"
-            else
-                npx prettier --write . 2>/dev/null
-                add_summary "error" "Files need formatting with Prettier"
+            local prettier_output
+            if ! prettier_output=$(npx prettier --check . 2>&1); then
+                # Apply formatting and capture any errors
+                local format_output
+                if ! format_output=$(npx prettier --write . 2>&1); then
+                    add_error "Prettier formatting failed"
+                    echo "$format_output" >&2
+                fi
             fi
         fi
     fi
@@ -418,17 +413,20 @@ lint_rust() {
     log_info "Running Rust linters..."
     
     if command_exists cargo; then
-        if cargo fmt -- --check 2>/dev/null; then
-            add_summary "success" "Rust formatting correct"
-        else
-            cargo fmt 2>/dev/null
-            add_summary "error" "Rust files need formatting"
+        local fmt_output
+        if ! fmt_output=$(cargo fmt -- --check 2>&1); then
+            # Apply formatting and capture any errors
+            local format_output
+            if ! format_output=$(cargo fmt 2>&1); then
+                add_error "Rust formatting failed"
+                echo "$format_output" >&2
+            fi
         fi
         
-        if cargo clippy --quiet -- -D warnings 2>&1; then
-            add_summary "success" "Clippy check passed"
-        else
-            add_summary "error" "Clippy found issues"
+        local clippy_output
+        if ! clippy_output=$(cargo clippy --quiet -- -D warnings 2>&1); then
+            add_error "Clippy found issues"
+            echo "$clippy_output" >&2
         fi
     else
         log_info "Cargo not found, skipping Rust checks"
@@ -455,27 +453,33 @@ lint_nix() {
     
     # Check formatting with nixpkgs-fmt or alejandra
     if command_exists nixpkgs-fmt; then
-        if echo "$nix_files" | xargs nixpkgs-fmt --check 2>/dev/null; then
-            add_summary "success" "Nix formatting correct"
-        else
-            echo "$nix_files" | xargs nixpkgs-fmt 2>/dev/null
-            add_summary "error" "Nix files need formatting"
+        local fmt_output
+        if ! fmt_output=$(echo "$nix_files" | xargs nixpkgs-fmt --check 2>&1); then
+            # Apply formatting and capture any errors
+            local format_output
+            if ! format_output=$(echo "$nix_files" | xargs nixpkgs-fmt 2>&1); then
+                add_error "Nix formatting failed"
+                echo "$format_output" >&2
+            fi
         fi
     elif command_exists alejandra; then
-        if echo "$nix_files" | xargs alejandra --check 2>/dev/null; then
-            add_summary "success" "Nix formatting correct"
-        else
-            echo "$nix_files" | xargs alejandra --quiet 2>/dev/null
-            add_summary "error" "Nix files need formatting"
+        local fmt_output
+        if ! fmt_output=$(echo "$nix_files" | xargs alejandra --check 2>&1); then
+            # Apply formatting and capture any errors
+            local format_output
+            if ! format_output=$(echo "$nix_files" | xargs alejandra 2>&1); then
+                add_error "Nix formatting failed"
+                echo "$format_output" >&2
+            fi
         fi
     fi
     
     # Static analysis with statix
     if command_exists statix; then
-        if statix check 2>&1; then
-            add_summary "success" "Statix check passed"
-        else
-            add_summary "error" "Statix found issues"
+        local statix_output
+        if ! statix_output=$(statix check 2>&1); then
+            add_error "Statix found issues"
+            echo "$statix_output" >&2
         fi
     fi
     
