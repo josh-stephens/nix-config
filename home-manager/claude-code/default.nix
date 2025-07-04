@@ -41,6 +41,7 @@
   # Copy command files
   home.file.".claude/commands/check.md".source = ./commands/check.md;
   home.file.".claude/commands/next.md".source = ./commands/next.md;
+  home.file.".claude/commands/prompt.md".source = ./commands/prompt.md;
 
   # Create necessary directories
   home.file.".claude/.keep".text = "";
