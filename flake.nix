@@ -158,7 +158,7 @@
             modules = [ module ];
           };
           
-          linuxHosts = [ "ultraviolet" "bluedesert" "echelon" "vermissian" ];
+          linuxHosts = [ "ultraviolet" "bluedesert" "echelon" "vermissian" "bishop" ];
           darwinHosts = [ "cloudbank" ];
         in
           (lib.genAttrs 
