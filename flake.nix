@@ -1,5 +1,5 @@
 {
-  description = "Josh Symonds' nix config";
+  description = "My nix config";
 
   inputs = {
     # Nixpkgs - using unstable as primary
@@ -23,9 +23,6 @@
 
     # Hardware-specific optimizations
     hardware.url = "github:nixos/nixos-hardware/master";
-
-    # Linkpearl - clipboard sync
-    linkpearl.url = "github:Veraticus/linkpearl";
   };
 
   outputs = { nixpkgs, darwin, home-manager, self, ... }@inputs:
@@ -50,133 +47,61 @@
 
       overlays = import ./overlays { inherit inputs; };
 
-      # NixOS configurations - inlined for clarity
+      # NixOS configurations
       nixosConfigurations = {
-        ultraviolet = lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = mkSpecialArgs "x86_64-linux";
-          modules = [
-            ./hosts/ultraviolet
-            ./hosts/common.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.joshsymonds = import ./home-manager/hosts/ultraviolet.nix;
-              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux" // {
-                hostname = "ultraviolet";
-              };
-            }
-          ];
-        };
-        
-        bluedesert = lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = mkSpecialArgs "x86_64-linux";
-          modules = [
-            ./hosts/bluedesert
-            ./hosts/common.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.joshsymonds = import ./home-manager/hosts/bluedesert.nix;
-              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux" // {
-                hostname = "bluedesert";
-              };
-            }
-          ];
-        };
-        
-        echelon = lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = mkSpecialArgs "x86_64-linux";
-          modules = [
-            ./hosts/echelon  # Fixed: was using bluedesert
-            ./hosts/common.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.joshsymonds = import ./home-manager/hosts/echelon.nix;
-              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux" // {
-                hostname = "echelon";
-              };
-            }
-          ];
-        };
-
-        vermissian = lib.nixosSystem {
-          system = "x86_64-linux";
-          specialArgs = mkSpecialArgs "x86_64-linux";
-          modules = [
-            ./hosts/vermissian
-            ./hosts/common.nix
-            home-manager.nixosModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.joshsymonds = import ./home-manager/hosts/vermissian.nix;
-              home-manager.extraSpecialArgs = mkSpecialArgs "x86_64-linux" // {
-                hostname = "vermissian";
-              };
-            }
-          ];
-        };
+        # Add NixOS systems here when needed
+        # example = lib.nixosSystem {
+        #   system = "x86_64-linux";
+        #   modules = [ ./hosts/example ];
+        # };
       };
 
-      # Darwin configuration - inlined for clarity
+      # Darwin configurations
       darwinConfigurations = {
-        cloudbank = darwin.lib.darwinSystem {
-          system = "aarch64-darwin";
-          specialArgs = mkSpecialArgs "aarch64-darwin";
-          modules = [
-            ./hosts/cloudbank
-            home-manager.darwinModules.home-manager
-            {
-              home-manager.useGlobalPkgs = true;
-              home-manager.useUserPackages = true;
-              home-manager.users.joshsymonds = import ./home-manager/aarch64-darwin.nix;
-              home-manager.extraSpecialArgs = mkSpecialArgs "aarch64-darwin" // {
-                hostname = "cloudbank";
-              };
-            }
-          ];
-        };
+        # Add macOS systems here when needed
+        # example = darwin.lib.darwinSystem {
+        #   system = "aarch64-darwin";
+        #   modules = [ ./hosts/example ];
+        # };
       };
 
-      # Simplified home configurations - generated programmatically
+      # Home configurations - for standalone home-manager
       homeConfigurations = 
         let
-          mkHome = { system, module, hostname }: home-manager.lib.homeManagerConfiguration {
+          mkHome = { system, username, hostname }: home-manager.lib.homeManagerConfiguration {
             pkgs = import nixpkgs {
               inherit system;
               overlays = [ outputs.overlays.default ];
               config.allowUnfree = true;
             };
             extraSpecialArgs = mkSpecialArgs system // { inherit hostname; };
-            modules = [ module ];
+            modules = [ 
+              ./home-manager/hosts/${hostname}.nix 
+              {
+                home = {
+                  inherit username;
+                  homeDirectory = if lib.hasSuffix "darwin" system 
+                    then "/Users/${username}"
+                    else "/home/${username}";
+                };
+              }
+            ];
+          };
+        in {
+          # Add your configurations here
+          # Format: "username@hostname"
+          "josh@bishop" = mkHome { 
+            system = "x86_64-linux"; 
+            username = "josh";
+            hostname = "bishop";
           };
           
-          linuxHosts = [ "ultraviolet" "bluedesert" "echelon" "vermissian" "bishop" ];
-          darwinHosts = [ "cloudbank" ];
-        in
-          (lib.genAttrs 
-            (map (h: "joshsymonds@${h}") linuxHosts)
-            (h: let hostname = lib.removePrefix "joshsymonds@" h; in
-              mkHome { 
-                system = "x86_64-linux"; 
-                module = ./home-manager/hosts/${hostname}.nix; 
-                inherit hostname;
-              })
-          ) // (lib.genAttrs 
-            (map (h: "joshsymonds@${h}") darwinHosts)
-            (h: let hostname = lib.removePrefix "joshsymonds@" h; in
-              mkHome { 
-                system = "aarch64-darwin"; 
-                module = ./home-manager/aarch64-darwin.nix; 
-                inherit hostname;
-              })
-          );
+          # Example for adding more machines:
+          # "youruser@yourhostname" = mkHome {
+          #   system = "x86_64-linux";  # or "aarch64-darwin" for Mac
+          #   username = "youruser";
+          #   hostname = "yourhostname";
+          # };
+        };
     };
 }

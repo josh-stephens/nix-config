@@ -3,13 +3,12 @@
     ./common.nix
     ./tmux
     ./devspaces-host
-    ./linkpearl
     ./security-tools
     ./gmailctl
   ];
 
   home = {
-    homeDirectory = "/home/joshsymonds";
+    homeDirectory = lib.mkDefault "/home/${config.home.username}";
 
     packages = with pkgs; [
       file
